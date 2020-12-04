@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -26,7 +26,7 @@ function App() {
         >
           Learn React
         </a>
-        <p>Current time is: {currentTime}</p>
+        <p>Flask server time: {currentTime}</p>
       </header>
     </div>
   );
