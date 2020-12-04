@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from threading import Lock
+import time
 from flask import Flask, render_template, session, request, \
     copy_current_request_context
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
@@ -32,6 +33,9 @@ def background_thread():
 def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
+@app.route('/time')
+def get_current_time():
+    return {'time': time.time()}
 
 @socketio.on('my_event', namespace='/test')
 def test_message(message):

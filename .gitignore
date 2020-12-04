@@ -1,1 +1,6 @@
 *.DS_Store
+/.idea/.gitignore
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/MultimodalChatbotCreator.iml
+/.idea/vcs.xml
