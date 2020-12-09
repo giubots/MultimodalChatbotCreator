@@ -27,7 +27,7 @@ function App() {
         >
           Learn React
         </a>
-        <Clickable onClick={() => alert("Work'd")}>
+        <Clickable>
           <div onClick={() => alert("should not work")}>Ciao</div>
         </Clickable>
 
