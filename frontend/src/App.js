@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {useEffect, useState} from "react";
+import { Clickable } from "./react-chatbot-ui";
 
 function App() {
   const [currentTime, setCurrentTime] = useState(0);
@@ -26,6 +27,10 @@ function App() {
         >
           Learn React
         </a>
+        <Clickable onClick={() => alert("Work'd")}>
+          <div onClick={() => alert("should not work")}>Ciao</div>
+        </Clickable>
+
         <p>Flask server time: {currentTime}</p>
       </header>
     </div>
@@ -33,3 +38,7 @@ function App() {
 }
 
 export default App;
+
+
+
+
