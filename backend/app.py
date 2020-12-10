@@ -37,6 +37,13 @@ def index():
 def get_current_time():
     return {'time': time.time()}
 
+@socketio.on('test_event', namespace='/test')
+def test_event(message):
+  print('test_event')
+  session['receive_count'] = session.get('receive_count', 0) + 1
+  emit('my_response',
+       {'data': message['data'], 'count': session['receive_count']})
+
 @socketio.on('my_event', namespace='/test')
 def test_message(message):
     session['receive_count'] = session.get('receive_count', 0) + 1
