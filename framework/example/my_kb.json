@@ -1,0 +1,9 @@
+{
+  "start": "welcome",
+  "insert_name": "Please insert your name",
+  "insert_name_err": "Name not found, please insert your name",
+  "insert_age": "Please insert your age",
+  "insert_age_err": "The input is not valid, please insert your age",
+  "insert_age_old": 100,
+  "end": "Process completed!"
+}

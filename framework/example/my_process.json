@@ -1,0 +1,25 @@
+{
+  "activities": [
+    {
+      "my_id": "start",
+      "next_id": "insert_name",
+      "my_type": "START"
+    },
+    {
+      "my_id": "insert_name",
+      "next_id": "insert_age",
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "insert_age",
+      "next_id": "end",
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "end",
+      "next_id": null,
+      "my_type": "END"
+    }
+  ],
+  "first_activity_id": "start"
+}
