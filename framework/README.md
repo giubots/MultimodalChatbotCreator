@@ -118,7 +118,7 @@ XOR C, and then finally D, the corresponding description would be:
 }
 ```
 
-### The callbacks:
+### The callbacks and the responses:
 
 Each `Activity` has an associated callback that is in charge of:
 
@@ -151,6 +151,9 @@ valid choice then it is completed and returns the choice, otherwise it returns a
 
 To pass the callbacks to the `Framework`, provide a method that, given the id of the task, returns the correct callback
 (without running it).
+
+When `handle_text_input` or `handle_data_input` terminate, they return a data structure that contains the utterance and
+the payload.
 
 ### The types of activities:
 
