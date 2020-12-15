@@ -2,12 +2,26 @@
   "activities": [
     {
       "my_id": "start",
-      "next_id": "insert_name",
+      "next_id": "name_nickname",
       "my_type": "START"
     },
     {
-      "my_id": "insert_name",
+      "my_id": "name_nickname",
       "next_id": "insert_age",
+      "my_type": "XOR",
+      "choices": [
+        "insert_name",
+        "insert_nickname"
+      ]
+    },
+    {
+      "my_id": "insert_name",
+      "next_id": null,
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "insert_nickname",
+      "next_id": null,
       "my_type": "TASK"
     },
     {

@@ -11,7 +11,8 @@ def get_callback(activity_id: str):
 
 
 def start(data, kb, context):
-    return Response(kb, context, True, payload={"BA": True, "BB": False, "FC": False, "FC_c": ""})
+    return Response(kb, context, True,
+                    payload={"BA": False, "BB": False, "BC": True, "BD": True, "FC": False, "FC_c": ""})
 
 
 def insert_name(data, kb, context):
@@ -21,21 +22,43 @@ def insert_name(data, kb, context):
     return Response(kb, context, False, utterance=kb["insert_name_err"])
 
 
+def insert_nickname(data, kb, context):
+    if "nickname" in data and data["nickname"] != "":
+        context["nickname"] = data["nickname"]
+        return Response(kb, context, True, payload={"BA": False, "BB": True})
+    return Response(kb, context, False, utterance=kb["insert_nickname_err"])
+
+
 def insert_age(data, kb, context):
     if "age" in data:
         try:
             age = int(data["age"])
             if age < kb["insert_age_old"]:
                 context["age"] = data["age"]
-                return Response(kb, context, True, utterance=f'{context["name"]} {context["age"]}',
-                                payload={"BB": False, "FC": True, "FC_c": context["name"] + " " + context["age"]})
+                if "name" in context:
+                    name = "Name, " + context["name"]
+                else:
+                    name = "Nickname, " + context["nickname"]
+                return Response(kb, context, True, utterance=f'{name} {context["age"]}',
+                                payload={"BB": False, "FC": True, "FC_c": name + " " + context["age"]})
         except ValueError:
             pass
     return Response(kb, context, False, utterance=kb["insert_age_err"])
 
 
+def name_nickname(data, kb, context):
+    if "name_nickname" in data:
+        if data["name_nickname"] == "name":
+            return Response(kb, context, True, choice="insert_name", payload={"BC": False, "BD": False, "BA": True})
+        if data["name_nickname"] == "nickname":
+            return Response(kb, context, True, choice="insert_nickname", payload={"BC": False, "BD": False})
+        return Response(kb, context, False, utterance=kb["wrong_choice"])
+
+
 _my_callbacks = {
     "start": start,
+    "name_nickname": name_nickname,
     "insert_name": insert_name,
+    "insert_nickname": insert_nickname,
     "insert_age": insert_age,
 }
