@@ -45,7 +45,7 @@ class Framework:
                 # Push next id on the stack, can be None.
                 self._stack.append(self._current.next_id)
 
-                # Current will not be None, because XOR must return a valid next id. # TODO(giulio): check choices?
+                # Current will not be None, because XOR must return a valid next id.
                 self._current = next(x for x in self._process.activities if x.id == response.choice)
 
                 # Add default utterance if it exists.
@@ -87,7 +87,7 @@ class Framework:
                             # Not completed: remove from the list.
                             if self._current.id in self._ctx[CTX_COMPLETED]:
                                 self._ctx[CTX_COMPLETED].remove(self._current.id)
-                    else:  # TODO(giulio): OR can be skipped after first choice
+                    else:
                         # An OR is completed after the first valid choice.
                         if self._current.id not in self._ctx[CTX_COMPLETED]:
                             self._ctx[CTX_COMPLETED].append(self._current.id)
@@ -187,7 +187,7 @@ class Process:
 
     @staticmethod
     def _check(activities: list, first_activity_id: str):
-        """ Checks that all the id exist and are unique. """
+        """ Checks that all the id exist and are unique, and that the choice are provided and correct. """
 
         # Assume the first activity id is not found.
         found_f = 0
@@ -197,14 +197,29 @@ class Process:
             if first_activity_id == (a.id if isinstance(a, Activity) else a["my_id"]):
                 found_f += 1
 
+            # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and late cross out).
+            a_type = a.type if isinstance(a, Activity) else a["my_type"]
+            if not isinstance(a_type, Type):
+                a_type = Type[a_type]
+            choices = []
+            if a_type == Type.XOR or a_type == Type.OR or a_type == Type.PARALLEL:
+                choices = (a.choices if isinstance(a, Activity) else a["choices"]).copy()
+
             # Also count how many other activities have this next id as their id.
             id_check = a.next_id if isinstance(a, Activity) else a["next_id"]
             if id_check is None:
                 continue
             found_n = 0
             for b in activities:
-                if id_check == (b.id if isinstance(b, Activity) else b["my_id"]):
+                b_id = (b.id if isinstance(b, Activity) else b["my_id"])
+                if id_check == b_id:
                     found_n += 1
+                if b_id in choices:
+                    choices.remove(b_id)
+
+            # Raise an exception if a choice does not have a corresponding activity.
+            if choices:
+                raise DescriptionException(choices, "Not all the choices have a corresponding id.")
 
             # Raise exceptions if next id or first id do not have exactly one corresponding activity.
             if found_n == 0:
