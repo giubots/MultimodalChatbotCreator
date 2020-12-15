@@ -7,6 +7,9 @@ import json
 from collections import deque
 from enum import Enum
 
+CTX_COMPLETED = "_done_"
+""" Context key whose value is a list of activity id for the pending gateways that allow skipping. """
+
 
 class Framework:
     # TODO(giulio): fix nlu (token and initialize)
@@ -14,10 +17,12 @@ class Framework:
         self._process = process if isinstance(process, Process) else Process.from_dict(process)
         self._kb = kb
         self._ctx = initial_context
+        self._ctx[CTX_COMPLETED] = []
         self._current = self._process.first
         self.callback_getter = callback_getter
         self._nlu = nlu
         self._stack = deque()
+        self._done = {}
 
     @classmethod
     def from_file(cls, process, kb, initial_context, callback_getter, nlu):
@@ -27,39 +32,96 @@ class Framework:
         return self.handle_data_input(self._nlu(text))
 
     def handle_data_input(self, data):
-        # If the activity is an END, then it returns the default utterance if it exists.
+        # If the activity is an END, return the default utterance if it exists.
         if self._current.type == Type.END:
             return Response({}, {}, True).add_utterance(self._kb, self._current.id).to_dict()
 
         # If the activity is a XOR, get the choice from the callback.
-        # If the choice is valid, push next on the stack and continue with the chosen activity.
         if self._current.type == Type.XOR:
-            response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
-            self._kb = response.kb
-            self._ctx = response.ctx
+            response = self._get_response(data)
+
+            # If the choice is valid, push next on the stack and continue with the chosen activity.
             if response.complete:
+                # Push next id on the stack, can be None.
                 self._stack.append(self._current.next_id)
+
+                # Current will not be None, because XOR must return a valid next id. # TODO(giulio): check choices?
                 self._current = next(x for x in self._process.activities if x.id == response.choice)
+
+                # Add default utterance if it exists.
                 response.add_utterance(self._kb, self._current.id)
             return response.to_dict()
 
-        # If the activity is TASK or START, the evaluate callback is called and the data is updated.
-        response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
-        self._kb = response.kb
-        self._ctx = response.ctx
+        # PARALLEL and OR have similar behaviour and they are handled together.
+        if self._current.type == Type.PARALLEL or self._current.type == Type.OR:
+            # Obtain the chosen task from the callback.
+            response = self._get_response(data)
+            if response.complete:
+                # The returned task is valid, and can be None to go to the next.
+                if response.choice is None:
+                    # Clear the info on the current gateway, if some exist.
+                    self._done.pop(self._current.id, "")
+                    if self._current.id in self._ctx[CTX_COMPLETED]:
+                        self._ctx[CTX_COMPLETED].remove(self._current.id)
 
-        # If the activity is completed, update current and add the next default utterance to the response
-        # If the next activity is None, try to pop one from the stack.
+                    # Go to next task.
+                    self._go_next(response)
+                else:
+                    # Put the gateway on the stack.
+                    self._stack.append(self._current.id)
+
+                    # Add an entry for this gateway to done and add the choice to it.
+                    if self._current.id not in self._done:
+                        self._done[self._current.id] = []
+                    if response.choice not in self._done[self._current.id]:
+                        self._done[self._current.id].append(response.choice)
+
+                    # Handle separately PARALLEL and OR for updating CTX_COMPLETED.
+                    if self._current.type == Type.PARALLEL:
+                        # A PARALLEL is completed when all the sub-tasks have been chosen at least once.
+                        if all(i in self._done[self._current.id] for i in self._current.choices):
+                            # Completed: add to the list.
+                            if self._current.id not in self._ctx[CTX_COMPLETED]:
+                                self._ctx[CTX_COMPLETED].append(self._current.id)
+                        else:
+                            # Not completed: remove from the list.
+                            if self._current.id in self._ctx[CTX_COMPLETED]:
+                                self._ctx[CTX_COMPLETED].remove(self._current.id)
+                    else:  # TODO(giulio): OR can be skipped after first choice
+                        # An OR is completed after the first valid choice.
+                        if self._current.id not in self._ctx[CTX_COMPLETED]:
+                            self._ctx[CTX_COMPLETED].append(self._current.id)
+
+                    # Set the choice and optional default utterance, the choice can not be None.
+                    self._current = next(x for x in self._process.activities if x.id == response.choice)
+                    response.add_utterance(self._kb, self._current.id)
+            return response.to_dict()
+
+        # If the activity is TASK or START, the evaluate callback is called.
+        response = self._get_response(data)
+
+        # If the activity is completed go to the next.
         if response.complete:
-            if self._current.next_id is None:
-                popped = self._stack.pop()
-                while popped is None:
-                    popped = self._stack.pop()
-                self._current = next(x for x in self._process.activities if x.id == popped)
-            else:
-                self._current = next(x for x in self._process.activities if x.id == self._current.next_id)
-            response.add_utterance(self._kb, self._current.id)
+            self._go_next(response)
         return response.to_dict()
+
+    def _get_response(self, data):
+        # Run the callback, update the context and the kb, and return the response.
+        response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
+        self._kb = response.kb  # TODO(giulio): save kb
+        self._ctx = response.ctx
+        return response
+
+    def _go_next(self, response):
+        # Go to the next task (maybe from the stack) and add the default utterance if it exists.
+        if self._current.next_id is None:
+            popped = self._stack.pop()
+            while popped is None:
+                popped = self._stack.pop()
+            self._current = next(x for x in self._process.activities if x.id == popped)
+        else:
+            self._current = next(x for x in self._process.activities if x.id == self._current.next_id)
+        response.add_utterance(self._kb, self._current.id)
 
 
 class Response:
@@ -75,19 +137,6 @@ class Response:
         return {"utt": self.utterance, "payload": self.payload}
 
     def add_utterance(self, kb: dict, key, fallback=""):
-        """
-        Returns a dictionary with a "utt" key.
-
-        The value of "utt" is taken from from kb[key] if it exists, else a fallback is used. If a response is provided,
-        the utterance is added to it and the other contents are not modified. If the provided response already contains
-        a "utt" element, and the value to add is not empty, the new value is appended to the one provided, on a new line.
-
-        :param kb: a dictionary that can contain the value to add.
-        :param key: the key to access the value to add.
-        :param fallback: if kb does not contain the key, then this fallback is used.
-        :param response: an existing response to which the new value is added.
-        :return: a dictionary with an "utt" key.
-        """  # TODO
         my_utt = kb[key] if key in kb else fallback
         if self.utterance == "":
             self.utterance = my_utt
@@ -140,15 +189,15 @@ class Process:
     def _check(activities: list, first_activity_id: str):
         """ Checks that all the id exist and are unique. """
 
-        # Assume the first activity id is not found
+        # Assume the first activity id is not found.
         found_f = 0
 
-        # Count how many activities have first id as their id
+        # Count how many activities have first id as their id.
         for a in activities:
             if first_activity_id == (a.id if isinstance(a, Activity) else a["my_id"]):
                 found_f += 1
 
-            # Also count how many other activities have this next id as their id
+            # Also count how many other activities have this next id as their id.
             id_check = a.next_id if isinstance(a, Activity) else a["next_id"]
             if id_check is None:
                 continue
@@ -157,7 +206,7 @@ class Process:
                 if id_check == (b.id if isinstance(b, Activity) else b["my_id"]):
                     found_n += 1
 
-            # Raise exceptions if next id or first id do not have exactly one corresponding activity
+            # Raise exceptions if next id or first id do not have exactly one corresponding activity.
             if found_n == 0:
                 raise DescriptionException(id_check, "Found a next id that has no corresponding activity.")
             if found_n > 1:
@@ -175,19 +224,22 @@ class Activity:
     :ivar id: the id of this Activity.
     :ivar next_id: the id of the Activity that comes after this, when completed (can be null).
     :ivar type: the Type of this Activity.
+    :ivar choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
     """
 
-    def __init__(self, my_id: str, next_id: str, my_type):
+    def __init__(self, my_id: str, next_id: str, my_type, choices=None):
         """
         Creates a new activity with the provided id, next id and type.
 
         :param my_id: the id of this Activity.
         :param next_id: the id of the Activity that comes after this, when completed (can be null).
         :param my_type: the Type of this Activity or a string representing it (for example "task" or "start").
+        :param choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
         """
         self.id = my_id
         self.next_id = next_id
         self.type = my_type if isinstance(my_type, Type) else Type[my_type.upper()]
+        self.choices = choices
 
     @classmethod
     def from_dict(cls, dictionary):
