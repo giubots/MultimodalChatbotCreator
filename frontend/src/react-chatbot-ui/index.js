@@ -1,2 +1,3 @@
-export { _clickable as Clickable } from "./Components"
-export { _scrollable as Scrollable } from "./Components"
+export { _onClick as onClick } from "./Components";
+export { _onScroll as onScroll } from "./Components";
+export { ws, _receive as receive } from "./WebSocketHandler";

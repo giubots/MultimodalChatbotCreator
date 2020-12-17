@@ -1,21 +1,32 @@
 import React from "react";
+import { ws } from "./index";
 
-export const _clickable = (props) => {
-    const handleClick = e => {
-        e.stopPropagation();
-        //props.onClick();
-        alert("Send data");
-    }
+const handleEvent = (e, type, id, payload) => {
+    e.stopPropagation();
+    console.debug("Sending data...");
+    /*ws.send(JSON.stringify({
+        type, id, payload
+    }));*/
+}
 
+
+export const _onClick = (props) => {
     return(
-        <div onClickCapture={handleClick}>
-            <p>Clickable</p>
+        <div onClickCapture={(e) => handleEvent(e,"click", props.id, props.payload)}>
             {props.children}
         </div>
     );
 }
 
-export const _scrollable = (props) => {
+export const _onScroll = (props) => {
+    return (
+        <>
+            {props.children}
+        </>
+    );
+}
+
+export const _onFocus = (props) => {
     return (
         <>
             <p>Scrollable</p>
@@ -23,4 +34,3 @@ export const _scrollable = (props) => {
         </>
     );
 }
-
