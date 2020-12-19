@@ -23,6 +23,7 @@ class Framework:
         self._nlu = nlu
         self._stack = deque()
         self._done = {}
+        self._check()
 
     @classmethod
     def from_file(cls, process, kb, initial_context, callback_getter, nlu):
@@ -108,7 +109,7 @@ class Framework:
     def _get_response(self, data):
         # Run the callback, update the context and the kb, and return the response.
         response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
-        self._kb = response.kb  # TODO(giulio): save kb
+        self._kb = response.kb  # TODO(giulio): save kb and check choice
         self._ctx = response.ctx
         return response
 
@@ -122,6 +123,19 @@ class Framework:
         else:
             self._current = next(x for x in self._process.activities if x.id == self._current.next_id)
         response.add_utterance(self._kb, self._current.id)
+
+    def _check(self):
+        """ Checks that all the activities have a callback"""
+
+        callback = ""
+        for a in self._process.activities:
+            try:
+                callback = self.callback_getter(a.id)
+            except BaseException as err:
+                if not a.type == Type.END:
+                    raise CallbackException(a.id, "Using the function to get a callback raised an error.") from err
+            if not callable(callback):
+                raise CallbackException(a.id, "The function to get a callback returned something that is not callable.")
 
 
 class Response:
@@ -164,10 +178,10 @@ class Process:
         :param activities: a list of Activity objects or of dictionaries representing the activities.
         :param first_activity_id: the id of the first Activity of the process.
         """
+        Process._check(activities, first_activity_id)
         self.activities = []
         for a in activities:
             self.activities.append(a if isinstance(a, Activity) else Activity.from_dict(a))
-        Process._check(activities, first_activity_id)
         self.first = next(x for x in self.activities if x.id == first_activity_id)
 
     @classmethod
@@ -187,49 +201,66 @@ class Process:
 
     @staticmethod
     def _check(activities: list, first_activity_id: str):
-        """ Checks that all the id exist and are unique, and that the choice are provided and correct. """
+        """ Performs some checks on the description, both syntactic and semantic (for example id are unique...). """
 
         # Assume the first activity id is not found.
         found_f = 0
+        a = ""
+        a_id = ""
 
-        # Count how many activities have first id as their id.
-        for a in activities:
-            if first_activity_id == (a.id if isinstance(a, Activity) else a["my_id"]):
-                found_f += 1
+        try:
+            for a in activities:
+                a_id = a.id if isinstance(a, Activity) else a["my_id"]
 
-            # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and late cross out).
-            a_type = a.type if isinstance(a, Activity) else a["my_type"]
-            if not isinstance(a_type, Type):
-                a_type = Type[a_type]
-            choices = []
-            if a_type == Type.XOR or a_type == Type.OR or a_type == Type.PARALLEL:
-                choices = (a.choices if isinstance(a, Activity) else a["choices"]).copy()
+                # Count how many activities have first id as their id.
+                if first_activity_id == a_id:
+                    found_f += 1
 
-            # Also count how many other activities have this next id as their id.
-            id_check = a.next_id if isinstance(a, Activity) else a["next_id"]
-            if id_check is None:
-                continue
-            found_n = 0
-            for b in activities:
-                b_id = (b.id if isinstance(b, Activity) else b["my_id"])
-                if id_check == b_id:
-                    found_n += 1
-                if b_id in choices:
-                    choices.remove(b_id)
+                # Check that the type is valid.
+                a_type = a.type if isinstance(a, Activity) else a["my_type"]
+                if not isinstance(a_type, Type):
+                    try:
+                        a_type = Type[a_type]
+                    except KeyError:
+                        raise DescriptionException(a_id, f"Wrong type: {a_type}.")
 
-            # Raise an exception if a choice does not have a corresponding activity.
-            if choices:
-                raise DescriptionException(choices, "Not all the choices have a corresponding id.")
+                # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and later cross out).
+                choices = []
+                if a_type == Type.XOR or a_type == Type.OR or a_type == Type.PARALLEL:
+                    choices = (a.choices if isinstance(a, Activity) else a["choices"]).copy()
+                    if not choices:
+                        raise DescriptionException(a_id, "Found a gateway that does not provide choices.")
 
-            # Raise exceptions if next id or first id do not have exactly one corresponding activity.
-            if found_n == 0:
-                raise DescriptionException(id_check, "Found a next id that has no corresponding activity.")
-            if found_n > 1:
-                raise DescriptionException(id_check, "Found a next id that has multiple corresponding activities.")
-        if found_f == 0:
-            raise DescriptionException(first_activity_id, "First activity id has no corresponding activity.")
-        if found_f > 1:
-            raise DescriptionException(first_activity_id, "First activity id has multiple corresponding activities.")
+                # Also count how many other activities have this next id as their id.
+                id_check = a.next_id if isinstance(a, Activity) else a["next_id"]
+                if id_check is None:
+                    continue
+                found_n = 0
+                for b in activities:
+                    b_id = (b.id if isinstance(b, Activity) else b["my_id"])
+                    if id_check == b_id:
+                        found_n += 1
+                    if b_id in choices:
+                        choices.remove(b_id)
+
+                # Raise an exception if a choice does not have a corresponding activity.
+                if choices:
+                    raise DescriptionException(a_id, f"The following do not have a corresponding activity: {choices}.")
+
+                # Raise exceptions if next id or first id do not have exactly one corresponding activity.
+                if found_n == 0:
+                    raise DescriptionException(a_id, "The provided next id does not have a corresponding activity.")
+                if found_n > 1:
+                    raise DescriptionException(id_check, "Found a next id that has multiple corresponding activities.")
+            if found_f == 0:
+                raise DescriptionException(first_activity_id, "First activity id has no corresponding activity.")
+            if found_f > 1:
+                raise DescriptionException(first_activity_id,
+                                           "First activity id has multiple corresponding activities.")
+        except KeyError as error:
+            if error.args[0] == "my_id":
+                raise DescriptionException(a, "Missing my_id key") from error
+            raise DescriptionException(a_id, f'Activity has missing key: {error}.') from error
 
 
 class Activity:
@@ -275,7 +306,7 @@ class Type(Enum):
 
 class DescriptionException(Exception):
     """
-    Exception raised when the check on the process description finds incongruities.
+    Exception raised when the check on the process description finds errors or incongruities.
 
     :ivar cause: the element that caused the error.
     :ivar message: the message of this exception.
@@ -289,3 +320,21 @@ class DescriptionException(Exception):
     def __str__(self) -> str:
         """ Presents the message and the cause of this exception. """
         return f"{super().__str__()} The cause of the exception was: {self.cause}"
+
+
+class CallbackException(Exception):
+    """
+    Exception raised when the check on the callbacks fails.
+
+    :ivar cause: the parameter that caused the exception.
+    :ivar message: the message of this exception.
+    """
+
+    def __init__(self, cause, message="A callback caused an exception."):
+        """ Creates an exception with the provided cause, and an optional message. """
+        super().__init__(message)
+        self.cause = cause
+
+    def __str__(self) -> str:
+        """ Presents the message and the cause of this exception. """
+        return f"{super().__str__()} The parameter of the function was: {self.cause}"
