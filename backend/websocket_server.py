@@ -6,6 +6,8 @@ import json
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'framework'))
 from framework import Framework
+from parameters import *
+
 
 async def hello(websocket, path):
     name = await websocket.recv()
@@ -44,9 +46,11 @@ async def handler(websocket, path):
             print(message)
             recv = json.loads(message)
             if recv['type'] == 'utterance':
-                await websocket.send('utte')
+                send = my_framework.handle_text_input(recv['utterance'])
+                await websocket.send(json.dumps(send))
             else:
-                await websocket.send('data')
+                send = my_framework.handle_data_input(recv['payload'])
+                await websocket.send(json.dumps(send))
     finally:
         connected.remove(websocket)
 

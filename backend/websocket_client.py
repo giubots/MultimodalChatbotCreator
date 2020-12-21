@@ -20,11 +20,20 @@ import json
 async def client():
     uri = "ws://localhost:8765"
     async with websockets.connect(uri) as websocket:
-        event = {
+        event_utterance = {
             'type': 'utterance',
-            'utterance': 'my_utterance',
-            'payload': 'ok'
+            'utterance': 'my_utterance'  # this is an example text
         }
+
+        event_data = {
+            'type': 'data',
+            'payload': {
+                'echo': 'Bob'  # this is an example data
+            }
+        }
+
+        # switch between test utterance or data
+        event = event_data
 
         await websocket.send(json.dumps(event))
         print(f"> {event}")
