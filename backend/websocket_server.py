@@ -1,5 +1,6 @@
 import asyncio
 import websockets
+import json
 
 # import framework
 import sys, os
@@ -32,9 +33,26 @@ async def hello(websocket, path):
     # altrimenti chiamo handle data input
     # salvo il risultato e lo invio alla socket
 
+connected = set()
 
 
-start_server = websockets.serve(hello, "localhost", 8765)
+async def handler(websocket, path):
+    # Register
+    connected.add(websocket)
+    try:
+        async for message in websocket:
+            print(message)
+            recv = json.loads(message)
+            if recv['type'] == 'utterance':
+                await websocket.send('utte')
+            else:
+                await websocket.send('data')
+    finally:
+        connected.remove(websocket)
+
+
+# start_server = websockets.serve(hello, "localhost", 8765)
+start_server = websockets.serve(handler, "localhost", 8765)
 
 asyncio.get_event_loop().run_until_complete(start_server)
 asyncio.get_event_loop().run_forever()
