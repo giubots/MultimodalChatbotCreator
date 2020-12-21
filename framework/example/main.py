@@ -78,8 +78,8 @@ if __name__ == '__main__':
             print("FC:", state["FC_c"])
 
         # print the "chat panel"
-        if "utt" in my_response:
-            print("chat:", my_response["utt"])
+        if "utterance" in my_response:
+            print("chat:", my_response["utterance"])
 
         # take next input
         u_in = input()

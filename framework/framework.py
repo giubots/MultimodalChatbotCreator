@@ -34,11 +34,11 @@ class Framework:
 
     def handle_data_input(self, data):
         # If the activity is an END, return the default utterance if it exists.
-        if self._current.type == Type.END:
+        if self._current.type == ActivityType.END:
             return Response({}, {}, True).add_utterance(self._kb, self._current.id).to_dict()
 
         # If the activity is a XOR, get the choice from the callback.
-        if self._current.type == Type.XOR:
+        if self._current.type == ActivityType.XOR:
             response = self._get_response(data)
 
             # If the choice is valid, push next on the stack and continue with the chosen activity.
@@ -54,7 +54,7 @@ class Framework:
             return response.to_dict()
 
         # PARALLEL and OR have similar behaviour and they are handled together.
-        if self._current.type == Type.PARALLEL or self._current.type == Type.OR:
+        if self._current.type == ActivityType.PARALLEL or self._current.type == ActivityType.OR:
             # Obtain the chosen task from the callback.
             response = self._get_response(data)
             if response.complete:
@@ -78,7 +78,7 @@ class Framework:
                         self._done[self._current.id].append(response.choice)
 
                     # Handle separately PARALLEL and OR for updating CTX_COMPLETED.
-                    if self._current.type == Type.PARALLEL:
+                    if self._current.type == ActivityType.PARALLEL:
                         # A PARALLEL is completed when all the sub-tasks have been chosen at least once.
                         if all(i in self._done[self._current.id] for i in self._current.choices):
                             # Completed: add to the list.
@@ -132,7 +132,7 @@ class Framework:
             try:
                 callback = self.callback_getter(a.id)
             except BaseException as err:
-                if not a.type == Type.END:
+                if not a.type == ActivityType.END:
                     raise CallbackException(a.id, "Using the function to get a callback raised an error.") from err
             if not callable(callback):
                 raise CallbackException(a.id, "The function to get a callback returned something that is not callable.")
@@ -148,7 +148,7 @@ class Response:
         self.choice = choice
 
     def to_dict(self):
-        return {"utt": self.utterance, "payload": self.payload}
+        return {"utterance": self.utterance, "payload": self.payload}
 
     def add_utterance(self, kb: dict, key, fallback=""):
         my_utt = kb[key] if key in kb else fallback
@@ -218,15 +218,15 @@ class Process:
 
                 # Check that the type is valid.
                 a_type = a.type if isinstance(a, Activity) else a["my_type"]
-                if not isinstance(a_type, Type):
+                if not isinstance(a_type, ActivityType):
                     try:
-                        a_type = Type[a_type]
+                        a_type = ActivityType[a_type]
                     except KeyError:
                         raise DescriptionException(a_id, f"Wrong type: {a_type}.")
 
                 # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and later cross out).
                 choices = []
-                if a_type == Type.XOR or a_type == Type.OR or a_type == Type.PARALLEL:
+                if a_type == ActivityType.XOR or a_type == ActivityType.OR or a_type == ActivityType.PARALLEL:
                     choices = (a.choices if isinstance(a, Activity) else a["choices"]).copy()
                     if not choices:
                         raise DescriptionException(a_id, "Found a gateway that does not provide choices.")
@@ -269,7 +269,7 @@ class Activity:
 
     :ivar id: the id of this Activity.
     :ivar next_id: the id of the Activity that comes after this, when completed (can be null).
-    :ivar type: the Type of this Activity.
+    :ivar type: the ActivityType of this Activity.
     :ivar choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
     """
 
@@ -279,12 +279,12 @@ class Activity:
 
         :param my_id: the id of this Activity.
         :param next_id: the id of the Activity that comes after this, when completed (can be null).
-        :param my_type: the Type of this Activity or a string representing it (for example "task" or "start").
+        :param my_type: the ActivityType of this Activity or a string representing it (for example "task" or "start").
         :param choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
         """
         self.id = my_id
         self.next_id = next_id
-        self.type = my_type if isinstance(my_type, Type) else Type[my_type.upper()]
+        self.type = my_type if isinstance(my_type, ActivityType) else ActivityType[my_type.upper()]
         self.choices = choices
 
     @classmethod
@@ -293,15 +293,39 @@ class Activity:
         return cls(**dictionary)
 
 
-class Type(Enum):
-    """ The various types of activities in a process. More info in the README file. """
+class ActivityType(Enum):
+    """ The various types of activities in a process. """
 
     TASK = "task"
+    """
+    Represents an operation to be done to complete the process.
+    The Response contains true if the user can move on to the next activity.
+    """
     START = "start"
+    """
+    It is the entry point of the process.
+    Its Response must contain True and can be used to prepare the state using the payload.
+    """
     END = "end"
+    """ A "sink" state, that represents the termination of the process. """
     PARALLEL = "parallel"
+    """
+    A task that gives some options to the user, the user can chose which one to execute.
+    This is completed when all options have been chosen at least once.
+    Its callback must return the id of the chosen activity if the user input was valid.
+    """
     XOR = "xor"
+    """
+    A task that gives some options to the user, the user can chose which one to execute.
+    This allows the user to choose exactly one of the options.
+    Its callback must return the id of the chosen activity if the user input was valid.
+    """
     OR = "or"
+    """
+    A task that gives some options to the user, the user can chose which one to execute.
+    This is completed when the user has chosen at least one of the options.
+    Its callback must return the id of the chosen activity if the user input was valid.
+    """
 
 
 class DescriptionException(Exception):
