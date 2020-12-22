@@ -1,3 +1,2 @@
-export { _onClick as onClick } from "./Components";
-export { _onScroll as onScroll } from "./Components";
-export { ws, _receive as receive } from "./WebSocketHandler";
+export { OnClick } from "./Components";
+export { SocketManager } from "./SocketManager";

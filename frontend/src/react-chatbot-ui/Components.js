@@ -1,36 +1,34 @@
 import React from "react";
-import { ws } from "./index";
+import { SocketContext } from './SocketManager';
 
-const handleEvent = (e, type, id, payload) => {
-    e.stopPropagation();
-    console.debug("Sending data...");
-    /*ws.send(JSON.stringify({
-        type, id, payload
-    }));*/
+class WebSocketComponent extends React.Component {
+    static contextType = SocketContext;
+    handleEvent(type) {
+        const {id, payload} = this.props;
+        const message = {
+            id,
+            type,
+            payload,
+        }
+        this.context?.send(JSON.stringify(message));
+    }
 }
 
+export class OnClick extends WebSocketComponent {
+    componentDidUpdate() {
+        this.props.onEvent && this.props.onEvent(this.context?.receive());
+    }
 
-export const _onClick = (props) => {
-    return(
-        <div onClickCapture={(e) => handleEvent(e,"click", props.id, props.payload)}>
-            {props.children}
-        </div>
-    );
-}
-
-export const _onScroll = (props) => {
-    return (
-        <>
-            {props.children}
-        </>
-    );
-}
-
-export const _onFocus = (props) => {
-    return (
-        <>
-            <p>Scrollable</p>
-            {props.children}
-        </>
-    );
+    render() {
+        return (
+            <div
+                onClickCapture={(e) => {
+                    this.props.stopPropagation && e.stopPropagation();
+                    this.handleEvent("click");
+                }}
+            >
+                {this.props.children}
+            </div>
+        );
+    }
 }

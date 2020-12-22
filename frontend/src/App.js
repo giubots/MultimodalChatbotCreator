@@ -1,56 +1,47 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useEffect, useState} from "react";
-import { onClick, ws, receive } from "./react-chatbot-ui";
+import React from "react";
+import {OnClick, SocketManager} from "./react-chatbot-ui";
 
 function App() {
-  const [currentTime, setCurrentTime] = useState(0);
-  const [input, setInput] = useState("");
-  const [output, setOutput] = useState("");
-
-  useEffect(() => {
-    /*fetch('/time').then(res => res.json()).then(data => {
-      setCurrentTime(data.time);
-    });*/
-
-  }, []);
-
-  let e = receive();
-  console.log(e);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <onClick id={"button-1"}>
-          <div onClick={() => alert("should not work")}>Button 1</div>
-        </onClick>
-        <onClick id={"button-2"}>
-          <button onClick={() => alert("should not work")}>Button 2</button>
-        </onClick>
-        <onClick id={"button-3"}>
-          <div onClick={() => alert("should not work")}>Button 3</div>
-        </onClick>
+      <SocketManager url={"ws://localhost:8765"}>
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo"/>
+            <p>
+              Edit <code>src/App.js</code> and save to reload.
+            </p>
+            <a
+                className="App-link"
+                href="https://reactjs.org"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+              Learn React
+            </a>
+            <OnClick
+                id={"button-1"}
+                stopPropagation
+                onEvent={e => console.log("Received from server:", e)}
+                payload={{
+                  data: "MyPayloadData",
+                }}
+            >
+              <div onClick={() => alert("should not work")}>Button 1</div>
+            </OnClick>
 
-        <p>Example of usage of ws: {output}</p>
-        <input name={""} onChange={(event) => setInput(event.target.value)}/>
-        <button onClick={() => {
-          ws.send(input);
-        }}>Submit</button>
-        <p>Flask server time: {currentTime}</p>
-      </header>
-    </div>
+            <OnClick id={"button-2"}>
+              <button onClick={() => alert("should work")}>Button 2</button>
+            </OnClick>
+
+            <OnClick id={"button-3"}>
+              <div onClick={() => alert("should work")}>Button 3</div>
+            </OnClick>
+          </header>
+        </div>
+      </SocketManager>
   );
 }
 
