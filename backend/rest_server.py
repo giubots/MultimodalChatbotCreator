@@ -17,9 +17,17 @@ class Event(Resource):
     def get(self):
         return {'response': 'ok'}, 200
     def post(self):
-        json_data = request.get_json(force=True)
-        print(json_data)
-        return json_data
+        recv = request.get_json(force=True)
+        print(recv)
+        # initialize framework
+        my_framework.handle_text_input('')
+        if recv['type'] == 'utterance':
+            send = my_framework.handle_text_input(recv['utterance'])
+            return send  # no need to convert to string on rest
+                         # (vs Websockets)
+        else:
+            send = my_framework.handle_data_input(recv['payload'])
+            return send
 
 
 api.add_resource(Event, '/event')
