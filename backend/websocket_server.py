@@ -41,6 +41,8 @@ connected = set()
 async def handler(websocket, path):
     # Register
     connected.add(websocket)
+    # initialize framework
+    my_framework.handle_text_input('')
     try:
         async for message in websocket:
             print(message)
