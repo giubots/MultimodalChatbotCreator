@@ -24,19 +24,29 @@ function App() {
             <OnClick
                 id={"button-1"}
                 stopPropagation
-                onEvent={e => console.log("Received from server:", e)}
+                onEvent={e => console.log("[Button 1] Received from server:", e)}
                 payload={{
-                  data: "MyPayloadData",
+                  data: "button-1",
                 }}
             >
               <div onClick={() => alert("should not work")}>Button 1</div>
             </OnClick>
 
-            <OnClick id={"button-2"}>
+            <OnClick
+                id={"button-2"}
+                onEvent={e => console.log("[Button 2] Received from server:", e)}
+                payload={{
+                  data: "button-2",
+                }}
+            >
               <button onClick={() => alert("should work")}>Button 2</button>
             </OnClick>
 
-            <OnClick id={"button-3"}>
+            <OnClick
+                id={"button-3"}
+                onEvent={e => console.log("[Button 3] Received from server:", e)}
+                payload={{data: "button-3",}}
+            >
               <div onClick={() => alert("should work")}>Button 3</div>
             </OnClick>
           </header>

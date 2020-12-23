@@ -7,9 +7,13 @@ export class SocketManager extends React.Component {
     constructor(props) {
         super(props);
         this.url = props.url
+
         this.state = {
-            lastMessage: "",
-        }
+            wsInterface: {
+                send: (message) => this.__send(message),
+                receive: "No messages yet",
+            }
+        };
     }
 
     componentDidMount() {
@@ -19,53 +23,43 @@ export class SocketManager extends React.Component {
     connect() {
         this.ws = new WebSocket(this.url);
         this.ws.onmessage = (event) => {
-            console.log(event);
-            this.setState({
-                lastMessage: event.data,
-            });
+            console.log("[SocketManager] New message:", event);
+            const wsInterface = {
+                send: (message) => this.__send(message),
+                receive: event.data,
+            }
+
+            this.setState({ wsInterface });
         }
 
         this.ws.onopen = (event) => {
-            console.debug("Connection opened!", event);
+            console.info("[SocketManager] Connection opened!");
         }
 
         this.ws.onerror = (event) => {
-            console.error("Error", event);
+            console.error("[SocketManager] Error", event);
             throw event;
         }
 
         this.ws.onclose = (event) => {
-            console.debug("Connection closed!", event);
+            console.info("[SocketManager] Connection closed!");
             setTimeout(() => {
                 this.connect();
             }, 1000);
         }
-
-        this.wsInterface = {
-            send: (message) => this._send(message),
-            receive: () => this._receive(),
-        }
-
-        this.setState({
-            wsInterface: this.wsInterface,
-        })
     }
 
-    _send(message) {
+    __send(message) {
         if (this.ws) {
             this.ws.send(message);
         }
     }
 
-    _receive() {
-        return this.state.lastMessage;
-    }
-
     componentWillUnmount () {
         try {
             this.ws !== null && this.ws.close();
-        } catch (e) {
-            console.error(e);
+        } catch (error) {
+            console.error("[SocketManager] Error in unmounting", error);
         }
     }
 

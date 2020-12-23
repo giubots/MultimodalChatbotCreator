@@ -1,5 +1,5 @@
 import React from "react";
-import { SocketContext } from './SocketManager';
+import {SocketContext, useWebsocket} from './SocketManager';
 
 class WebSocketComponent extends React.Component {
     static contextType = SocketContext;
@@ -10,25 +10,35 @@ class WebSocketComponent extends React.Component {
             type,
             payload,
         }
-        this.context?.send(JSON.stringify(message));
     }
 }
 
-export class OnClick extends WebSocketComponent {
-    componentDidUpdate() {
-        this.props.onEvent && this.props.onEvent(this.context?.receive());
-    }
+export const OnClick = (props) => {
 
-    render() {
-        return (
-            <div
-                onClickCapture={(e) => {
-                    this.props.stopPropagation && e.stopPropagation();
-                    this.handleEvent("click");
-                }}
-            >
-                {this.props.children}
-            </div>
-        );
+    function handleEvent(e, type, context) {
+        props.stopPropagation && e.stopPropagation();
+        const {id, payload} = props;
+        const message = {
+            id,
+            type,
+            payload,
+        }
+        context.send(JSON.stringify(message));
     }
+    return (
+        <SocketContext.Consumer>
+            {context => {
+                props.onEvent && props.onEvent(context.receive);
+                    return (
+                        <div
+                            onClickCapture={(e) => {
+                                handleEvent(e,"click", context);
+                            }}
+                        >
+                            {props.children}
+                        </div>
+                    );
+                }}
+        </SocketContext.Consumer>
+    );
 }
