@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 import json
 
@@ -16,6 +16,10 @@ api = Api(app)
 class Event(Resource):
     def get(self):
         return {'response': 'ok'}, 200
+    def post(self):
+        json_data = request.get_json(force=True)
+        print(json_data)
+        return json_data
 
 
 api.add_resource(Event, '/event')
