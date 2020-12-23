@@ -13,10 +13,12 @@ api = Api(app)
 
 
 # create REST backup API
+# https://towardsdatascience.com/the-right-way-to-build-an-api-with-python-cd08ab285f8f
 class Event(Resource):
     def get(self):
         return {'response': 'ok'}, 200
     def post(self):
+        # https://stackoverflow.com/questions/30491841/python-flask-restful-post-not-taking-json-arguments
         recv = request.get_json(force=True)
         print(recv)
         # initialize framework
