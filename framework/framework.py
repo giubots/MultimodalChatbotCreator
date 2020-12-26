@@ -160,69 +160,81 @@ class Response:
 
 
 class Process:
-    """
-    The description of a process, with a list of activities and the id of the first activity.
+    """ The description of a process, with a list of activities and the id of the first activity.
 
-    :ivar activities: a list of Activity objects representing this process.
-    :ivar first: the first Activity of the process.
+    :ivar activities: a list of Activity objects representing this process
+    :ivar first: the first Activity of the process
     """
 
     def __init__(self, activities: list, first_activity_id: str):
-        """
-        Creates a new process description with the provided activities and first activity id.
+        """ Creates a new process description with the provided activities and first activity id.
 
         If the provided activities list contains the activities as dictionaries instead of Activity objects, this will
         call Activity.from_dict(...) on each of them before adding it.
-        Before returning, this checks that the process is sound.
 
-        :param activities: a list of Activity objects or of dictionaries representing the activities.
-        :param first_activity_id: the id of the first Activity of the process.
+        Example:
+            my_process = Process([Activity("one", "two", ActivityType.TASK), ...], "one")
+
+        :param activities: a list of Activity objects or of dictionaries representing the activities of the process
+        :type activities: list of Activity or list of dict
+        :param first_activity_id: the id of the first Activity of the process (that should have type START)
+        :type first_activity_id: str
+        :raises DescriptionException: if first activity id has no corresponding activity
         """
-        Process._check(activities, first_activity_id)
         self.activities = []
         for a in activities:
             self.activities.append(a if isinstance(a, Activity) else Activity.from_dict(a))
-        self.first = next(x for x in self.activities if x.id == first_activity_id)
+        try:
+            self.first = next(x for x in self.activities if x.id == first_activity_id)
+        except StopIteration as err:
+            raise DescriptionException(first_activity_id, "Found no activity with the provided id.") from err
 
     @classmethod
     def from_dict(cls, dictionary):
-        """ Given a dictionary representing a Process, this returns the corresponding Process, if possible. """
-        return cls(**dictionary)
-
-    @classmethod
-    def from_file(cls, fp):
-        """
-        Given a file containing a dictionary or json description, this returns the corresponding Process, if possible.
+        """ Given a dictionary representing a Process, this returns the corresponding Process, if possible.
 
         Example:
-            myProcess = Process.from_file(open("my_process.json"))
+            my_process = Process.from_dict({"first_activity_id": "one",
+                                            "activities": [{"my_id": "one", "next_id": "two", "my_type": "task"},
+                                                           ... ]})
+
+
+        :return: a Process instance with the provided attributes
+        :rtype: Process
+        :raises DescriptionException: if the required parameters are not found, or unknown parameters are provided
         """
-        return cls.from_dict(json.load(fp))
+        try:
+            return cls(**dictionary)
+        except TypeError as err:
+            raise DescriptionException(dictionary, "Did not find a required parameter in the process.") from err
 
     @staticmethod
-    def _check(activities: list, first_activity_id: str):
-        """ Performs some checks on the description, both syntactic and semantic (for example id are unique...). """
+    def _check(activities: list, first_activity_id: str):  # TODO(giulio): null next and others
+        """ Performs some checks on the description, both syntactic and semantic (for example id are unique...).
+
+        :raises DescriptionException: if the check is not passed
+        """
 
         # Assume the first activity id is not found.
-        found_f = 0
+        found_first = 0
+
         a = ""
         a_id = ""
-
         try:
             for a in activities:
                 a_id = a.id if isinstance(a, Activity) else a["my_id"]
 
                 # Count how many activities have first id as their id.
                 if first_activity_id == a_id:
-                    found_f += 1
+                    found_first += 1
 
                 # Check that the type is valid.
                 a_type = a.type if isinstance(a, Activity) else a["my_type"]
                 if not isinstance(a_type, ActivityType):
                     try:
-                        a_type = ActivityType[a_type]
-                    except KeyError:
-                        raise DescriptionException(a_id, f"Wrong type: {a_type}.")
+                        a_type = ActivityType[a_type.upper()]
+                    except KeyError as err:
+                        raise DescriptionException(a_id, f"Wrong type: {a_type}.") from err
 
                 # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and later cross out).
                 choices = []
@@ -252,9 +264,9 @@ class Process:
                     raise DescriptionException(a_id, "The provided next id does not have a corresponding activity.")
                 if found_n > 1:
                     raise DescriptionException(id_check, "Found a next id that has multiple corresponding activities.")
-            if found_f == 0:
+            if found_first == 0:
                 raise DescriptionException(first_activity_id, "First activity id has no corresponding activity.")
-            if found_f > 1:
+            if found_first > 1:
                 raise DescriptionException(first_activity_id,
                                            "First activity id has multiple corresponding activities.")
         except KeyError as error:
@@ -264,76 +276,115 @@ class Process:
 
 
 class Activity:
+    """ An element of a Process description, this represent a single step in which the user has to do something.
+
+    :ivar id: the id of this Activity
+    :ivar next_id: the id of the Activity that comes after this, when completed (can be None)
+    :ivar type: the ActivityType of this Activity
+    :ivar choices: a list of id that this activity offers as choices (can be None)
     """
-    An element of a Process description, this represent a single step in which the user has to do something.
 
-    :ivar id: the id of this Activity.
-    :ivar next_id: the id of the Activity that comes after this, when completed (can be null).
-    :ivar type: the ActivityType of this Activity.
-    :ivar choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
-    """
+    def __init__(self, my_id: str, next_id, my_type, choices=None):
+        """ Creates a new activity with the provided id, next id, type and choices; performs some checks.
 
-    def __init__(self, my_id: str, next_id: str, my_type, choices=None):
-        """
-        Creates a new activity with the provided id, next id and type.
+        The parameter next_id is None if the activity is the last "inside" one of the ActivityType.get_require_choice
+        gateways.
 
-        :param my_id: the id of this Activity.
-        :param next_id: the id of the Activity that comes after this, when completed (can be null).
-        :param my_type: the ActivityType of this Activity or a string representing it (for example "task" or "start").
-        :param choices: a list of id that this activity offers as choices (only for PARALLEL, OR, XOR).
+        :param my_id: the id of this Activity (unique)
+        :type my_id: str
+        :param next_id: the id of the Activity that comes after this, when completed (can be None)
+        :type next_id: str or None
+        :param my_type: the ActivityType of this Activity or a string representing it (for example "task" or "start")
+        :type my_type: ActivityType or str
+        :param choices: the ids that this activity offers as choices (only if type is in ActivityType.get_require_choice())
+        :type choices: list of str
+        :raises DescriptionException: if choices are provided and not needed, or needed and not provided
+        :raises KeyError: if can not recognize the ActivityType provided
         """
         self.id = my_id
         self.next_id = next_id
         self.type = my_type if isinstance(my_type, ActivityType) else ActivityType[my_type.upper()]
+        if self.type in ActivityType.get_require_choice():
+            if choices is None:
+                raise DescriptionException(self.id, "Expected some choices, but found none.")
+            if not choices:
+                raise DescriptionException(self.id, "Expected some choices, but found an empty list.")
+        else:
+            if choices is not None or choices:
+                raise DescriptionException(self.id, "Found unexpected choices.")
         self.choices = choices
 
     @classmethod
-    def from_dict(cls, dictionary):
-        """ Given a dictionary representing an Activity, this returns the corresponding Activity, if possible. """
-        return cls(**dictionary)
+    def from_dict(cls, dictionary: dict):
+        """ Given a dictionary representing an Activity, this returns the corresponding Activity, if possible.
+
+        Example:
+            my_activity = Activity.from_dict({"my_id": "an id",
+                                              "next_id": "another id",
+                                              "my_type": "xor",
+                                              "choices": ["id", "more id"]})
+
+        See Activity.__init__ for more info.
+
+        :return: an Activity instance with the provided attributes
+        :rtype: Activity
+        :raises DescriptionException: if the required parameters are not found, or unknown parameters are provided
+        """
+        try:
+            return cls(**dictionary)
+        except TypeError as err:
+            raise DescriptionException(dictionary, "Did not find a required parameter in this activity.") from err
+
+    def __eq__(self, o: object) -> bool:
+        """ Returns true if two activities have the same attributes. """
+        return isinstance(o, Activity) and self.id == o.id and self.next_id == o.next_id and self.type == o.type \
+               and self.choices == o.choices
+
+    def __ne__(self, o: object) -> bool:
+        """ Returns true if __eq__ would return false. """
+        return not self == o
 
 
 class ActivityType(Enum):
     """ The various types of activities in a process. """
 
     TASK = "task"
-    """
-    Represents an operation to be done to complete the process.
+    """ Represents an operation to be done to complete the process.
     The Response contains true if the user can move on to the next activity.
     """
     START = "start"
-    """
-    It is the entry point of the process.
+    """ It is the entry point of the process.
     Its Response must contain True and can be used to prepare the state using the payload.
     """
     END = "end"
     """ A "sink" state, that represents the termination of the process. """
     PARALLEL = "parallel"
-    """
-    A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can chose which one to execute.
     This is completed when all options have been chosen at least once.
     Its callback must return the id of the chosen activity if the user input was valid.
     """
     XOR = "xor"
-    """
-    A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can chose which one to execute.
     This allows the user to choose exactly one of the options.
     Its callback must return the id of the chosen activity if the user input was valid.
     """
     OR = "or"
-    """
-    A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can chose which one to execute.
     This is completed when the user has chosen at least one of the options.
     Its callback must return the id of the chosen activity if the user input was valid.
     """
 
+    @staticmethod
+    def get_require_choice():
+        """ Returns a list of ActivityType that require some choices to be provided in the description. """
+        return [ActivityType.PARALLEL, ActivityType.XOR, ActivityType.OR]
+
 
 class DescriptionException(Exception):
-    """
-    Exception raised when the check on the process description finds errors or incongruities.
+    """ Exception raised when the check on the process description finds errors or incongruities.
 
-    :ivar cause: the element that caused the error.
-    :ivar message: the message of this exception.
+    :ivar cause: the element that caused the error
+    :ivar message: the message of this exception
     """
 
     def __init__(self, cause, message="The process description caused an exception."):
@@ -347,11 +398,10 @@ class DescriptionException(Exception):
 
 
 class CallbackException(Exception):
-    """
-    Exception raised when the check on the callbacks fails.
+    """ Exception raised when the check on the callbacks fails.
 
-    :ivar cause: the parameter that caused the exception.
-    :ivar message: the message of this exception.
+    :ivar cause: the parameter that caused the exception
+    :ivar message: the message of this exception
     """
 
     def __init__(self, cause, message="A callback caused an exception."):
