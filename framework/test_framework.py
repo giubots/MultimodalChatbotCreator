@@ -8,6 +8,65 @@ from unittest import TestCase
 from framework import *
 
 
+class TestResponse(TestCase):
+    def setUp(self) -> None:
+        self.my_kb = {"key": "value", "key2": "value2"}
+        self.my_ctx = {"c key": "c value"}
+        self.my_bool = True
+        self.my_utt = "An utt"
+        self.my_payload = {"payload": "payload value"}
+        self.my_choice = "A choice"
+
+    def test_init(self):
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool, self.my_utt, self.my_payload, self.my_choice)
+
+        self.assertEqual(my_response.kb, self.my_kb, "The kb is correctly saved")
+        self.assertEqual(my_response.ctx, self.my_ctx, "The ctx is correctly saved")
+        self.assertEqual(my_response.complete, self.my_bool, "Completed is correctly saved")
+        self.assertEqual(my_response.utterance, self.my_utt, "The utterance is correctly saved")
+        self.assertEqual(my_response.payload, self.my_payload, "The payload is correctly saved")
+        self.assertEqual(my_response.choice, self.my_choice, "The choice is correctly saved")
+
+    def test_init_with_default(self):
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool)
+        self.assertEqual(my_response.kb, self.my_kb, "The kb is correctly saved")
+        self.assertEqual(my_response.ctx, self.my_ctx, "The ctx is correctly saved")
+        self.assertEqual(my_response.complete, self.my_bool, "Completed is correctly saved")
+        self.assertEqual(my_response.utterance, "", "The default utterance is empty")
+        self.assertEqual(my_response.payload, {}, "The default payload is empty")
+        self.assertIsNone(my_response.choice, "The default choice is None")
+
+    def test_to_dict(self):
+        my_dict = Response(self.my_kb, self.my_ctx, self.my_bool, self.my_utt, self.my_payload,
+                           self.my_choice).to_dict()
+
+        self.assertEqual(my_dict["utterance"], self.my_utt, "The utterance is correctly passed to the dict")
+        self.assertEqual(my_dict["payload"], self.my_payload, "The payload is correctly passed to the dict")
+
+    def test_to_dict_with_default(self):
+        my_dict = Response(self.my_kb, self.my_ctx, self.my_bool).to_dict()
+
+        self.assertEqual(my_dict["utterance"], "", "The utterance is correctly passed to the dict")
+        self.assertEqual(my_dict["payload"], {}, "The payload is correctly passed to the dict")
+
+    def test_add_utterance(self):
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool, self.my_utt, self.my_payload, self.my_choice)
+        my_response.add_utterance(self.my_kb, "key")
+        self.assertEqual(my_response.utterance, self.my_utt + "\n" + self.my_kb["key"])
+
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool, self.my_utt, self.my_payload, self.my_choice)
+        my_response.add_utterance(self.my_kb, "key3", "def")
+        self.assertEqual(my_response.utterance, self.my_utt + "\n" + "def")
+
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool, self.my_utt, self.my_payload, self.my_choice)
+        my_response.add_utterance(self.my_kb, "key3")
+        self.assertEqual(my_response.utterance, self.my_utt)
+
+        my_response = Response(self.my_kb, self.my_ctx, self.my_bool)
+        my_response.add_utterance(self.my_kb, "key")
+        self.assertEqual(my_response.utterance, self.my_kb["key"])
+
+
 class TestProcess(TestCase):
     def test_init(self):
         my_activities = [Activity("one", "two", ActivityType.TASK),
@@ -73,8 +132,53 @@ class TestProcess(TestCase):
                 {"activities": [{"my_id": "one", "next_id": "two", "my_type": "task"}], "first_activity_id": "one",
                  "other": True})
 
-    def test_check(self):
-        pass  # TODO implement tests here
+    def test_check_first_with_more_correspondences(self):
+        my_process = Process([Activity("one", None, ActivityType.TASK),
+                              Activity("one", None, ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if first activity id has more correspondences"):
+            my_process._check()
+
+    def test_check_exists_unique_next_id(self):
+        my_process = Process([Activity("one", "two", ActivityType.TASK),
+                              Activity("two", None, ActivityType.TASK),
+                              Activity("two", None, ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a next id is not unique"):
+            my_process._check()
+
+        my_process = Process([Activity("one", "two", ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a next id is not found"):
+            my_process._check()
+
+    def test_check_next_id_is_not_self(self):
+        my_process = Process([Activity("one", "one", ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a next id is equal to id"):
+            my_process._check()
+
+    def test_check_exists_unique_choices(self):
+        my_process = Process([Activity("one", None, ActivityType.OR, ["two"]),
+                              Activity("two", None, ActivityType.TASK),
+                              Activity("two", None, ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a choice is not unique"):
+            my_process._check()
+
+        my_process = Process([Activity("one", None, ActivityType.OR, ["two"])], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a choice is not found"):
+            my_process._check()
+
+    def test_check_choice_not_allowed(self):
+        my_process = Process([Activity("one", None, ActivityType.OR, ["two", None]),
+                              Activity("two", None, ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a choice is None"):
+            my_process._check()
+
+        my_process = Process([Activity("one", None, ActivityType.OR, ["one"])], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a choice is the same as the id"):
+            my_process._check()
+
+        my_process = Process([Activity("one", None, ActivityType.OR, ["two", "two"]),
+                              Activity("two", None, ActivityType.TASK)], "one")
+        with self.assertRaises(DescriptionException, msg="Raise if a choice contains duplicates"):
+            my_process._check()
 
 
 class TestActivity(TestCase):
