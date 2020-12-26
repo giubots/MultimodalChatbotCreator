@@ -133,52 +133,43 @@ class TestProcess(TestCase):
                  "other": True})
 
     def test_check_first_with_more_correspondences(self):
-        my_process = Process([Activity("one", None, ActivityType.TASK),
-                              Activity("one", None, ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if first activity id has more correspondences"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.TASK),
+                     Activity("one", None, ActivityType.TASK)], "one")
 
     def test_check_exists_unique_next_id(self):
-        my_process = Process([Activity("one", "two", ActivityType.TASK),
-                              Activity("two", None, ActivityType.TASK),
-                              Activity("two", None, ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a next id is not unique"):
-            my_process._check()
+            Process([Activity("one", "two", ActivityType.TASK),
+                     Activity("two", None, ActivityType.TASK),
+                     Activity("two", None, ActivityType.TASK)], "one")
 
-        my_process = Process([Activity("one", "two", ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a next id is not found"):
-            my_process._check()
+            Process([Activity("one", "two", ActivityType.TASK)], "one")
 
     def test_check_next_id_is_not_self(self):
-        my_process = Process([Activity("one", "one", ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a next id is equal to id"):
-            my_process._check()
+            Process([Activity("one", "one", ActivityType.TASK)], "one")
 
     def test_check_exists_unique_choices(self):
-        my_process = Process([Activity("one", None, ActivityType.OR, ["two"]),
-                              Activity("two", None, ActivityType.TASK),
-                              Activity("two", None, ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a choice is not unique"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.OR, ["two"]),
+                     Activity("two", None, ActivityType.TASK),
+                     Activity("two", None, ActivityType.TASK)], "one")
 
-        my_process = Process([Activity("one", None, ActivityType.OR, ["two"])], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a choice is not found"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.OR, ["two"])], "one")
 
     def test_check_choice_not_allowed(self):
-        my_process = Process([Activity("one", None, ActivityType.OR, ["two", None]),
-                              Activity("two", None, ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a choice is None"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.OR, ["two", None]),
+                     Activity("two", None, ActivityType.TASK)], "one")
 
-        my_process = Process([Activity("one", None, ActivityType.OR, ["one"])], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a choice is the same as the id"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.OR, ["one"])], "one")
 
-        my_process = Process([Activity("one", None, ActivityType.OR, ["two", "two"]),
-                              Activity("two", None, ActivityType.TASK)], "one")
         with self.assertRaises(DescriptionException, msg="Raise if a choice contains duplicates"):
-            my_process._check()
+            Process([Activity("one", None, ActivityType.OR, ["two", "two"]),
+                     Activity("two", None, ActivityType.TASK)], "one")
 
 
 class TestActivity(TestCase):

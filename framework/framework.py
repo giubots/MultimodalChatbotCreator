@@ -219,6 +219,7 @@ class Process:
             self.first = next(x for x in self.activities if x.id == first_activity_id)
         except StopIteration as err:
             raise DescriptionException(first_activity_id, "Found no activity with the provided id.") from err
+        self._check()
 
     @classmethod
     def from_dict(cls, dictionary):
