@@ -139,18 +139,49 @@ class Framework:
 
 
 class Response:
-    def __init__(self, kb: dict, ctx: dict, complete: bool, utterance="", payload=None, choice=""):
+    def __init__(self, kb: dict, ctx: dict, complete: bool, utterance: str = None, payload: dict = None,
+                 choice: str = None):
+        """ Creates a Response with the provided parameters.
+        If the current activity is one of ActivityType.get_require_choice(), and is completed, the Response will contain
+        the choice of the user. This must be the id of one of the choices provided in the description.
+
+        :param kb: the updated knowledge
+        :type kb: dict
+        :param ctx: the updated context
+        :type ctx: dict
+        :param complete: whether the current activity is completed
+        :type complete: bool
+        :param utterance: an optional utterance to be displayed
+        :type utterance: str
+        :param payload: an optional payload to be returned to the caller
+        :type payload: dict
+        :param choice: if the current activity is in ActivityType.get_require_choice() this can contain the user choice
+        :type choice: bool
+        """
         self.kb = kb
         self.ctx = ctx
         self.complete = complete
-        self.utterance = utterance
+        self.utterance = utterance if utterance is not None else ""
         self.payload = payload if payload is not None else {}
         self.choice = choice
 
     def to_dict(self):
+        """ Returns a dictionary with utterance and payload, that can be returned to the caller. """
         return {"utterance": self.utterance, "payload": self.payload}
 
-    def add_utterance(self, kb: dict, key, fallback=""):
+    def add_utterance(self, kb: dict, key, fallback: str = ""):
+        """ Adds an utterance to this response.
+        The utterance is taken from the kb using the provided key, if it is not present a fallback (empty by default) is
+        used. If this response does not already contain an utterance, in the end it will contain the added utterance.
+        If the utterance to add can not be found and a fallback is not provided, nothing is added.
+        If an utterance is provided and one already exists, the new one is appended on a new line.
+
+        :param kb: the kb from which to take the utterance to add
+        :type kb: dict
+        :param key: the key to retrieve the utterance from the kb
+        :param fallback: the value that is used if the key is not in the kb
+        :type fallback: str
+        """
         my_utt = kb[key] if key in kb else fallback
         if self.utterance == "":
             self.utterance = my_utt
@@ -208,8 +239,7 @@ class Process:
         except TypeError as err:
             raise DescriptionException(dictionary, "Did not find a required parameter in the process.") from err
 
-    @staticmethod
-    def _check(activities: list, first_activity_id: str):  # TODO(giulio): null next and others
+    def _check(self):  # TODO(giulio): check if next == None happens only in a gateway?
         """ Performs some checks on the description, both syntactic and semantic (for example id are unique...).
 
         :raises DescriptionException: if the check is not passed
@@ -218,61 +248,55 @@ class Process:
         # Assume the first activity id is not found.
         found_first = 0
 
-        a = ""
-        a_id = ""
-        try:
-            for a in activities:
-                a_id = a.id if isinstance(a, Activity) else a["my_id"]
+        for a in self.activities:
+            # Check that next id is note equal to id.
+            if a.next_id == a.id:
+                raise DescriptionException(a.id, "Found an activity that is the next of itself.")
 
-                # Count how many activities have first id as their id.
-                if first_activity_id == a_id:
-                    found_first += 1
+            # Count how many activities have first id as their id.
+            if self.first.id == a.id:
+                found_first += 1
 
-                # Check that the type is valid.
-                a_type = a.type if isinstance(a, Activity) else a["my_type"]
-                if not isinstance(a_type, ActivityType):
-                    try:
-                        a_type = ActivityType[a_type.upper()]
-                    except KeyError as err:
-                        raise DescriptionException(a_id, f"Wrong type: {a_type}.") from err
+            # If this is a OR, XOR or PARALLEL, check that choices exist unique.
+            choices = {}
+            if a.type in ActivityType.get_require_choice():
+                # Choices list is provided because of previous checks in Activity constructor.
+                for c in a.choices:
+                    if c is None:
+                        raise DescriptionException(a.id, "Fond an activity that contains None in the choices.")
+                    if c == a.id:
+                        raise DescriptionException(a.id, "Found an activity with itself in its choices.")
+                    if c in choices:
+                        raise DescriptionException(a.id, "Found an activity that contains duplicate choices.")
+                    choices[c] = 0
 
-                # If this is a OR, XOR or PARALLEL, check that choices are provided (add to list and later cross out).
-                choices = []
-                if a_type == ActivityType.XOR or a_type == ActivityType.OR or a_type == ActivityType.PARALLEL:
-                    choices = (a.choices if isinstance(a, Activity) else a["choices"]).copy()
-                    if not choices:
-                        raise DescriptionException(a_id, "Found a gateway that does not provide choices.")
+            # Also count how many other activities have this next id as their id.
+            found_next = 0
+            for b in self.activities:
+                if b.id == a.next_id:
+                    found_next += 1
 
-                # Also count how many other activities have this next id as their id.
-                id_check = a.next_id if isinstance(a, Activity) else a["next_id"]
-                if id_check is None:
-                    continue
-                found_n = 0
-                for b in activities:
-                    b_id = (b.id if isinstance(b, Activity) else b["my_id"])
-                    if id_check == b_id:
-                        found_n += 1
-                    if b_id in choices:
-                        choices.remove(b_id)
+                # And count how many activities correspond to a choice.
+                if b.id in choices:
+                    choices[b.id] += 1
 
-                # Raise an exception if a choice does not have a corresponding activity.
-                if choices:
-                    raise DescriptionException(a_id, f"The following do not have a corresponding activity: {choices}.")
+            # Raise an exception if a choice does not have a corresponding activity or has more than one.
+            for c, v in choices.items():
+                if v == 0:
+                    raise DescriptionException(a.id, f"The following does not have a corresponding activity: {c}.")
+                if v > 1:
+                    raise DescriptionException(a.id, f"The following have multiple corresponding activities: {c}.")
 
-                # Raise exceptions if next id or first id do not have exactly one corresponding activity.
-                if found_n == 0:
-                    raise DescriptionException(a_id, "The provided next id does not have a corresponding activity.")
-                if found_n > 1:
-                    raise DescriptionException(id_check, "Found a next id that has multiple corresponding activities.")
-            if found_first == 0:
-                raise DescriptionException(first_activity_id, "First activity id has no corresponding activity.")
-            if found_first > 1:
-                raise DescriptionException(first_activity_id,
-                                           "First activity id has multiple corresponding activities.")
-        except KeyError as error:
-            if error.args[0] == "my_id":
-                raise DescriptionException(a, "Missing my_id key") from error
-            raise DescriptionException(a_id, f'Activity has missing key: {error}.') from error
+            # Raise exceptions if next id or first id do not have exactly one corresponding activity.
+            if a.next_id is not None:
+                if found_next == 0:
+                    raise DescriptionException(a.id, "The provided next id does not have a corresponding activity.")
+                if found_next > 1:
+                    raise DescriptionException(a.next_id, "Found a next id that has multiple corresponding activities.")
+        if found_first == 0:
+            raise DescriptionException(self.first.id, "First activity id has no corresponding activity.")
+        if found_first > 1:
+            raise DescriptionException(self.first.id, "First activity id has multiple corresponding activities.")
 
 
 class Activity:
