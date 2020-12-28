@@ -50,43 +50,50 @@ nlu:
     - no way
     - not really
 
-- intent: mood_great
-  examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
-
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
-
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: choose_name
+  examples: |
+    - name
+    - the name
+    - I want to use my name
+    - my name
+    - my real name
+    - I will write my name
+    - I will give you my name
+    - I am giving you my name
+    - I'll tell you my name
+
+- intent: choose_nickname
+  examples: |
+    - nickname
+    - the nickname
+    - I want to use my nickname
+    - my nickname
+    - my real nickname
+    - I will write my nickname
+    - I will give you my nickname
+    - I am giving you my nickname
+    - I'll tell you my nickname
+
+- intent: choose_name_nickname
+  examples: |
+    - I'm [Alice](name)
+    - My name is [Bob](name)
+    - Call me [Carl](name)
+    - [David](name)
+
+- intent: choose_age
+  examples: |
+   - I'm [10](age)
+   - I'm [25](age) years old
+   - [39](age)
+   - I'm [47](age) yo
+   - [59] yo
+
+
