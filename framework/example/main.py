@@ -3,6 +3,8 @@
 # This file is part of the "Multimodal chatbot creator" project.
 #
 # Author: Giulio Antonio Abbo
+from rasa.nlu.model import Interpreter
+
 from example.my_callbacks import get_callback
 from framework import *
 
@@ -36,7 +38,6 @@ def get_state(response):
 # The developer writes a knowledge base, in this case it contains the utterances that are shown to the user when an
 # activities starts, some other utterances, and a constraint on the age.
 if __name__ == '__main__':
-
     # The initial context is empty, instead of the token, here a callback is forwarded to the framework.
     # The developer creates a framework (which is immediately initialized)
     my_framework = Framework.from_file(open("my_process.json"),

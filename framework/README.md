@@ -157,12 +157,12 @@ the payload.
 
 ### The types of activities:
 
-There are six `Type` values:
+There are six `ActivityType` values:
 
-* TASK: Represents the operations to be done to complete the process, the callback returns true if the user can move on
+* TASK: Represents an operation to be done to complete the process, the Response contains true if the user can move on
   to the next activity.
-* START: It is the entry point of the process, its callback must return always `True` and can be used to prepare the
-  state using the payload.
+* START: It is the entry point of the process, its Response must contain True and can be used to prepare the state using
+  the payload.
 * END: A "sink" state, that represents the termination of the process.
 * PARALLEL: A task that gives some options to the user, the user can chose which one to execute, and is completed when
   all have been chosen at least once. Its callback must return the id of the chosen activity if the user input was
