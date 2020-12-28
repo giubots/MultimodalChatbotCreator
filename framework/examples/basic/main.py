@@ -3,16 +3,13 @@
 # This file is part of the "Multimodal chatbot creator" project.
 #
 # Author: Giulio Antonio Abbo
-from rasa.nlu.model import Interpreter
 
-from example.my_callbacks import get_callback
-from framework import *
-
+from examples.basic.my_callbacks import get_callback
+from mccreator_framework.framework import *
 
 # A nlu implementation that takes the text input and puts it into a dict.
 # This is needed to abstract the nlu dependency in this first phase of the project implementation.
-def stupid_nlu(text):
-    return {"name": text, "nickname": text, "age": text, "name_nickname": text}
+from mccreator_framework.nlu_adapters import NoNluAdapter
 
 
 # A helper function that extracts the information from the payload of the response and returns an updated state.
@@ -44,7 +41,7 @@ if __name__ == '__main__':
                                        open("my_kb.json"),
                                        open("my_context.json"),
                                        get_callback,
-                                       stupid_nlu)
+                                       NoNluAdapter(["name", "nickname", "age", "name_nickname"]))
 
     # The application takes the input from the keyboard and forwards it to the framework, the response is printed out.
     # To quickly simulate a GUI interaction, the application prints BA, BB, FC if the respective elements are visible,

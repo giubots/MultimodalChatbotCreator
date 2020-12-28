@@ -3,7 +3,7 @@
 # This file is part of the "Multimodal chatbot creator" project.
 #
 # Author: Giulio Antonio Abbo
-from framework import Response
+from mccreator_framework.framework import Response
 
 
 def get_callback(activity_id: str):
@@ -52,7 +52,7 @@ def name_nickname(data, kb, context):
             return Response(kb, context, True, choice="insert_name", payload={"BC": False, "BD": False, "BA": True})
         if data["name_nickname"] == "nickname":
             return Response(kb, context, True, choice="insert_nickname", payload={"BC": False, "BD": False})
-        return Response(kb, context, False, utterance=kb["wrong_choice"])
+    return Response(kb, context, False, utterance=kb["wrong_choice"])
 
 
 _my_callbacks = {
