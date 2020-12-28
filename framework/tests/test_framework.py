@@ -5,7 +5,7 @@
 # Author: Giulio Antonio Abbo
 from unittest import TestCase
 
-from framework import *
+from mccreator_framework.framework import *
 
 
 class TestResponse(TestCase):

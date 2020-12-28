@@ -7,13 +7,14 @@ import json
 from collections import deque
 from enum import Enum
 
+from mccreator_framework.nlu_adapters import NluAdapter
+
 CTX_COMPLETED = "_done_"
 """ Context key whose value is a list of activity id for the pending gateways that allow skipping. """
 
 
 class Framework:
-    # TODO(giulio): fix nlu (token and initialize)
-    def __init__(self, process, kb: dict, initial_context: dict, callback_getter, nlu):
+    def __init__(self, process, kb: dict, initial_context: dict, callback_getter, nlu: NluAdapter):
         self._process = process if isinstance(process, Process) else Process.from_dict(process)
         self._kb = kb
         self._ctx = initial_context
@@ -30,7 +31,7 @@ class Framework:
         return cls(json.load(process), json.load(kb), json.load(initial_context), callback_getter, nlu)
 
     def handle_text_input(self, text):
-        return self.handle_data_input(self._nlu(text))
+        return self.handle_data_input(self._nlu.parse(text))
 
     def handle_data_input(self, data):
         # If the activity is an END, return the default utterance if it exists.
@@ -321,7 +322,7 @@ class Activity:
         :type next_id: str or None
         :param my_type: the ActivityType of this Activity or a string representing it (for example "task" or "start")
         :type my_type: ActivityType or str
-        :param choices: the ids that this activity offers as choices (only if type is in ActivityType.get_require_choice())
+        :param choices: the ids that this activity offers as choices (only if type is ActivityType.get_require_choice())
         :type choices: list of str
         :raises DescriptionException: if choices are provided and not needed, or needed and not provided
         :raises KeyError: if can not recognize the ActivityType provided
