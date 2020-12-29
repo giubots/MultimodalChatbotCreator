@@ -42,6 +42,10 @@ async def handler(websocket, path):
     # Register
     connected.add(websocket)
     # initialize framework
+    my_framework = Framework(Process([Activity("start", "echo", ActivityType.START),
+                                  Activity("echo", "end", ActivityType.TASK),
+                                  Activity("end", None, ActivityType.END)],
+                                 "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
     my_framework.handle_text_input('')
     try:
         async for message in websocket:

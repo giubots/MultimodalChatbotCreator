@@ -22,6 +22,10 @@ class Event(Resource):
         recv = request.get_json(force=True)
         print(recv)
         # initialize framework
+        my_framework = Framework(Process([Activity("start", "echo", ActivityType.START),
+                                          Activity("echo", "end", ActivityType.TASK),
+                                          Activity("end", None, ActivityType.END)],
+                                         "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
         my_framework.handle_text_input('')
         if recv['type'] == 'utterance':
             send = my_framework.handle_text_input(recv['utterance'])
