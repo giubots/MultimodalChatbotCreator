@@ -25,11 +25,11 @@ async def hello(websocket, path):
     # differenza tra messaggio che contiene stringa e dati
     # se c'e un utterance
     # type utterance
-    # my_recv = {​​
+    # my_recv = {
     #     "type": "utterance", ['utterance', 'data']
     #     "utterance": "my utterance", # my_framework.handle_text_input(my_input["utterance"])
-    #     "payload": {​​...}​​             # my_framework.handle_data_input({​​...}​​)
-    # }​​
+    #     "payload": {...}             # my_framework.handle_data_input({...})
+    # }
 
     # utterance e' frase, quindi chiamo handle text input
     # altrimenti chiamo handle data input
@@ -38,9 +38,10 @@ async def hello(websocket, path):
 connected = set()
 
 
-async def handler(websocket, path):
+async def handler(websocket: websockets.WebSocketServerProtocol, path):
     # Register
     connected.add(websocket)
+    print(connected)
     # initialize framework
     my_framework = Framework(Process([Activity("start", "echo", ActivityType.START),
                                   Activity("echo", "end", ActivityType.TASK),
