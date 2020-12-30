@@ -1,5 +1,20 @@
 import requests
 
+# create a Session
+s = requests.Session()
+
+name = 'My Name'
+
+print(f'> /init?name={name}')
+greeting = s.post(
+  url='http://127.0.0.1:5000/init',
+  data={
+    'uid': name
+  }
+)
+print(f'< {greeting.json()}')
+
+
 event_utterance = {
     'type': 'utterance',
     'utterance': 'my_utterance'  # this is an example text
@@ -15,8 +30,8 @@ event_data = {
 # switch between test utterance or data
 event = event_data
 
-print(f'> {event}')
-greeting = requests.post(
+print(f'> /event: {event}')
+greeting = s.post(
   url='http://127.0.0.1:5000/event',
   json=event
 )
