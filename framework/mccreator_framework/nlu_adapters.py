@@ -14,7 +14,6 @@ class NluAdapter(ABC):
 
 
 class NoNluAdapter(NluAdapter):
-
     def __init__(self, expected_keys: List) -> None:
         self.keys = expected_keys.copy()
 
@@ -22,10 +21,9 @@ class NoNluAdapter(NluAdapter):
         return dict.fromkeys(self.keys, utterance)
 
 
-# TODO: investigate if this can support multiple frameworks
-# TODO: fix import
-# TODO: standardize parse return (data for the framework)
-class RasaNluAdapter(NluAdapter):
+# TODO(giulio): investigate if this can support multiple frameworks
+# TODO(giulio): fix import
+class RasaNlu(NluAdapter):
 
     def __init__(self, path: Text) -> None:
         from rasa.nlu.model import Interpreter
@@ -35,5 +33,11 @@ class RasaNluAdapter(NluAdapter):
         response = self.interpreter.parse(text=utterance)
         if response["intent"]["name"] is None:
             return {}
-        return {"intent": response["intent"]["name"],
-                **{item['entity']: item["value"] for item in response["entities"]}}
+        return self.dict(response["intent"]["name"],
+                         {item['entity']: item["value"] for item in response["entities"]})
+
+    @staticmethod
+    def dict(intent: Text, values: Dict[Text, Any] = None):
+        if values is None:
+            values = {}
+        return {"intent": intent, **values}
