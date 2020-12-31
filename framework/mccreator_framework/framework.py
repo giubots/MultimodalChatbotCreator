@@ -14,7 +14,7 @@ CTX_COMPLETED = "_done_"
 
 
 class Framework:
-    def __init__(self, process, kb: dict, initial_context: dict, callback_getter, nlu: NluAdapter):
+    def __init__(self, process, kb: dict, initial_context: dict, callback_getter, nlu: NluAdapter, on_save):
         self._process = process if isinstance(process, Process) else Process.from_dict(process)
         self._kb = kb
         self._ctx = initial_context
@@ -22,13 +22,14 @@ class Framework:
         self._current = self._process.first
         self.callback_getter = callback_getter
         self._nlu = nlu
+        self._on_save = on_save
         self._stack = deque()
         self._done = {}
         self._check()
 
     @classmethod
-    def from_file(cls, process, kb, initial_context, callback_getter, nlu):
-        return cls(json.load(process), json.load(kb), json.load(initial_context), callback_getter, nlu)
+    def from_file(cls, process, kb, initial_context, callback_getter, nlu, on_save):  # TODO(giulio): remove
+        return cls(json.load(process), json.load(kb), json.load(initial_context), callback_getter, nlu, on_save)
 
     def handle_text_input(self, text):
         return self.handle_data_input(self._nlu.parse(text))
@@ -52,6 +53,10 @@ class Framework:
 
                 # Add default utterance if it exists.
                 response.add_utterance(self._kb, self._current.id)
+
+                # If the task is END, save the KB.
+                if self._current.type == ActivityType.END:
+                    self._on_save(self._kb)
             return response.to_dict()
 
         # PARALLEL and OR have similar behaviour and they are handled together.
@@ -97,6 +102,10 @@ class Framework:
                     # Set the choice and optional default utterance, the choice can not be None.
                     self._current = next(x for x in self._process.activities if x.id == response.choice)
                     response.add_utterance(self._kb, self._current.id)
+
+                    # If the task is END, save the KB.
+                    if self._current.type == ActivityType.END:
+                        self._on_save(self._kb)
             return response.to_dict()
 
         # If the activity is TASK or START, the evaluate callback is called.
@@ -110,7 +119,7 @@ class Framework:
     def _get_response(self, data):
         # Run the callback, update the context and the kb, and return the response.
         response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
-        self._kb = response.kb  # TODO(giulio): save kb and check choice
+        self._kb = response.kb  # TODO(giulio): check choice
         self._ctx = response.ctx
         return response
 
@@ -124,6 +133,10 @@ class Framework:
         else:
             self._current = next(x for x in self._process.activities if x.id == self._current.next_id)
         response.add_utterance(self._kb, self._current.id)
+
+        # If the task is END, save the KB.
+        if self._current.type == ActivityType.END:
+            self._on_save(self._kb)
 
     def _check(self):
         """ Checks that all the activities have a callback"""

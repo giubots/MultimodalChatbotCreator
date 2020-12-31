@@ -24,6 +24,13 @@ def get_state(response):
     }
 
 
+def on_save(kb: dict, kb_file):
+    kb_file.seek(0)
+    json.dump(kb, kb_file, indent=2)
+    kb_file.truncate()
+    kb_file.close()
+
+
 # Example of how the framework can be used.
 # Let's suppose that the user has a chat panel, some buttons that can be hidden, and a field that will
 # contain the data he has inserted. The user has to insert his name XOR nickname, then his age, and then he will see
@@ -37,11 +44,14 @@ def get_state(response):
 if __name__ == '__main__':
     # The initial context is empty, instead of the token, here a callback is forwarded to the framework.
     # The developer creates a framework (which is immediately initialized)
-    my_framework = Framework.from_file(open("my_process.json"),
-                                       open("my_kb.json"),
-                                       open("my_context.json"),
-                                       get_callback,
-                                       NoNluAdapter(["name", "nickname", "age", "name_nickname"]))
+    my_kb = open("my_kb.json", "r+")
+    with open("my_process.json") as my_process, open("my_context.json") as my_ctx:
+        my_framework = Framework(json.load(my_process),
+                                 json.load(my_kb),
+                                 json.load(my_ctx),
+                                 get_callback,
+                                 NoNluAdapter(["name", "nickname", "age", "name_nickname"]),
+                                 lambda kb: on_save(kb, my_kb))
 
     # The application takes the input from the keyboard and forwards it to the framework, the response is printed out.
     # To quickly simulate a GUI interaction, the application prints BA, BB, FC if the respective elements are visible,
