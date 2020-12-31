@@ -1,12 +1,21 @@
 from flask import Flask, request, session
 from flask_restful import Resource, Api, reqparse
-import json
+import string
+import random
 
 # import framework
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'framework'))
 from framework import Framework
 from parameters import *
+
+
+def id_generator(
+      size=24,
+      chars=string.ascii_letters + string.digits + string.punctuation
+):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,8 +27,9 @@ my_framework = dict()
 
 class Init(Resource):
     def post(self):
-        if 'uid' in session:
-            return {'error': 'Session already initialized.'}
+        # this is called when there is a new interaction from the user,
+        # and a new framework must be called to address it.
+
         # get argument uid, uid is the user id
         parser = reqparse.RequestParser()
         parser.add_argument('uid', required=True)
@@ -28,13 +38,18 @@ class Init(Resource):
         # session.save(uid)
         session['uid'] = uid
         print(session)
+        if uid not in my_framework:
+            my_framework[uid] = dict()
+        # generate a new interaction
+        i = session['interaction'] = id_generator()
         # initialize framework
         # TODO: the process will be sent from the client
-        my_framework['uid'] = Framework(Process([Activity("start", "echo", ActivityType.START),
+        my_framework[uid][i] = Framework(Process([Activity("start", "echo", ActivityType.START),
                                           Activity("echo", "end", ActivityType.TASK),
                                           Activity("end", None, ActivityType.END)],
                                          "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
-        my_framework['uid'].handle_text_input('')
+        my_framework[uid][i].handle_text_input('')
+        print(my_framework)
         return {'response': f'your uid is: {uid}'}, 200
 
 
@@ -49,6 +64,7 @@ class Event(Resource):
     def post(self):
         if 'uid' in session:
             uid = session.get('uid')
+            i = session.get('interaction')
         else:
             print(session)
             return {'error': 'The user has not been initialized yet'}
@@ -56,11 +72,11 @@ class Event(Resource):
         recv = request.get_json(force=True)
         print(recv)
         if recv['type'] == 'utterance':
-            send = my_framework['uid'].handle_text_input(recv['utterance'])
+            send = my_framework[uid][i].handle_text_input(recv['utterance'])
             return send  # no need to convert to string on rest
                          # (vs Websockets)
         else:
-            send = my_framework['uid'].handle_data_input(recv['payload'])
+            send = my_framework[uid][i].handle_data_input(recv['payload'])
             return send
 
 
