@@ -1,5 +1,4 @@
 {
-  "start": "welcome",
   "name_nickname": "Would you like to insert the name or a nickname?",
   "wrong_choice": "The choice is not valid",
   "insert_name": "Please insert your name",

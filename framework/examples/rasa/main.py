@@ -1,83 +1,106 @@
-# (C) Copyright 2020 Giulio Antonio Abbo, Pier Carlo Cadoppi, Davide Savoldelli.
-# All rights reserved.
-# This file is part of the "Multimodal chatbot creator" project.
-#
-# Author: Giulio Antonio Abbo
+import tkinter as tk
 
+from examples.basic.my_callbacks import get_callback
 from examples.rasa.my_callbacks import get_callback
-from mccreator_framework.framework import *
-
+from mccreator_framework.framework import Framework
 # A nlu implementation that takes the text input and puts it into a dict.
 # This is needed to abstract the nlu dependency in this first phase of the project implementation.
 from mccreator_framework.nlu_adapters import RasaNlu
 
 
 # A helper function that extracts the information from the payload of the response and returns an updated state.
-def get_state(response):
+def get_state(response, old_state):
+    response = response["payload"]
     return {
-        "BA": "BA" in response["payload"] and response["payload"]["BA"],
-        "BB": "BB" in response["payload"] and response["payload"]["BB"],
-        "BC": "BC" in response["payload"] and response["payload"]["BC"],
-        "BD": "BD" in response["payload"] and response["payload"]["BD"],
-        "FC": "FC" in response["payload"] and response["payload"]["FC"],
-        "FC_c": response["payload"]["FC_c"] if "FC_c" in response["payload"] else "empty"
+        "show_name": response["show_name"] if "show_name" in response else old_state["show_name"],
+        "show_age": response["show_age"] if "show_age" in response else old_state["show_age"],
+        "show_choose_name": response["show_choose_name"] if "show_choose_name" in response else old_state[
+            "show_choose_name"],
+        "show_choose_nickname": response["show_choose_nickname"] if "show_choose_nickname" in response else old_state[
+            "show_choose_nickname"],
+        "show_field": response["show_field"] if "show_field" in response else old_state["show_field"],
+        "field_contents": response["field_contents"] if "field_contents" in response else old_state["field_contents"],
     }
 
 
-# Example of how the framework can be used.
-# Let's suppose that the user has a chat panel, some buttons that can be hidden, and a field that will
-# contain the data he has inserted. The user has to insert his name XOR nickname, then his age, and then he will see
-# both his name and age in the field FC.
-# He can insert the data in the chat panel, or if he presses BA he will insert a default name, "Bob",
-# if he presses the button BB he will insert a default age, 50.
-# The operations must be performed in the correct order, also if performed via GUI.
-# The framework will interact with the GUI via the data structure returned by the handle_input method.
-# The developer writes a knowledge base, in this case it contains the utterances that are shown to the user when an
-# activities starts, some other utterances, and a constraint on the age.
+# A frame with some buttons and a chat.
+class Application(tk.Frame):
+    def __init__(self, master=None):
+        super().__init__(master)
+
+        # Prepare the state and the framework.
+        self.state = {"show_name": False, "show_age": False, "show_choose_name": True, "show_choose_nickname": True,
+                      "show_field": False, "field_contents": ""}
+        self.framework = Framework.from_file("my_process.json",
+                                             "my_kb.json",
+                                             {},
+                                             get_callback,
+                                             RasaNlu("rasa_model\\nlu"))
+        self.master = master
+        self.pack()
+
+        # Add the buttons.
+        self.name_button = tk.Button(self.master, text='Insert "Bob"', command=lambda: self.send_data(
+            RasaNlu.dict("choose_name_nickname", {"name": "Bob"})))
+        self.name_button.pack()
+        self.age_button = tk.Button(self.master, text='Insert "50"',
+                                    command=lambda: self.send_data(RasaNlu.dict("choose_age", {"age": "50"})))
+        self.age_button.pack()
+        self.choose_name_button = tk.Button(self.master, text="Use the name",
+                                            command=lambda: self.send_data(RasaNlu.dict("choose_name")))
+        self.choose_name_button.pack()
+        self.choose_nickname_button = tk.Button(self.master, text="Use the nickname",
+                                                command=lambda: self.send_data(RasaNlu.dict("choose_nickname")))
+        self.choose_nickname_button.pack()
+        self.field = tk.Label(self.master, text="")
+        self.field.pack()
+
+        # Add the chat.
+        self.chat = tk.Text(self.master, state=tk.constants.DISABLED)
+        self.chat.tag_config('user_input', foreground="blue")
+        self.chat.pack()
+        self.insert = tk.Text(self.master, wrap='none', height=1)
+        self.insert.pack()
+
+        # The user can send the text input either pressing the button or pressing Return.
+        self.go = tk.Button(self.master, text="ENTER", command=self.send_text)
+        self.master.bind('<Return>', self.send_text)
+        self.go.pack()
+
+        # Update the view
+        self.update_view(self.framework.handle_text_input(""))
+
+    # Updates the view using the state.
+    def update_view(self, response):
+        self.chat["state"] = tk.constants.NORMAL
+        self.chat.insert(tk.constants.END, "\n" + response["utterance"])
+        self.chat["state"] = tk.constants.DISABLED
+        self.state = get_state(response, self.state)
+
+        self.name_button['state'] = (tk.constants.NORMAL if self.state["show_name"] else tk.constants.DISABLED)
+        self.age_button["state"] = tk.constants.NORMAL if self.state["show_age"] else tk.constants.DISABLED
+        self.choose_name_button["state"] = tk.constants.NORMAL if self.state[
+            "show_choose_name"] else tk.constants.DISABLED
+        self.choose_nickname_button["state"] = tk.constants.NORMAL if self.state[
+            "show_choose_nickname"] else tk.constants.DISABLED
+        self.field["state"] = tk.constants.NORMAL if self.state["show_field"] else tk.constants.DISABLED
+        self.field["text"] = self.state["field_contents"]
+
+    def send_data(self, data):
+        self.update_view(self.framework.handle_data_input(data))
+
+    def send_text(self, event=None):
+        text = self.insert.get('1.0', 'end-1c')
+        self.insert.delete('1.0', tk.constants.END)
+        self.chat["state"] = tk.constants.NORMAL
+        self.chat.insert(tk.constants.END, "\n-- " + text, "user_input")
+        self.chat["state"] = tk.constants.DISABLED
+        response = self.framework.handle_text_input(text)
+        self.update_view(response)
+
+
+# Run the app.
 if __name__ == '__main__':
-    # The initial context is empty, instead of the token, here a callback is forwarded to the framework.
-    # The developer creates a framework (which is immediately initialized)
-    my_framework = Framework.from_file("my_process.json",
-                                       "my_kb.json",
-                                       "my_context.json",
-                                       get_callback,
-                                       RasaNlu("rasa_project\\models\\nlu-20201228-183937\\nlu"))
-
-    # The application takes the input from the keyboard and forwards it to the framework, the response is printed out.
-    # To quickly simulate a GUI interaction, the application prints BA, BB, FC if the respective elements are visible,
-    # and the input "BA" is managed as if the user interacted with BA.
-    # The user should insert "BA" only if BA is visible, otherwise the behaviour is not correct.
-    # To close the program, the user has to type "quit".
-    u_in = ""
-    while u_in != "quit":
-        # handle input and update the state
-        if u_in == "BA":
-            my_response = my_framework.handle_data_input(RasaNlu.dict("choose_name_nickname", {"name": "Bob"}))
-        elif u_in == "BB":
-            my_response = my_framework.handle_data_input(RasaNlu.dict("choose_age", {"age": "50"}))
-        elif u_in == "BC":
-            my_response = my_framework.handle_data_input(RasaNlu.dict("choose_name"))
-        elif u_in == "BD":
-            my_response = my_framework.handle_data_input(RasaNlu.dict("choose_nickname"))
-        else:
-            my_response = my_framework.handle_text_input(u_in)
-        state = get_state(my_response)
-
-        # print the "GUI"
-        if state["BA"]:
-            print("BA - Insert Bob")
-        if state["BB"]:
-            print("BB - Insert 50")
-        if state["BC"]:
-            print("BC - Choose to insert name")
-        if state["BD"]:
-            print("BD - Choose to insert nickname")
-        if state["FC"]:
-            print("FC:", state["FC_c"])
-
-        # print the "chat panel"
-        if "utterance" in my_response:
-            print("chat:", my_response["utterance"])
-
-        # take next input
-        u_in = input()
+    root = tk.Tk()
+    app = Application(master=root)
+    app.mainloop()
