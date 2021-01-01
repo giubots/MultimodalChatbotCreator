@@ -1,8 +1,3 @@
-# (C) Copyright 2020 Giulio Antonio Abbo, Pier Carlo Cadoppi, Davide Savoldelli.
-# All rights reserved.
-# This file is part of the "Multimodal chatbot creator" project.
-#
-# Author: Giulio Antonio Abbo
 from unittest import TestCase
 
 from mccreator_framework.framework import *

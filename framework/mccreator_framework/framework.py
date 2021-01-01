@@ -1,12 +1,8 @@
-# (C) Copyright 2020 Giulio Antonio Abbo, Pier Carlo Cadoppi, Davide Savoldelli.
-# All rights reserved.
-# This file is part of the "Multimodal chatbot creator" project.
-#
-# Author: Giulio Antonio Abbo
 import json
 from collections import deque
 from enum import Enum
 from threading import Lock
+from typing import Union, Optional, List, Dict, Any, Callable
 
 from mccreator_framework.nlu_adapters import NluAdapter
 
@@ -14,14 +10,43 @@ CTX_COMPLETED = "_done_"
 """ Context key whose value is a list of activity id for the pending gateways that allow skipping. """
 
 
-class Framework:
-    def __init__(self, process, kb: dict, initial_context: dict, callback_getter, nlu: NluAdapter, on_save):
+class Framework(object):
+    """ A sort of state machine, takes a process description and handles inputs, keeping track of the current activity.
+
+    :ivar _process: an object that represents the process for this Framework instance
+    :ivar _kb: the data that is saved between different process executions
+    :ivar _ctx: the data that is not saved between different process executions
+    :ivar _current: the activity of the process that is being executed
+    :ivar _callback_getter: a function that returns the callback of an activity given its id
+    :ivar _nlu: provides a translation from text to data, to handle in the same way text and data input (multimodal)
+    :ivar _on_save: a function called when it is time to save the kb
+    :ivar _stack: a pile of Activity id that is used to handle the gateways
+    :ivar _done: a list that is used to determine if a gateway is completed
+    """
+
+    def __init__(self,
+                 process: Union["Process", Dict[str, Any]],
+                 kb: Dict[str, Any],
+                 initial_context: Dict[str, Any],
+                 callback_getter: Callable[
+                     [str], Callable[[Dict[str, Any], Dict[str, Any], Dict[str, Any]], "Response"]],
+                 nlu: NluAdapter,
+                 on_save: Callable[[Dict[str, Any]], None]) -> None:
+        """ Instantiates a Framework with the given parameters, then performs a check.
+
+        :param process: the Process for this instance or a dictionary representing it
+        :param kb: the data that is saved between different process executions
+        :param initial_context: can be empty or contain configuration variables
+        :param callback_getter: a function that returns the callback of an activity given its id
+        :param nlu: provides a translation from text to data, to handle in the same way text and data input
+        :param on_save: the function called when it is time to save the kb
+        """
         self._process = process if isinstance(process, Process) else Process.from_dict(process)
         self._kb = kb
         self._ctx = initial_context
         self._ctx[CTX_COMPLETED] = []
         self._current = self._process.first
-        self.callback_getter = callback_getter
+        self._callback_getter = callback_getter
         self._nlu = nlu
         self._on_save = on_save
         self._stack = deque()
@@ -29,7 +54,30 @@ class Framework:
         self._check()
 
     @classmethod
-    def from_file(cls, process: str, kb: str, initial_context, callback_getter, nlu, lock: Lock = Lock()):
+    def from_file(cls,
+                  process: str,
+                  kb: str,
+                  initial_context: Union[str, Dict[str, Any]],
+                  callback_getter: Callable[
+                      [str], Callable[[Dict[str, Any], Dict[str, Any], Dict[str, Any]], "Response"]],
+                  nlu: NluAdapter,
+                  lock: Lock = Lock()) -> "Framework":
+        """ Loads the configuration of a framework from the files provided.
+
+        The process file must contain a Process description that will be handled by Process.fromDict().
+        The kb and context files must contain a dictionary, the context can also be provided directly.
+        The kb will be saved back to its file when the process is completed.
+        If exists the possibility that the files will be handled by more than one Framework instance at the time, it is
+        necessary to provided a unique lock shared by all the instances. This will allow the framework to correctly
+        handle the concurrency.
+
+        :param process: the path to a file containing the process description
+        :param kb: the path to a file containing the kb
+        :param initial_context: the context or the path to a file containing the context
+        :param callback_getter: a function that returns the callback of an activity given its id
+        :param nlu: provides a translation from text to data, to handle in the same way text and data input
+        :param lock: a unique lock shared by all the instances that can use the files
+        """
         with lock:
             if not isinstance(initial_context, dict):
                 with open(initial_context) as ctx_file:
@@ -46,10 +94,25 @@ class Framework:
                                    lambda kb_c: _on_file_save(kb_c, kb, lock))
         return my_framework
 
-    def handle_text_input(self, text):
-        return self.handle_data_input(self._nlu.parse(text))
+    def handle_text_input(self, text: str) -> Dict[str, Any]:
+        """ Takes textual input from the user, uses the nlu to parse it, and handles the input as data.
 
-    def handle_data_input(self, data):
+        :param text: the textual input from the user, to be parsed
+        :return: a dictionary containing an utterance and a payload
+        """
+        return self.handle_data_input(self._nlu.parse(text.rstrip()))
+
+    def handle_data_input(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """ Takes data input from the user and handles it.
+
+        This will call the current activity callback and pass to it the data, then will forward the returned response
+        utterance and payload to the caller.
+        If the callback signals that the activity was completed successfully, this moves to the next activity in the
+        process.
+
+        :param data: the data representing the input from the user, formatted accordingly to the chosen NluAdapter
+        :return: a dictionary containing an utterance and a payload
+        """
         # If the activity is an END, return the default utterance if it exists.
         if self._current.type == ActivityType.END:
             return Response({}, {}, True).add_utterance(self._kb, self._current.id).to_dict()
@@ -133,8 +196,8 @@ class Framework:
 
     def _get_response(self, data):
         # Run the callback, update the context and the kb, and return the response.
-        response = self.callback_getter(self._current.id)(data, self._kb, self._ctx)
-        self._kb = response.kb  # TODO(giulio): check choice
+        response = self._callback_getter(self._current.id)(data, self._kb, self._ctx)
+        self._kb = response.kb
         self._ctx = response.ctx
         return response
 
@@ -154,12 +217,11 @@ class Framework:
             self._on_save(self._kb)
 
     def _check(self):
-        """ Checks that all the activities have a callback"""
-
+        """ Checks that all the activities have a callback. """
         callback = ""
         for a in self._process.activities:
             try:
-                callback = self.callback_getter(a.id)
+                callback = self._callback_getter(a.id)
             except BaseException as err:
                 if not a.type == ActivityType.END:
                     raise CallbackException(a.id, "Using the function to get a callback raised an error.") from err
@@ -167,31 +229,40 @@ class Framework:
                 raise CallbackException(a.id, "The function to get a callback returned something that is not callable.")
 
 
-def _on_file_save(contents, path, lock):
+def _on_file_save(contents: Dict[str, Any], path: str, lock: Lock) -> None:
+    """ The callback used to save a json formatted dictionary to a file.
+
+    If the file is shared, provide a lock that is unique for all the instances, and this method will handle concurrent
+    access to the file.
+
+    :param contents: the dictionary to save
+    :param path: the path of the destination file
+    :param lock: a lock shared by all instances that have access to the file
+    """
     with lock:
         with open(path, "w") as kb_file:
             json.dump(contents, kb_file, indent=2)
 
 
-class Response:
-    def __init__(self, kb: dict, ctx: dict, complete: bool, utterance: str = None, payload: dict = None,
-                 choice: str = None):
+class Response(object):
+    def __init__(self,
+                 kb: Dict[str, Any],
+                 ctx: Dict[str, Any],
+                 complete: bool,
+                 utterance: str = None,
+                 payload: Dict[str, Any] = None,
+                 choice: str = None) -> None:
         """ Creates a Response with the provided parameters.
+
         If the current activity is one of ActivityType.get_require_choice(), and is completed, the Response will contain
         the choice of the user. This must be the id of one of the choices provided in the description.
 
         :param kb: the updated knowledge
-        :type kb: dict
         :param ctx: the updated context
-        :type ctx: dict
         :param complete: whether the current activity is completed
-        :type complete: bool
         :param utterance: an optional utterance to be displayed
-        :type utterance: str
         :param payload: an optional payload to be returned to the caller
-        :type payload: dict
         :param choice: if the current activity is in ActivityType.get_require_choice() this can contain the user choice
-        :type choice: bool
         """
         self.kb = kb
         self.ctx = ctx
@@ -200,22 +271,22 @@ class Response:
         self.payload = payload if payload is not None else {}
         self.choice = choice
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         """ Returns a dictionary with utterance and payload, that can be returned to the caller. """
         return {"utterance": self.utterance, "payload": self.payload}
 
-    def add_utterance(self, kb: dict, key, fallback: str = ""):
+    def add_utterance(self, kb: Dict[str, Any], key: str, fallback: str = "") -> "Response":
         """ Adds an utterance to this response.
+
         The utterance is taken from the kb using the provided key, if it is not present a fallback (empty by default) is
         used. If this response does not already contain an utterance, in the end it will contain the added utterance.
         If the utterance to add can not be found and a fallback is not provided, nothing is added.
         If an utterance is provided and one already exists, the new one is appended on a new line.
 
         :param kb: the kb from which to take the utterance to add
-        :type kb: dict
         :param key: the key to retrieve the utterance from the kb
         :param fallback: the value that is used if the key is not in the kb
-        :type fallback: str
+        :return: the updated Response
         """
         my_utt = kb[key] if key in kb else fallback
         if self.utterance == "":
@@ -225,14 +296,14 @@ class Response:
         return self
 
 
-class Process:
-    """ The description of a process, with a list of activities and the id of the first activity.
+class Process(object):
+    """ The description of a process, with a list of activities and the first activity.
 
     :ivar activities: a list of Activity objects representing this process
     :ivar first: the first Activity of the process
     """
 
-    def __init__(self, activities: list, first_activity_id: str):
+    def __init__(self, activities: List[Union["Activity", Dict[str, Any]]], first_activity_id: str) -> None:
         """ Creates a new process description with the provided activities and first activity id.
 
         If the provided activities list contains the activities as dictionaries instead of Activity objects, this will
@@ -242,9 +313,7 @@ class Process:
             my_process = Process([Activity("one", "two", ActivityType.TASK), ...], "one")
 
         :param activities: a list of Activity objects or of dictionaries representing the activities of the process
-        :type activities: list of Activity or list of dict
         :param first_activity_id: the id of the first Activity of the process (that should have type START)
-        :type first_activity_id: str
         :raises DescriptionException: if first activity id has no corresponding activity
         """
         self.activities = []
@@ -257,17 +326,20 @@ class Process:
         self._check()
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict[str, Any]) -> "Process":
         """ Given a dictionary representing a Process, this returns the corresponding Process, if possible.
 
         Example:
-            my_process = Process.from_dict({"first_activity_id": "one",
-                                            "activities": [{"my_id": "one", "next_id": "two", "my_type": "task"},
-                                                           ... ]})
+            my_process = Process.from_dict({
+                            "first_activity_id": "one",
+                            "activities": [
+                                { "my_id": "one", "next_id": "two", "my_type": "task" },
+                                ...
+                            ]})
 
 
+        :param dictionary: a dictionary that represents a Process
         :return: a Process instance with the provided attributes
-        :rtype: Process
         :raises DescriptionException: if the required parameters are not found, or unknown parameters are provided
         """
         try:
@@ -275,7 +347,7 @@ class Process:
         except TypeError as err:
             raise DescriptionException(dictionary, "Did not find a required parameter in the process.") from err
 
-    def _check(self):  # TODO(giulio): check if next == None happens only in a gateway?
+    def _check(self) -> None:
         """ Performs some checks on the description, both syntactic and semantic (for example id are unique...).
 
         :raises DescriptionException: if the check is not passed
@@ -335,8 +407,8 @@ class Process:
             raise DescriptionException(self.first.id, "First activity id has multiple corresponding activities.")
 
 
-class Activity:
-    """ An element of a Process description, this represent a single step in which the user has to do something.
+class Activity(object):
+    """ An element of a Process description, this represents a single step in which the user has to do something.
 
     :ivar id: the id of this Activity
     :ivar next_id: the id of the Activity that comes after this, when completed (can be None)
@@ -344,20 +416,20 @@ class Activity:
     :ivar choices: a list of id that this activity offers as choices (can be None)
     """
 
-    def __init__(self, my_id: str, next_id, my_type, choices=None):
+    def __init__(self,
+                 my_id: str,
+                 next_id: Optional[str],
+                 my_type: Union[str, "ActivityType"],
+                 choices: List[str] = None) -> None:
         """ Creates a new activity with the provided id, next id, type and choices; performs some checks.
 
-        The parameter next_id is None if the activity is the last "inside" one of the ActivityType.get_require_choice
+        The parameter next_id is None if the activity is the last "inside" one of the ActivityType.get_require_choice()
         gateways.
 
         :param my_id: the id of this Activity (unique)
-        :type my_id: str
         :param next_id: the id of the Activity that comes after this, when completed (can be None)
-        :type next_id: str or None
         :param my_type: the ActivityType of this Activity or a string representing it (for example "task" or "start")
-        :type my_type: ActivityType or str
         :param choices: the ids that this activity offers as choices (only if type is ActivityType.get_require_choice())
-        :type choices: list of str
         :raises DescriptionException: if choices are provided and not needed, or needed and not provided
         :raises KeyError: if can not recognize the ActivityType provided
         """
@@ -375,7 +447,7 @@ class Activity:
         self.choices = choices
 
     @classmethod
-    def from_dict(cls, dictionary: dict):
+    def from_dict(cls, dictionary: Dict[str, Any]) -> "Activity":
         """ Given a dictionary representing an Activity, this returns the corresponding Activity, if possible.
 
         Example:
@@ -386,8 +458,8 @@ class Activity:
 
         See Activity.__init__ for more info.
 
+        :param dictionary: a dictionary that represents an Activity
         :return: an Activity instance with the provided attributes
-        :rtype: Activity
         :raises DescriptionException: if the required parameters are not found, or unknown parameters are provided
         """
         try:
@@ -397,8 +469,8 @@ class Activity:
 
     def __eq__(self, o: object) -> bool:
         """ Returns true if two activities have the same attributes. """
-        return isinstance(o, Activity) and self.id == o.id and self.next_id == o.next_id and self.type == o.type \
-               and self.choices == o.choices
+        return isinstance(o, Activity) and \
+               self.id == o.id and self.next_id == o.next_id and self.type == o.type and self.choices == o.choices
 
     def __ne__(self, o: object) -> bool:
         """ Returns true if __eq__ would return false. """
@@ -435,8 +507,8 @@ class ActivityType(Enum):
     """
 
     @staticmethod
-    def get_require_choice():
-        """ Returns a list of ActivityType that require some choices to be provided in the description. """
+    def get_require_choice() -> List["ActivityType"]:
+        """ Returns a list of the ActivityType that require some choices to be provided in the description. """
         return [ActivityType.PARALLEL, ActivityType.XOR, ActivityType.OR]
 
 
@@ -447,7 +519,7 @@ class DescriptionException(Exception):
     :ivar message: the message of this exception
     """
 
-    def __init__(self, cause, message="The process description caused an exception."):
+    def __init__(self, cause, message: str = "The process description caused an exception.") -> None:
         """ Creates an exception with the provided cause, and an optional message. """
         super().__init__(message)
         self.cause = cause
@@ -464,7 +536,7 @@ class CallbackException(Exception):
     :ivar message: the message of this exception
     """
 
-    def __init__(self, cause, message="A callback caused an exception."):
+    def __init__(self, cause, message: str = "A callback caused an exception.") -> None:
         """ Creates an exception with the provided cause, and an optional message. """
         super().__init__(message)
         self.cause = cause
