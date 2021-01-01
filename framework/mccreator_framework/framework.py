@@ -6,6 +6,7 @@
 import json
 from collections import deque
 from enum import Enum
+from threading import Lock
 
 from mccreator_framework.nlu_adapters import NluAdapter
 
@@ -28,8 +29,22 @@ class Framework:
         self._check()
 
     @classmethod
-    def from_file(cls, process, kb, initial_context, callback_getter, nlu, on_save):  # TODO(giulio): remove
-        return cls(json.load(process), json.load(kb), json.load(initial_context), callback_getter, nlu, on_save)
+    def from_file(cls, process: str, kb: str, initial_context, callback_getter, nlu, lock: Lock = Lock()):
+        with lock:
+            if not isinstance(initial_context, dict):
+                with open(initial_context) as ctx_file:
+                    my_ctx = json.load(ctx_file)
+            else:
+                my_ctx = initial_context
+
+            with open(process) as process_file, open(kb) as kb_file:
+                my_framework = cls(json.load(process_file),
+                                   json.load(kb_file),
+                                   my_ctx,
+                                   callback_getter,
+                                   nlu,
+                                   lambda kb_c: _on_file_save(kb_c, kb, lock))
+        return my_framework
 
     def handle_text_input(self, text):
         return self.handle_data_input(self._nlu.parse(text))
@@ -150,6 +165,12 @@ class Framework:
                     raise CallbackException(a.id, "Using the function to get a callback raised an error.") from err
             if not callable(callback):
                 raise CallbackException(a.id, "The function to get a callback returned something that is not callable.")
+
+
+def _on_file_save(contents, path, lock):
+    with lock:
+        with open(path, "w") as kb_file:
+            json.dump(contents, kb_file, indent=2)
 
 
 class Response:
