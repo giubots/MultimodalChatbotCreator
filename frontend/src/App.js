@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from "react";
-import {OnClick, SocketManager} from "./react-chatbot-ui";
+import {OnClick, OnSubmit, SocketManager} from "./react-chatbot-ui";
 
 function App() {
 
@@ -41,6 +41,18 @@ function App() {
             >
               <button onClick={() => alert("should work")}>Button 2</button>
             </OnClick>
+            <OnSubmit>
+                <input type={"text"} name={"nome"} />
+                <input type={"text"} name={"cognome"} />
+                <input type={"text"} name={"indirizzo"} />
+                <input type={"text"} name={"città"} />
+                <input type={"submit"} />
+            </OnSubmit>
+
+            <OnSubmit type={"utterance"}>
+                <input type={"text"} />
+                <input type={"submit"} />
+            </OnSubmit>
 
             <OnClick
                 id={"button-3"}

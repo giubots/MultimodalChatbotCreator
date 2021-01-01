@@ -53,7 +53,11 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
     # interaction.
     i = websocket.request_headers.get('interaction')
     # this is the user id and is used to keep track of different users
-    uid = websocket.request_headers.get('uid')
+
+    # uid = websocket.request_headers.get('uid')
+
+    uid = "MY_UID"
+
     if uid == 'None' or uid is None:
         error = {'error': 'Insert the uid (user id) in the headers'
                           ' and try again.'}

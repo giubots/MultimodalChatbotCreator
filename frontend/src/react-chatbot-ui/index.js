@@ -1,2 +1,2 @@
-export { OnClick } from "./Components";
+export { OnClick, OnSubmit } from "./Components";
 export { SocketManager } from "./SocketManager";

@@ -1,44 +1,74 @@
-import React from "react";
-import {SocketContext, useWebsocket} from './SocketManager';
+import React, {useContext} from "react";
+import {SocketContext} from './SocketManager';
 
-class WebSocketComponent extends React.Component {
-    static contextType = SocketContext;
-    handleEvent(type) {
-        const {id, payload} = this.props;
-        const message = {
-            id,
-            type,
-            payload,
-        }
+function handleEvent (event, context, props, payload) {
+    const message = {
+        id: props.id,
+        type: props.type || event.type,
+        payload: payload || props.payload,
     }
+    props.stopPropagation && event.stopPropagation();
+    console.info("[Message]", message);
+    context.send(JSON.stringify(message));
 }
 
-export const OnClick = (props) => {
 
-    function handleEvent(e, type, context) {
-        props.stopPropagation && e.stopPropagation();
-        const {id, payload} = props;
-        const message = {
-            id,
-            type,
-            payload,
-        }
-        context.send(JSON.stringify(message));
-    }
+const WebSocketComponent = (props) => {
     return (
         <SocketContext.Consumer>
             {context => {
                 props.onEvent && props.onEvent(context.receive);
-                    return (
-                        <div
-                            onClickCapture={(e) => {
-                                handleEvent(e,"click", context);
-                            }}
-                        >
-                            {props.children}
-                        </div>
-                    );
-                }}
+                return <>{props.children}</>;
+            }}
         </SocketContext.Consumer>
+    );
+}
+
+export const OnClick = (props) => {
+    const context = useContext(SocketContext)
+
+    return (
+        <WebSocketComponent>
+            <div
+                onClickCapture={(e) => {handleEvent(e, context, props)}}
+            >
+                {props.children}
+            </div>
+        </WebSocketComponent>
+    );
+}
+
+
+export const OnSubmit = (props) => {
+    const context = useContext(SocketContext)
+
+    return (
+        <WebSocketComponent>
+            <form
+                onSubmitCapture={(e) => {
+                    e.preventDefault();
+
+                    let payload = {};
+
+                    // Framework compliant utterance type
+                    if (props.type === "utterance") {
+                        payload["text"] = e.target[0].value;
+                    }
+
+                    // Standard OnSubmit type
+                    else {
+                        for (let i = 0; i < e.target.length; i++) {
+                            let t = e.target[i];
+                            if (t.name) {
+                                payload[t.name] = t.value;
+                            }
+                        }
+                    }
+                    handleEvent(e, context, props, payload)
+                }}
+            >
+                {props.children}
+            </form>
+        </WebSocketComponent>
     );
 }
