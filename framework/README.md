@@ -3,7 +3,7 @@
 This project is based on the paper "A Conceptual Framework for Multi-modal Process-driven Conversational
 Agents" [WIP LINK]. It provides a framework that, if kept updated with the inputs from the user, guides him through an
 appropriately defined process, regardless of the input type. More info are available at [WIP PRESENTATION].
-___
+___________________________
 
 # Usage
 
@@ -19,19 +19,29 @@ A developer that wants to use this framework has to:
 * Call `handle_text_input` or `handle_data_input` whenever an input from the user is received
 * Display back to the user the `Response` returned by the methods.
 
-To create a `Framework` it is possible to provide some json files with the process description, context and knowledge
-base, while the callbacks are provided through a function (more info below):
+The text input is transformed into data input, and the data is passed to the callback. The callbacks can use the data
+and what is contained in the kb and context to produce a `Response`. The response can contain an utterance and a payload
+that are returned to the caller. You are free to use the payload as you prefer, the data that you provide instead
+depends on the `NluAdapter` that you chose.
+
+To create a `Framework` it is possible to provide some files with the process description in json format, context and
+knowledge base, while the callbacks are provided through a function (more info below):
 
 ```Python
 from framework import Framework
 
-my_framework = Framework.from_file(open("my_process.json"),
-                                   open("my_kb.json"),
-                                   open("my_context.json"),
-                                   get_callback,
-                                   nlu)
-
+self.framework = Framework.from_file("my_process.json",
+                                     "my_kb.json",
+                                     {},  # Notice that in this case the context does not use a file.
+                                     get_callback,
+                                     RasaNlu("rasa_project\\models\\my_model\\nlu"))
 ```
+
+If multiple instances share the same files, remember to provide a unique lock shared by all the instances, this will
+allow the framework to handle concurrency when using the files.
+
+If you prefer to create a framework instance from some existing data, structure, you can use the constructor, and you
+will have to provide also a callback that will be used when it will be time to save the kb.
 
 ### The knowledge base and the context:
 
@@ -44,8 +54,8 @@ These are dictionaries with key-value pairs.
 ```
 
 SPECIAL KB KEYS: When a task is starting, the framework **automatically** searches in the knowledge base a value
-corresponding to its id and appends its value to the utterance in the `Response`. For example, when a task called "
-insert_name" starts, the message in the knowledge base of the example above will be put in the utterance. If you prefer
+corresponding to its id and appends its value to the utterance in the `Response`. For example, when a task called
+"insert_name" starts, the message in the knowledge base of the example above will be put in the utterance. If you prefer
 to handle manually all the utterances, avoid using the id of a task as a knowledge base key.
 
 SPECIAL CONTEXT KEYS: In the context, the framework **automatically** adds a `CTX_COMPLETED` key whose value is a list
@@ -120,7 +130,7 @@ XOR C, and then finally D, the corresponding description would be:
 
 ### The callbacks and the responses:
 
-Each `Activity` has an associated callback that is in charge of:
+Each `Activity` (END excluded) has an associated callback that is in charge of:
 
 * Handling the input
 * Updating the knowledge base
@@ -131,9 +141,6 @@ Each `Activity` has an associated callback that is in charge of:
 * Finally, the Response specifies whether the activity is completed and an optional "choice", depending on the type.
 
 ```Python
-from framework import Response
-
-
 def callback(data, kb, context) -> Response:
     # Obtain my_choice from the data, evaluate it and prepare my_payload.
     my_choice = ...
@@ -143,7 +150,6 @@ def callback(data, kb, context) -> Response:
     if completed:
         return Response(kb, context, True, payload=my_payload, choice=my_choice)
     return Response(kb, context, False, utterance=kb["my_kb_key"])
-
 ```
 
 The example above is a callback that could be associated with a OR, XOR or PARALLEL activity. If the user inserted a
@@ -153,7 +159,14 @@ To pass the callbacks to the `Framework`, provide a method that, given the id of
 (without running it).
 
 When `handle_text_input` or `handle_data_input` terminate, they return a data structure that contains the utterance and
-the payload.
+the payload. The payload contents are not predefined and can be customized.
+
+```Python
+{
+    "utterance": "An utterance",
+    "payload": {...}
+}
+```
 
 ### The types of activities:
 
@@ -169,3 +182,11 @@ There are six `ActivityType` values:
   valid.
 * XOR: Similar to a PARALLEL, but allows the user to choose exactly one of the options.
 * OR: Similar to a PARALLEL, but it is completed when the user has chosen at least one of the options.
+
+### The NLU Adapters
+
+These classes allow to use a single callback to handle both text and data input, because they translate the text input
+into data. The `NoNluAdapter` takes as a parameter the list of all the keys the callbacks expect to find in the data
+dictionary, and when parsing an utterance simply puts it in a dictionary as the value for each of the keys provided.
+The `RasaNlu` instead uses a trained rasa interpreter to extract an intent and entities from the utterance. Have a look
+at the code documentation for more info.
