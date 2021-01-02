@@ -1,7 +1,6 @@
 import React from "react";
 
 export const SocketContext = React.createContext("");
-export const useWebsocket = () => React.useContext(SocketContext);
 
 export class SocketManager extends React.Component {
     constructor(props) {
@@ -21,31 +20,35 @@ export class SocketManager extends React.Component {
     }
 
     connect() {
-        this.ws = new WebSocket(this.url);
-        this.ws.onmessage = (event) => {
-            console.debug("[SocketManager] New message:", event);
-            const wsInterface = {
-                send: (message) => this.__send(message),
-                receive: event.data,
+        if (this.props.useRest) {
+            //TODO: implement REST adapter
+        }
+        else {
+            this.ws = new WebSocket(this.url);
+            this.ws.onmessage = (event) => {
+                console.debug("[SocketManager] New message:", event);
+                const wsInterface = {
+                    send: (message) => this.__send(message),
+                }
+                this.props.onReceive && this.props.onReceive(event.data);
+                this.setState({ wsInterface });
             }
-            this.props.onReceive && this.props.onReceive(event.data);
-            this.setState({ wsInterface });
-        }
 
-        this.ws.onopen = (event) => {
-            console.debug("[SocketManager] Connection opened!");
-        }
+            this.ws.onopen = (event) => {
+                console.debug("[SocketManager] Connection opened!");
+            }
 
-        this.ws.onerror = (event) => {
-            console.error("[SocketManager] Error", event);
-            throw event;
-        }
+            this.ws.onerror = (event) => {
+                console.error("[SocketManager] Error", event);
+                throw event;
+            }
 
-        this.ws.onclose = (event) => {
-            console.debug("[SocketManager] Connection closed!");
-            setTimeout(() => {
-                this.connect();
-            }, 1000);
+            this.ws.onclose = (event) => {
+                console.debug("[SocketManager] Connection closed!");
+                setTimeout(() => {
+                    this.connect();
+                }, 1000);
+            }
         }
     }
 

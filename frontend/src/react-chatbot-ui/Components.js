@@ -16,7 +16,7 @@ function handleEvent (event, context, props, payload) {
 const WebSocketComponent = (props) => {
     return (
         <SocketContext.Consumer>
-            {(context) => {
+            {() => {
                 return <>{props.children}</>;
             }}
         </SocketContext.Consumer>
@@ -27,7 +27,7 @@ export const OnClick = (props) => {
     const context = useContext(SocketContext)
 
     return (
-        <WebSocketComponent onReceive={props.onReceive}>
+        <WebSocketComponent>
             <div
                 onClick={(e) => {handleEvent(e, context, props)}}
             >

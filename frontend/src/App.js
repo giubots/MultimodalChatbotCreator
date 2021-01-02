@@ -42,7 +42,7 @@ function App() {
                         id={"button-2"}
                         type={"data"}
                         payload={{data: message}}
-                        onSend={(m) => setMessages([...messages, message])}
+                        onSend={() => setMessages([...messages, message])}
                     >
                         <input type={"text"} onChange={e => setMessage(e.target.value)}/>
                         <button>Send Message</button>
