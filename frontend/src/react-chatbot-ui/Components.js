@@ -40,10 +40,12 @@ export const OnClick = (props) => {
 
 export const OnSubmit = (props) => {
     const context = useContext(SocketContext)
+    let form;
 
     return (
         <WebSocketComponent onReceive={props.onReceive}>
             <form
+                ref={r => form = r}
                 action={"."}
                 onSubmitCapture={(e) => {
                     e.preventDefault();
@@ -65,7 +67,7 @@ export const OnSubmit = (props) => {
                         }
                     }
                     handleEvent(e, context, props, payload);
-                    return false;
+                    form.reset();
                 }}
             >
                 {props.children}

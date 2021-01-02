@@ -35,6 +35,7 @@ function App() {
                 </div>
                 <footer className={"footer"}>
                     <OnSubmit
+                        stopPropagation
                         id={"button-2"}
                         type={"data"}
                         payload={{data: message}}
