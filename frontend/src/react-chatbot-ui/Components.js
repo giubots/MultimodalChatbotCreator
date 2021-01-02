@@ -8,7 +8,7 @@ function handleEvent (event, context, props, payload) {
         payload: payload || props.payload,
     }
     props.stopPropagation && event.stopPropagation();
-    console.info("[Message]", message);
+    props.onSend && props.onSend(message);
     context.send(JSON.stringify(message));
 }
 
@@ -16,8 +16,7 @@ function handleEvent (event, context, props, payload) {
 const WebSocketComponent = (props) => {
     return (
         <SocketContext.Consumer>
-            {context => {
-                props.onEvent && props.onEvent(context.receive);
+            {(context) => {
                 return <>{props.children}</>;
             }}
         </SocketContext.Consumer>
@@ -28,9 +27,9 @@ export const OnClick = (props) => {
     const context = useContext(SocketContext)
 
     return (
-        <WebSocketComponent>
+        <WebSocketComponent onReceive={props.onReceive}>
             <div
-                onClickCapture={(e) => {handleEvent(e, context, props)}}
+                onClick={(e) => {handleEvent(e, context, props)}}
             >
                 {props.children}
             </div>
@@ -43,8 +42,9 @@ export const OnSubmit = (props) => {
     const context = useContext(SocketContext)
 
     return (
-        <WebSocketComponent>
+        <WebSocketComponent onReceive={props.onReceive}>
             <form
+                action={"."}
                 onSubmitCapture={(e) => {
                     e.preventDefault();
 
@@ -64,7 +64,8 @@ export const OnSubmit = (props) => {
                             }
                         }
                     }
-                    handleEvent(e, context, props, payload)
+                    handleEvent(e, context, props, payload);
+                    return false;
                 }}
             >
                 {props.children}

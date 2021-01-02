@@ -23,17 +23,17 @@ export class SocketManager extends React.Component {
     connect() {
         this.ws = new WebSocket(this.url);
         this.ws.onmessage = (event) => {
-            console.log("[SocketManager] New message:", event);
+            console.debug("[SocketManager] New message:", event);
             const wsInterface = {
                 send: (message) => this.__send(message),
                 receive: event.data,
             }
-
+            this.props.onReceive && this.props.onReceive(event.data);
             this.setState({ wsInterface });
         }
 
         this.ws.onopen = (event) => {
-            console.info("[SocketManager] Connection opened!");
+            console.debug("[SocketManager] Connection opened!");
         }
 
         this.ws.onerror = (event) => {
@@ -42,7 +42,7 @@ export class SocketManager extends React.Component {
         }
 
         this.ws.onclose = (event) => {
-            console.info("[SocketManager] Connection closed!");
+            console.debug("[SocketManager] Connection closed!");
             setTimeout(() => {
                 this.connect();
             }, 1000);
