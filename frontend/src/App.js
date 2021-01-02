@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+import "./styles/ChatApp.css";
 import React, {useState} from "react";
 import {OnSubmit, SocketManager} from "./react-chatbot-ui";
 
@@ -13,42 +12,48 @@ function App() {
             url={"ws://localhost:8765"}
             onReceive={(m) => {
                 console.log("[App] Received:", m)
-                setMessages([...messages, m]);
+                setMessages([...messages, {fromMe: "", message: JSON.parse(m).utterance}]);
             }}
         >
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <p>
-                        Edit <code>src/App.js</code> and save to reload.
-                    </p>
-                    <a
-                        className="App-link"
-                        href="https://reactjs.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Learn React
-                    </a>
-                    <div>
-                        <h4>Text messages:</h4>
+                <div className={"header"}>
+                    <div className='messages' id='messageList'>
                         <ul>
                             {messages.map((m, i) => {
-                                return <li key={i}><span>{m}</span></li>
+                                return (
+                                    <div key={i} className={`message ${m.fromMe}`}>
+                                        <div className='username'>
+                                            { m.fromMe? "You" : "Socket" }
+                                        </div>
+                                        <div className='message-body'>
+                                            { m.message }
+                                        </div>
+                                    </div>
+                                )
                             })}
                         </ul>
                     </div>
+                </div>
+                <footer className={"footer"}>
                     <OnSubmit
                         id={"button-2"}
                         type={"data"}
                         payload={{data: message}}
-                        onSend={() => setMessages([...messages, message])}
+                        onSend={() => setMessages([...messages, {fromMe: "from-me", message}])}
                     >
-                        <input type={"text"} onChange={e => setMessage(e.target.value)}/>
-                        <button>Send Message</button>
+                        <div className={"input-container"}>
+                            <input
+                                className={"input"}
+                                type={"text"}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder={"Type message"}
+                            />
+                            <button className={"send-button"}>
+                                Send
+                            </button>
+                        </div>
+
                     </OnSubmit>
-                </header>
-            </div>
+                </footer>
         </SocketManager>
     );
 }
