@@ -26,7 +26,7 @@ async def client():
                 # successful websocket connection.
                 # This interaction id is then sent to the server via the
                 # headers.
-                interaction = websocket.request_headers.get('Sec-WebSocket-Key')
+                interaction = await websocket.recv()
 
             event_utterance = {
                 'type': 'utterance',

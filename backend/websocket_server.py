@@ -67,6 +67,7 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
         my_framework[uid] = dict()
 
     if i == 'None' or i is None:
+        # this is when the client starts the interaction
         i = ws_key
         # initialize framework
         my_framework[uid][i] = Framework(Process([Activity("start", "echo", ActivityType.START),
@@ -74,11 +75,13 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
                                       Activity("end", None, ActivityType.END)],
                                      "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
         my_framework[uid][i].handle_text_input('')
+        # send the interaction id (the websocket key) to client
+        await websocket.send(i)
     print(my_framework)
     try:
         async for message in websocket:
             print(message)
-            print() # for better visual distinction between messages
+            print()  # for better visual distinction between messages
             recv = json.loads(message)
             if recv['type'] == 'utterance':
                 send = my_framework[uid][i].handle_text_input(recv['utterance'])

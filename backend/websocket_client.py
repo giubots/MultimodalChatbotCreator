@@ -35,7 +35,8 @@ async def client():
         # if the interaction is set to None, a new interaction will be
         # created. (and a new Framework process instantiated)
         # see websocket_client_interrupted.py for more information
-        ws_key = websocket.request_headers.get('Sec-WebSocket-Key')
+        if params['interaction'] is None:
+            ws_key = await websocket.recv()
 
         event_utterance = {
             'type': 'utterance',
