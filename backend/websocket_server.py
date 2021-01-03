@@ -54,9 +54,12 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
     # this will be the interaction id received by the client,
     # and will correspond to the first websocket request for this
     # interaction.
-    i = params['interaction']
+    # [the setdefault function works to get the value from dict,
+    # and if the value is not present, get the default value None
+    # instead of raising a keyError and shutting down the server
+    i = params.setdefault('interaction', None)
     # this is the user id and is used to keep track of different users
-    uid = params['uid']
+    uid = params.setdefault('uid', None)
     if uid == 'None' or uid is None:
         error = {'error': 'Insert the uid (user id) in the headers'
                           ' and try again.'}
