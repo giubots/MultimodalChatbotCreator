@@ -2,6 +2,7 @@ import asyncio
 import websockets
 import json
 import time
+from functions import *
 
 
 async def client():
@@ -9,11 +10,11 @@ async def client():
     interaction = None
     uid = input("What's your name? ")
     for i in range(100):
-        ws_headers = {
+        params = {
             'interaction': interaction,
             'uid': uid
         }
-        async with websockets.connect(uri, extra_headers=ws_headers) as websocket:
+        async with websockets.connect(add_params(uri, params)) as websocket:
 
             if interaction is None:
                 # this is an example of an interaction,

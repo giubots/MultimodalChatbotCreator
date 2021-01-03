@@ -49,12 +49,14 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
     # set up the interaction. we are going to use the first one
     # received by the server to identify it
     ws_key = websocket.request_headers.get('Sec-WebSocket-Key')
+    # these are the query parameters: interaction and uid:
+    params = get_params(path)
     # this will be the interaction id received by the client,
     # and will correspond to the first websocket request for this
     # interaction.
-    i = websocket.request_headers.get('interaction')
+    i = params['interaction']
     # this is the user id and is used to keep track of different users
-    uid = websocket.request_headers.get('uid')
+    uid = params['uid']
     if uid == 'None' or uid is None:
         error = {'error': 'Insert the uid (user id) in the headers'
                           ' and try again.'}

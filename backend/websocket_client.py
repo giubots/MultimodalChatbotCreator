@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import json
+from functions import *
 
 
 # async def hello():
@@ -19,7 +20,7 @@ import json
 
 async def client():
     uri = "ws://localhost:8765"
-    ws_headers = {
+    params = {
         # interaction is None when you are starting it,
         # then you need to set it to the initial websocket key value
         # to continue the interaction.
@@ -27,7 +28,7 @@ async def client():
         # the user id identifies the user in the backend and is required
         'uid': 'user id'
     }
-    async with websockets.connect(uri, extra_headers=ws_headers) as websocket:
+    async with websockets.connect(add_params(uri, params)) as websocket:
         # this is the websocket key value you need to provide
         # if you want to start a new websocket connection for the
         # same interaction.
