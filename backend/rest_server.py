@@ -1,7 +1,6 @@
 from flask import Flask, request, session
 from flask_restful import Resource, Api, reqparse
-import string
-import random
+from functions import *
 
 # import framework
 import sys, os
@@ -10,11 +9,7 @@ from framework import Framework
 from parameters import *
 
 
-def id_generator(
-      size=24,
-      chars=string.ascii_letters + string.digits + string.punctuation
-):
-    return ''.join(random.choice(chars) for _ in range(size))
+
 
 
 app = Flask(__name__)

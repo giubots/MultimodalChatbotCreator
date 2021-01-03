@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import json
+from functions import *
 
 # import framework
 import sys, os
