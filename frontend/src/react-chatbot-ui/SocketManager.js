@@ -27,11 +27,11 @@ export class SocketManager extends React.Component {
         else {
             this.ws = new WebSocket(this.url + `?uid="Davide"` + `&interaction=${this.state.interaction}`);
             this.ws.onmessage = (event) => {
+                console.info("[SocketManager] New message:", event.data);
                 if (this.state.interaction === "None") {
                     this.setState({interaction: event.data});
                     return;
                 }
-                console.info("[SocketManager] New message:", event.data);
                 const wsInterface = {
                     send: (message) => this.__send(message),
                 }
@@ -49,7 +49,7 @@ export class SocketManager extends React.Component {
             }
 
             this.ws.onclose = (event) => {
-                console.debug("[SocketManager] Connection closed!");
+                console.info("[SocketManager] Connection closed!");
                 setTimeout(() => {
                     this.connect();
                 }, 1000);
