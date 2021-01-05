@@ -10,6 +10,7 @@ export class SocketManager extends React.Component {
         this.state = {
             wsInterface: {
                 send: (message) => this.__send(message),
+                close: () => this.__close(),
                 receive: "No messages yet",
             },
             interaction: "None",
@@ -25,7 +26,7 @@ export class SocketManager extends React.Component {
             //TODO: implement REST adapter
         }
         else {
-            this.ws = new WebSocket(this.url + `?uid="Davide"` + `&interaction=${this.state.interaction}`);
+            this.ws = new WebSocket(this.url + `?uid=Davide"` + `&interaction=${encodeURIComponent(this.state.interaction)}`);
             this.ws.onmessage = (event) => {
                 console.info("[SocketManager] New message:", event.data);
                 if (this.state.interaction === "None") {
@@ -34,6 +35,7 @@ export class SocketManager extends React.Component {
                 }
                 const wsInterface = {
                     send: (message) => this.__send(message),
+                    close: () => this.__close(),
                 }
                 this.props.onReceive && this.props.onReceive(event.data);
                 this.setState({ wsInterface });
@@ -61,6 +63,10 @@ export class SocketManager extends React.Component {
         if (this.ws) {
             this.ws.send(message);
         }
+    }
+
+    __close() {
+        this.ws.close();
     }
 
     componentWillUnmount () {

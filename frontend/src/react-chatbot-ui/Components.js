@@ -13,6 +13,9 @@ function handleEvent (event, context, props, payload, text) {
             utterance: text,
         }
     }
+    if (text === "quit") {
+        context.close();
+    }
     props.stopPropagation && event.stopPropagation();
     props.onSend && props.onSend(message);
     context.send(JSON.stringify(message));
