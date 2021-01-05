@@ -36,8 +36,7 @@ function App() {
                 <footer className={"footer"}>
                     <OnSubmit
                         stopPropagation
-                        id={"button-2"}
-                        type={"data"}
+                        type={"utterance"}
                         payload={{data: message}}
                         onSend={() => setMessages([...messages, {fromMe: "from-me", message}])}
                     >
@@ -48,9 +47,9 @@ function App() {
                                 onChange={e => setMessage(e.target.value)}
                                 placeholder={"Type message"}
                             />
-                            <button className={"send-button"}>
+                            {/*<button className={"send-button"}>
                                 Send
-                            </button>
+                            </button>*/}
                         </div>
 
                     </OnSubmit>

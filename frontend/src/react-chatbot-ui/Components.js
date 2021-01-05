@@ -1,11 +1,17 @@
 import React, {useContext} from "react";
 import {SocketContext} from './SocketManager';
 
-function handleEvent (event, context, props, payload) {
-    const message = {
+function handleEvent (event, context, props, payload, text) {
+    let message = {
         id: props.id,
         type: props.type || event.type,
         payload: payload || props.payload,
+    }
+    if (props.type === "utterance") {
+        message = {
+            type: "utterance",
+            utterance: text,
+        }
     }
     props.stopPropagation && event.stopPropagation();
     props.onSend && props.onSend(message);
@@ -51,10 +57,11 @@ export const OnSubmit = (props) => {
                     e.preventDefault();
 
                     let payload = {};
+                    let text;
 
                     // Framework compliant utterance type
                     if (props.type === "utterance") {
-                        payload["text"] = e.target[0].value;
+                        text = e.target[0].value;
                     }
 
                     // Standard OnSubmit type
@@ -66,7 +73,7 @@ export const OnSubmit = (props) => {
                             }
                         }
                     }
-                    handleEvent(e, context, props, payload);
+                    handleEvent(e, context, props, payload, text);
                     form.reset();
                 }}
             >
