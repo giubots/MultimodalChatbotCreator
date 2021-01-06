@@ -1,10 +1,7 @@
 import tkinter as tk
 
-from examples.basic.my_callbacks import get_callback
 from examples.rasa.my_callbacks import get_callback
 from mccreator_framework.framework import Framework
-# A nlu implementation that takes the text input and puts it into a dict.
-# This is needed to abstract the nlu dependency in this first phase of the project implementation.
 from mccreator_framework.nlu_adapters import RasaNlu
 
 
