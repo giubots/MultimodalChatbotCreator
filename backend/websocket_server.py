@@ -3,12 +3,6 @@ import websockets
 import json
 from functions import *
 
-# import framework
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'framework'))
-from framework import Framework
-from parameters import *
-
 
 async def hello(websocket, path):
     name = await websocket.recv()
@@ -72,14 +66,13 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
     if i == 'None' or i is None:
         # this is when the client starts the interaction
         i = ws_key
-        # initialize framework
-        my_framework[uid][i] = Framework(Process([Activity("start", "echo", ActivityType.START),
-                                      Activity("echo", "end", ActivityType.TASK),
-                                      Activity("end", None, ActivityType.END)],
-                                     "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
-        my_framework[uid][i].handle_text_input('')
+        # create framework
+        my_framework[uid][i] = create_framework()
         # send the interaction id (the websocket key) to client
         await websocket.send(i)
+        # init framework
+        welcome_message = welcome_message_framework(my_framework[uid][i])
+        await websocket.send(json.dumps(welcome_message))
     print(my_framework)
     try:
         async for message in websocket:
@@ -96,8 +89,9 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
         connected.remove(websocket)
 
 
-# start_server = websockets.serve(hello, "localhost", 8765)
-start_server = websockets.serve(handler, "localhost", 8765)
+if __name__ == '__main__':
+    # start_server = websockets.serve(hello, "localhost", 8765)
+    start_server = websockets.serve(handler, "localhost", 8765)
 
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
