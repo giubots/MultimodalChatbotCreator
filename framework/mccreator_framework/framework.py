@@ -68,7 +68,7 @@ class Framework(object):
         The kb and context files must contain a dictionary, the context can also be provided directly.
         The kb will be saved back to its file when the process is completed.
         If exists the possibility that the files will be handled by more than one Framework instance at the time, it is
-        necessary to provided a unique lock shared by all the instances. This will allow the framework to correctly
+        necessary to provide a unique lock shared by all the instances. This will allow the framework to correctly
         handle the concurrency.
 
         :param process: the path to a file containing the process description
