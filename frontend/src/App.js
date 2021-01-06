@@ -1,58 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
-import React from "react";
-import {OnClick, SocketManager} from "./react-chatbot-ui";
+import "./styles/ChatApp.css";
+import React, {useState} from "react";
+import {OnSubmit, SocketManager} from "./react-chatbot-ui";
 
 function App() {
 
-  return (
-      <SocketManager url={"ws://localhost:8765"}>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo"/>
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-            <OnClick
-                id={"button-1"}
-                stopPropagation
-                onEvent={e => console.log("[Button 1] Received from server:", e)}
-                payload={{
-                  data: "button-1",
-                }}
-            >
-              <div onClick={() => alert("should not work")}>Button 1</div>
-            </OnClick>
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState(undefined);
 
-            <OnClick
-                id={"button-2"}
-                onEvent={e => console.log("[Button 2] Received from server:", e)}
-                payload={{
-                  data: "button-2",
-                }}
-            >
-              <button onClick={() => alert("should work")}>Button 2</button>
-            </OnClick>
+    return (
+        <SocketManager
+            url={"ws://localhost:8765"}
+            onReceive={(m) => {
+                console.log("[App] Received:", m)
+                setMessages([...messages, {fromMe: "", message: JSON.parse(m).utterance}]);
+            }}
+        >
+                <div className={"header"}>
+                    <div className='messages' id='messageList'>
+                        <ul>
+                            {messages.map((m, i) => {
+                                return (
+                                    <div key={i} className={`message ${m.fromMe}`}>
+                                        <div className='username'>
+                                            { m.fromMe? "You" : "Socket" }
+                                        </div>
+                                        <div className='message-body'>
+                                            { m.message }
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </ul>
+                    </div>
+                </div>
+                <footer className={"footer"}>
+                    <OnSubmit
+                        stopPropagation
+                        type={"utterance"}
+                        payload={{data: message}}
+                        onSend={() => setMessages([...messages, {fromMe: "from-me", message}])}
+                    >
+                        <div className={"input-container"}>
+                            <input
+                                className={"input"}
+                                type={"text"}
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder={"Type message"}
+                            />
+                            {/*<button className={"send-button"}>
+                                Send
+                            </button>*/}
+                        </div>
 
-            <OnClick
-                id={"button-3"}
-                onEvent={e => console.log("[Button 3] Received from server:", e)}
-                payload={{data: "button-3",}}
-            >
-              <div onClick={() => alert("should work")}>Button 3</div>
-            </OnClick>
-          </header>
-        </div>
-      </SocketManager>
-  );
+                    </OnSubmit>
+                </footer>
+        </SocketManager>
+    );
 }
 
 export default App;

@@ -1,7 +1,6 @@
 import React from "react";
 
 export const SocketContext = React.createContext("");
-export const useWebsocket = () => React.useContext(SocketContext);
 
 export class SocketManager extends React.Component {
     constructor(props) {
@@ -11,8 +10,10 @@ export class SocketManager extends React.Component {
         this.state = {
             wsInterface: {
                 send: (message) => this.__send(message),
+                close: () => this.__close(),
                 receive: "No messages yet",
-            }
+            },
+            interaction: "None",
         };
     }
 
@@ -21,31 +22,40 @@ export class SocketManager extends React.Component {
     }
 
     connect() {
-        this.ws = new WebSocket(this.url);
-        this.ws.onmessage = (event) => {
-            console.log("[SocketManager] New message:", event);
-            const wsInterface = {
-                send: (message) => this.__send(message),
-                receive: event.data,
+        if (this.props.useRest) {
+            //TODO: implement REST adapter
+        }
+        else {
+            this.ws = new WebSocket(this.url + `?uid=Davide"` + `&interaction=${encodeURIComponent(this.state.interaction)}`);
+            this.ws.onmessage = (event) => {
+                console.info("[SocketManager] New message:", event.data);
+                if (this.state.interaction === "None") {
+                    this.setState({interaction: event.data});
+                    return;
+                }
+                const wsInterface = {
+                    send: (message) => this.__send(message),
+                    close: () => this.__close(),
+                }
+                this.props.onReceive && this.props.onReceive(event.data);
+                this.setState({ wsInterface });
             }
 
-            this.setState({ wsInterface });
-        }
+            this.ws.onopen = (event) => {
+                console.info("[SocketManager] Connection opened!", event.data);
+            }
 
-        this.ws.onopen = (event) => {
-            console.info("[SocketManager] Connection opened!");
-        }
+            this.ws.onerror = (event) => {
+                console.error("[SocketManager] Error", event);
+                throw event;
+            }
 
-        this.ws.onerror = (event) => {
-            console.error("[SocketManager] Error", event);
-            throw event;
-        }
-
-        this.ws.onclose = (event) => {
-            console.info("[SocketManager] Connection closed!");
-            setTimeout(() => {
-                this.connect();
-            }, 1000);
+            this.ws.onclose = (event) => {
+                console.info("[SocketManager] Connection closed!");
+                setTimeout(() => {
+                    this.connect();
+                }, 1000);
+            }
         }
     }
 
@@ -53,6 +63,10 @@ export class SocketManager extends React.Component {
         if (this.ws) {
             this.ws.send(message);
         }
+    }
+
+    __close() {
+        this.ws.close();
     }
 
     componentWillUnmount () {

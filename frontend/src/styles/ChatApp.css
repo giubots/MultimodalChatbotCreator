@@ -1,0 +1,86 @@
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.messages {
+  overflow-y: scroll;
+  overflow-x: hidden;
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+}
+
+.header {
+  flex: 1 0 auto;
+  height: 100vh;
+}
+
+.input {
+  border-color: rgba(0,131,255,1);
+  height: 50px;
+  padding-left: 20px;
+  flex: 1;
+  border-radius: 5px;
+}
+
+.send-button {
+  height: 56px;
+  background: rgba(9,43,121,1);
+  color: white;
+  font-size: 0.9rem;
+  border-radius: 0 5px 5px 0;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.input-container {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  padding: 0 20px 20px;
+}
+
+
+.message.from-me .username {
+  display: none;
+}
+
+.message.from-me {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 5px;
+}
+
+.message.from-me .message-body {
+  background: rgb(0,29,36);
+  background: linear-gradient(45deg, rgba(0,29,36,1) 0%, rgba(9,43,121,1) 35%, rgba(0,131,255,1) 100%);
+  color: white;
+}
+
+.message {
+  margin-bottom: 20px;
+}
+.message-body {
+  max-width: 80%;
+  display: inline-block;
+  padding: 20px;
+  background-color: #eee;
+  border: 1px;
+  border-radius: 5px;
+  padding-right: 50px;
+  white-space: pre-wrap;
+}
+
+.username {
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 5px;
+}
