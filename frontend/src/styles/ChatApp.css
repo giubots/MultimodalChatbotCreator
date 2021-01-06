@@ -15,6 +15,15 @@
   bottom: 0;
 }
 
+.login-container {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+  place-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 .header {
   flex: 1 0 auto;
   height: 100vh;

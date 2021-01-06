@@ -1,87 +1,76 @@
-import React, {useContext} from "react";
+import React from "react";
 import {SocketContext} from './SocketManager';
 
-function handleEvent (event, context, props, payload, text) {
+function handleEvent(event, context, props, payload, text) {
     let message = {
-        id: props.id,
         type: props.type || event.type,
-        payload: payload || props.payload,
     }
     if (props.type === "utterance") {
-        message = {
-            type: "utterance",
-            utterance: text,
-        }
-    }
-    if (text === "quit") {
-        context.close();
+        message["utterance"] = text;
+    } else {
+        message["payload"] = payload || props.payload;
     }
     props.stopPropagation && event.stopPropagation();
     props.onSend && props.onSend(message);
     context.send(JSON.stringify(message));
 }
 
-
-const WebSocketComponent = (props) => {
+export const OnClick = (props) => {
     return (
         <SocketContext.Consumer>
-            {() => {
-                return <>{props.children}</>;
+            {(context) => {
+                return (
+                    <div
+                        onClick={(e) => {
+                            handleEvent(e, context, props)
+                        }}
+                    >
+                        {props.children}
+                    </div>
+                );
             }}
         </SocketContext.Consumer>
     );
 }
 
-export const OnClick = (props) => {
-    const context = useContext(SocketContext)
-
-    return (
-        <WebSocketComponent>
-            <div
-                onClick={(e) => {handleEvent(e, context, props)}}
-            >
-                {props.children}
-            </div>
-        </WebSocketComponent>
-    );
-}
-
 
 export const OnSubmit = (props) => {
-    const context = useContext(SocketContext)
     let form;
-
     return (
-        <WebSocketComponent onReceive={props.onReceive}>
-            <form
-                ref={r => form = r}
-                action={"."}
-                onSubmitCapture={(e) => {
-                    e.preventDefault();
+        <SocketContext.Consumer>
+            {(context) => {
+                return (
+                    <form
+                        ref={r => form = r}
+                        action={"."}
+                        onSubmitCapture={(e) => {
+                            e.preventDefault();
 
-                    let payload = {};
-                    let text;
+                            let payload = {};
+                            let text;
 
-                    // Framework compliant utterance type
-                    if (props.type === "utterance") {
-                        text = e.target[0].value;
-                    }
-
-                    // Standard OnSubmit type
-                    else {
-                        for (let i = 0; i < e.target.length; i++) {
-                            let t = e.target[i];
-                            if (t.name) {
-                                payload[t.name] = t.value;
+                            // Framework compliant utterance type
+                            if (props.type === "utterance") {
+                                text = e.target[0].value;
                             }
-                        }
-                    }
-                    handleEvent(e, context, props, payload, text);
-                    form.reset();
-                }}
-            >
-                {props.children}
-            </form>
-        </WebSocketComponent>
+
+                            // Standard OnSubmit type
+                            else {
+                                for (let i = 0; i < e.target.length; i++) {
+                                    let t = e.target[i];
+                                    if (t.name) {
+                                        payload[t.name] = t.value;
+                                    }
+                                }
+                            }
+                            handleEvent(e, context, props, payload, text);
+                            form.reset();
+                        }}
+                    >
+                        {props.children}
+                    </form>
+                );
+            }}
+        </SocketContext.Consumer>
     );
 }
