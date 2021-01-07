@@ -2,6 +2,7 @@ from mccreator_framework.framework import Response
 
 noNluList = ["name", "nickname", "age", "name_nickname"]
 
+
 def start(data, kb, context):
     return Response(kb, context, True, payload={"show_name": False, "show_age": False, "show_choose_name": True,
                                                 "show_choose_nickname": True, "show_field": False,
