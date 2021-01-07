@@ -1,1 +1,1 @@
-/Users/piercarlocadoppi/Documents/GitHub/MultimodalChatbotCreator/backend/examples/quickstart/my_callbacks.py
+../examples/quickstart/my_callbacks.py
