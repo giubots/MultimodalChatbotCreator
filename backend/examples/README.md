@@ -1,6 +1,8 @@
 # MULTIMODAL CHATBOT CREATOR - BACKEND EXAMPLES
 
 To run the examples, copy and paste all the files of the example you want to run in the [config folder](../config)
+
+Go back to the [backend guide](../README.md)
 ___
 
 ## Example 1: Quickstart
