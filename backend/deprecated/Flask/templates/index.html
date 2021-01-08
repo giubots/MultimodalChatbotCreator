@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Flask-WebSocket Test</title>
+    <script type="text/javascript" charset="utf-8">
+        (function() {
+            // Use a "/test" namespace.
+            // An application can open a connection on multiple namespaces, and
+            // Socket.IO will multiplex all those connections on a single
+            // physical channel. If you don't care about multiple channels, you
+            // can set the namespace to an empty string.
+
+            alert('ex');
+            namespace = '/test';
+
+            // Connect to the Socket.IO server.
+            // The connection URL has the following format, relative to the current page:
+            //     http[s]://<domain>:<port>[/<namespace>]
+            const socket = new WebSocket('ws://127.0.0.1:5000');
+
+            socket.onopen = function(e) {
+              alert("[open] Connection established");
+              alert("Sending to server");
+              socket.send("test_event");
+            };
+
+            socket.onmessage = function(event) {
+              alert(`[message] Data received from server: ${event.data}`);
+            };
+
+            socket.onclose = function(event) {
+              if (event.wasClean) {
+                alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+              } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                alert('[close] Connection died');
+              }
+            };
+
+            socket.onerror = function(error) {
+              alert(`[error] ${error.message}`);
+            };
+
+            // Handlers for the different forms in the page.
+            // These accept data from the user and send it to the server in a
+            // variety of ways
+            // $('form#emit').submit(function(event) {
+            //     socket.emit('my_event', {data: $('#emit_data').val()});
+            //     return false;
+            // });
+
+            document.getElementById('emit').submit(function (event) {
+                socket.send('my_event');
+            })
+
+            document.getElementById('disconnect').submit(function (event) {
+                socket.send('disconnect_request');
+            });
+        })();
+    </script>
+</head>
+<body>
+    <h1>Flask-WebSocket Test</h1>
+    <h2>Send:</h2>
+    <form id="emit" method="POST" action='#'>
+        <input type="text" name="emit_data" id="emit_data" placeholder="Message">
+        <input type="submit" value="Echo">
+    </form>
+    <form id="disconnect" method="POST" action="#">
+        <input type="submit" value="Disconnect">
+    </form>
+    <h2>Receive:</h2>
+    <div id="log"></div>
+</body>
+</html>
