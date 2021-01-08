@@ -5,6 +5,7 @@ from urllib.parse import urlsplit, parse_qsl, urlencode
 from mccreator_framework.framework import Framework
 from mccreator_framework.nlu_adapters import NoNluAdapter
 from config.my_callbacks import get_callback, noNluList
+from uuid import uuid4
 
 lock = Lock()
 
@@ -14,6 +15,10 @@ def id_generator(
 			chars=string.ascii_letters + string.digits + string.punctuation
 ):
 	return ''.join(random.choice(chars) for _ in range(size))
+
+
+def uuid_generator():
+	return str(uuid4())
 
 
 def get_params(url):

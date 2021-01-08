@@ -19,7 +19,7 @@ class GetUid(Resource):
 
         :return: the uid
         """
-        return id_generator()
+        return uuid_generator()
 
 
 api.add_resource(GetUid, '/get_uid')
