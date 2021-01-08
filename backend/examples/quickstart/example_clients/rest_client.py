@@ -31,8 +31,8 @@ event_data = {
 event = event_data
 
 print(f'> /event: {event}')
-message = s.post(
+response = s.post(
   url='http://127.0.0.1:5000/event',
   json=event
 )
-print(f'< {message.json()}')
+print(f'< {response.json()}')
