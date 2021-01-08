@@ -11,6 +11,20 @@ my_framework = dict()
 # create REST backup API
 # https://towardsdatascience.com/the-right-way-to-build-an-api-with-python-cd08ab285f8f
 
+class GetUid(Resource):
+    def get(self):
+        """
+        This is called when the client does not have a uid yet.
+        A uid (User Id) is necessary to be identified in the server.
+
+        :return: the uid
+        """
+        return id_generator()
+
+
+api.add_resource(GetUid, '/get_uid')
+
+
 class Init(Resource):
     def post(self):
         # this is called when there is a new interaction from the user,
