@@ -1,0 +1,20 @@
+{
+  "activities": [
+    {
+      "my_id": "start",
+      "next_id": "echo",
+      "my_type": "START"
+    },
+    {
+      "my_id": "echo",
+      "next_id": "end",
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "end",
+      "next_id": null,
+      "my_type": "END"
+    }
+  ],
+  "first_activity_id": "start"
+}

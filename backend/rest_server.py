@@ -2,15 +2,6 @@ from flask import Flask, request, session
 from flask_restful import Resource, Api, reqparse
 from functions import *
 
-# import framework
-import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'framework'))
-from framework import Framework
-from parameters import *
-
-
-
-
 
 app = Flask(__name__)
 api = Api(app)
@@ -38,14 +29,11 @@ class Init(Resource):
         # generate a new interaction
         i = session['interaction'] = id_generator()
         # initialize framework
-        # TODO: the process will be sent from the client
-        my_framework[uid][i] = Framework(Process([Activity("start", "echo", ActivityType.START),
-                                          Activity("echo", "end", ActivityType.TASK),
-                                          Activity("end", None, ActivityType.END)],
-                                         "start"), {"end": "Process completed!"}, {}, c_getter, my_nlu)
-        my_framework[uid][i].handle_text_input('')
+        # TODO: the process will be sent from the client (?)
+        my_framework[uid][i] = create_framework()
+        welcome_message = welcome_message_framework(my_framework[uid][i])
         print(my_framework)
-        return {'response': f'your uid is: {uid}'}, 200
+        return welcome_message, 200
 
 
 api.add_resource(Init, '/init')
