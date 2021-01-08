@@ -20,6 +20,23 @@ This is as simple as it gets! It's a single interaction with the chatbot, and th
 * Adapt your website to handle the connection just like the example clients do.
 * You are ready to move on to the next example, Name Nickname!
 
+### Example Clients
+
+#### Simple Rest Client
+[rest_client.py](quickstart/example_clients/rest_client.py) is made to work with the Quickstart example, and it sends a post request with uid in the body (to identify the user) to `/init`
+
+Then if `event` is set to `event_data`, it will send a data input (such as a click of a button).
+
+If it's set to `event_utterance` instead, it will send a text from the user (for example sent in the chat of the website).
+
+It will receive the response of the Framework.
+
+#### Rest Client, but with the uid generated from the server
+[rest_client_without_uid.py](quickstart/example_clients/rest_client_without_uid.py)
+
+This example is similar to the one above, but it does an additional request to `/get_id` at the beginning, to get the uid from the server. It then proceeds in the same way as the simple rest client above.
+
+
 
 ## Example 2: Name Nickname
 
