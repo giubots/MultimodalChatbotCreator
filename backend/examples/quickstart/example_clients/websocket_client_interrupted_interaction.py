@@ -15,7 +15,7 @@ async def client():
             'uid': uid
         }
         async with websockets.connect(add_params(uri, params)) as websocket:
-
+            print(f'> Connections params: {params}')
             if interaction is None:
                 # this is an example of an interaction,
                 # such that of a user sending messages to a chatbot.
@@ -27,6 +27,10 @@ async def client():
                 # This interaction id is then sent to the server via the
                 # headers.
                 interaction = await websocket.recv()
+                print(f'< Interaction Id: {interaction}')
+
+                welcome_message = await websocket.recv()
+                print(f'< Welcome Message: {welcome_message}')
 
             event_utterance = {
                 'type': 'utterance',
@@ -46,8 +50,9 @@ async def client():
             await websocket.send(json.dumps(event))
             print(f"> {event}")
 
-            greeting = await websocket.recv()
-            print(f"< {greeting}")
+            response = await websocket.recv()
+            print(f"< {response}")
+            print()
             time.sleep(5)
 
 

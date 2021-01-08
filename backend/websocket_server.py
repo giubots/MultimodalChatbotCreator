@@ -55,8 +55,17 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
     # this is the user id and is used to keep track of different users
     uid = params.setdefault('uid', None)
     if uid == 'None' or uid is None:
+        if i == 'None' or i is None:
+            # it means that the client is initializing and asking
+            # for the uid
+            await websocket.send(uuid_generator())
+            return
+
         error = {'error': 'Insert the uid (user id) in the headers'
-                          ' and try again.'}
+                          ' and try again.'
+                          ' Tip: try to send an empty request,'
+                          ' and you will receive a server-generated'
+                          ' uid!'}
         print(error)
         await websocket.send(json.dumps(error))
         return

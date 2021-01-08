@@ -20,18 +20,23 @@ from functions import *
 
 async def client():
     uri = "ws://localhost:8765"
+
+    # this simulates having to connect to
+    # get the user id (if you don't provide it)
+    async with websockets.connect(uri) as websocket:
+        uid = await websocket.recv()
+        print(f'< uid: {uid}')
+
     params = {
         # interaction is None when you are starting it,
         # then you need to set it to the initial websocket key value
         # to continue the interaction.
         'interaction': None,
         # the user id identifies the user in the backend and is required
-        'uid': 'user id'
+        'uid': uid
     }
-
     async with websockets.connect(add_params(uri, params)) as websocket:
         print(f'> Connections params: {params}')
-
         # this is the websocket key value you need to provide
         # if you want to start a new websocket connection for the
         # same interaction.
