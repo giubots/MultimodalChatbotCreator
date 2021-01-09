@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 
 from examples.rasa.my_callbacks import get_callback
@@ -32,7 +33,7 @@ class Application(tk.Frame):
                                              "my_kb.json",
                                              {},
                                              get_callback,
-                                             RasaNlu("rasa_model\\nlu"))
+                                             RasaNlu(os.path.join("rasa_model", "nlu")))
         self.master = master
         self.pack()
 
