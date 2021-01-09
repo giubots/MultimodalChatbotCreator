@@ -1,3 +1,4 @@
+import collections
 import json
 from collections import deque
 from enum import Enum
@@ -25,8 +26,8 @@ class Framework(object):
     """
 
     def __init__(self,
-                 process: Union["Process", Dict[str, Any]],
-                 kb: Dict[str, Any],
+                 process: Union["Process", Dict[str, Any], Callable[[], Union["Process", Dict[str, Any]]]],
+                 kb: Union[Dict[str, Any], Callable[[], Dict[str, Any]]],
                  initial_context: Dict[str, Any],
                  callback_getter: Callable[
                      [str], Callable[[Dict[str, Any], Dict[str, Any], Dict[str, Any]], "Response"]],
@@ -34,14 +35,22 @@ class Framework(object):
                  on_save: Callable[[Dict[str, Any]], None]) -> None:
         """ Instantiates a Framework with the given parameters, then performs a check.
 
-        :param process: the Process for this instance or a dictionary representing it
+        The process parameter can be a Process instance or a dictionary representing a process. In alternative, it can
+        also be a function that returns a Process or a dictionary.
+        Similarly, the kb parameter can be a dictionary or a callback that returns a dictionary.
+
+        :param process: the Process for this instance, a dictionary representing it, or a callable that provides it
         :param kb: the data that is saved between different process executions
         :param initial_context: can be empty or contain configuration variables
         :param callback_getter: a function that returns the callback of an activity given its id
         :param nlu: provides a translation from text to data, to handle in the same way text and data input
         :param on_save: the function called when it is time to save the kb
         """
+        if callable(process):
+            process = process()
         self._process = process if isinstance(process, Process) else Process.from_dict(process)
+        if callable(kb):
+            kb = kb()
         self._kb = kb
         self._ctx = initial_context
         self._ctx[CTX_COMPLETED] = []
