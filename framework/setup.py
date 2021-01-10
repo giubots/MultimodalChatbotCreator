@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name='mccreator-framework',
+    name='mmcc-framework',
     version='0.1',
     author='Giulio Antonio Abbo',
     author_email='giulioantonio.abbo@gmail.com',

@@ -5,7 +5,7 @@ from enum import Enum
 from threading import Lock
 from typing import Union, Optional, List, Dict, Any, Callable
 
-from mccreator_framework.nlu_adapters import NluAdapter
+from mmcc_framework.nlu_adapters import NluAdapter
 
 CTX_COMPLETED = "_done_"
 """ Context key whose value is a list of activity id for the pending gateways that allow skipping. """

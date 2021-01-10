@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from mccreator_framework.framework import *
-from mccreator_framework.nlu_adapters import NoNluAdapter
+from mmcc_framework.framework import *
+from mmcc_framework.nlu_adapters import NoNluAdapter
 
 
 class TestFramework(TestCase):
