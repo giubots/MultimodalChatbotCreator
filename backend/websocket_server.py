@@ -100,7 +100,7 @@ async def handler(websocket: websockets.WebSocketServerProtocol, path):
 
 if __name__ == '__main__':
     # start_server = websockets.serve(hello, "localhost", 8765)
-    start_server = websockets.serve(handler, "localhost", 8765)
+    start_server = websockets.serve(handler, "", 8765)
 
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
