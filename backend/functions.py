@@ -2,8 +2,8 @@ import string
 import random
 from threading import Lock
 from urllib.parse import urlsplit, parse_qsl, urlencode
-from mccreator_framework.framework import Framework
-from mccreator_framework.nlu_adapters import NoNluAdapter
+from mmcc_framework.framework import Framework
+from mmcc_framework.nlu_adapters import NoNluAdapter
 from config.my_callbacks import get_callback, noNluList
 from uuid import uuid4
 

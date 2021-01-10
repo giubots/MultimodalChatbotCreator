@@ -80,7 +80,7 @@ You can see the process we described in [my_process.json](name_nickname/my_proce
 [my_callbacks.py](name_nickname/my_callbacks.py) describes how the process works, and must contain:
 * The `Response` object from the framework
 ```python
-from mccreator_framework.framework import Response
+from mmcc_framework.framework import Response
 ```
 * The list of names to give to the Natural Language Understanding
 ```python

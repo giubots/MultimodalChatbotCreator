@@ -1,4 +1,4 @@
-from mccreator_framework.framework import Response
+from mmcc_framework.framework import Response
 
 noNluList = ["echo"]
 

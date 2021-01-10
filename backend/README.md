@@ -16,7 +16,7 @@ ___
 To install the framework, use this github command on your terminal:
 
 ```shell
-pip install 'git+https://github.com/giubots/MultimodalChatbotCreator@feature-nlu#egg=mccreator-framework&subdirectory=framework'
+pip install 'git+https://github.com/giubots/MultimodalChatbotCreator@main#egg=mmcc-framework&subdirectory=framework'
 ```
 
 ### 2. Initialize the backend
