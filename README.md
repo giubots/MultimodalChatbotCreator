@@ -9,7 +9,7 @@
 To use Docker:
 
 * Download and install Docker
-* Download this repo
+* Clone this repo
 * Place the process configuration files in `backend/config` (you can copy them from `backend/examples`)
 * From the root directory of the repo run `docker compose up`
 * A MMCC backend with your process is now running on port `8765`!
