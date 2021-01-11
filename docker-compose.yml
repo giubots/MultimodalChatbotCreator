@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  mmcc:
+    build: .
+    volumes:
+     - ./backend/config:/usr/src/mmcc/config
+    ports:
+    - 8765:8765
+
+    
