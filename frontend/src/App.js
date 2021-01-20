@@ -1,6 +1,6 @@
 import "./styles/ChatApp.css";
 import React, {useState} from "react";
-import {OnSubmit, SocketManager} from "./react-chatbot-ui";
+import {SocketManager, Components} from "./react-chatbot-ui";
 
 function App() {
 
@@ -55,7 +55,7 @@ function App() {
                                 </div>
                             </div>
                             <footer className={"footer"}>
-                                <OnSubmit
+                                <Components.onSubmit
                                     stopPropagation
                                     type={"utterance"}
                                     payload={{data: message}}
@@ -73,7 +73,7 @@ function App() {
                                         </button>*/}
                                     </form>
 
-                                </OnSubmit>
+                                </Components.onSubmit>
                             </footer>
                         </div>
                     </div>

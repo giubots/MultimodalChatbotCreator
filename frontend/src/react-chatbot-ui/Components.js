@@ -15,7 +15,7 @@ function handleEvent(event, context, props, payload, text) {
     context.send(JSON.stringify(message));
 }
 
-export const OnClick = (props) => {
+const onClick = (props) => {
     return (
         <SocketContext.Consumer>
             {(context) => {
@@ -34,7 +34,7 @@ export const OnClick = (props) => {
 }
 
 
-export const OnSubmit = (props) => {
+const onSubmit = (props) => {
     return (
         <SocketContext.Consumer>
             {(context) => {
@@ -71,3 +71,7 @@ export const OnSubmit = (props) => {
         </SocketContext.Consumer>
     );
 }
+
+export default {
+    onClick, onSubmit
+};
