@@ -106,8 +106,8 @@ export class NetworkManager extends React.Component {
 NetworkManager.propTypes = {
     /**
      * The url of the connection.
-     * It support WebSocket protocol and
-     * is scheduled to be support HTTP too.
+     * It supports WebSocket protocol.
+     * In future it will handle HTTP connections with REST api's.
      */
     url: PropTypes.string.isRequired,
     /**
