@@ -1,6 +1,6 @@
 import "./styles/ChatApp.css";
 import React, {useState} from "react";
-import {SocketManager, Components} from "./react-chatbot-ui";
+import {NetworkManager, Components} from "./react-chatbot-ui";
 
 function App() {
 
@@ -23,7 +23,7 @@ function App() {
                         />
                     </form>
                 </div> :
-                <SocketManager
+                <NetworkManager
                     url={"ws://localhost:8765"}
                     uid={uid}
                     onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
@@ -77,7 +77,7 @@ function App() {
                             </footer>
                         </div>
                     </div>
-                </SocketManager>
+                </NetworkManager>
             }
         </>
     );

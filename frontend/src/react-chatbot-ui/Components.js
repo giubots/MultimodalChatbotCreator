@@ -1,5 +1,5 @@
 import React from "react";
-import {SocketContext} from './SocketManager';
+import {NetworkContext} from './NetworkManager';
 
 function handleEvent(event, context, props, payload, text) {
     let message = {
@@ -17,7 +17,7 @@ function handleEvent(event, context, props, payload, text) {
 
 const onClick = (props) => {
     return (
-        <SocketContext.Consumer>
+        <NetworkContext.Consumer>
             {(context) => {
                 return (
                     <div
@@ -29,14 +29,14 @@ const onClick = (props) => {
                     </div>
                 );
             }}
-        </SocketContext.Consumer>
+        </NetworkContext.Consumer>
     );
 }
 
 
 const onSubmit = (props) => {
     return (
-        <SocketContext.Consumer>
+        <NetworkContext.Consumer>
             {(context) => {
                 return (
                     <div
@@ -68,7 +68,7 @@ const onSubmit = (props) => {
                     </div>
                 );
             }}
-        </SocketContext.Consumer>
+        </NetworkContext.Consumer>
     );
 }
 

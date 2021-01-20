@@ -1,9 +1,9 @@
-import React from "react";
+import React, {createContext} from "react";
 import PropTypes from "prop-types";
 
-export const SocketContext = React.createContext("");
+export const NetworkContext = createContext("");
 
-export class SocketManager extends React.Component {
+export class NetworkManager extends React.Component {
     constructor(props) {
         super(props);
         this.url = props.url;
@@ -58,7 +58,7 @@ export class SocketManager extends React.Component {
                 }, 1000);
             }
             this.setState({
-                wsInterface: {
+                interface: {
                     send: (message) => this.__send(message),
                 }
             });
@@ -81,16 +81,16 @@ export class SocketManager extends React.Component {
 
     render() {
         return (
-            <SocketContext.Provider
-                value={this.state.wsInterface}
+            <NetworkContext.Provider
+                value={this.state.interface}
             >
                 {this.props.children}
-            </SocketContext.Provider>
+            </NetworkContext.Provider>
         )
     }
 }
 
-SocketManager.propTypes = {
+NetworkManager.propTypes = {
     url: PropTypes.string.isRequired,
     uid: PropTypes.string.isRequired,
     onMessage: PropTypes.func,
