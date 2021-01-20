@@ -35,17 +35,14 @@ export const OnClick = (props) => {
 
 
 export const OnSubmit = (props) => {
-    let form;
     return (
         <SocketContext.Consumer>
             {(context) => {
                 return (
-                    <form
-                        ref={r => form = r}
-                        action={"."}
-                        onSubmitCapture={(e) => {
+                    <div
+                        onSubmit={(e) => {
                             e.preventDefault();
-
+                            console.log(e);
                             let payload = {};
                             let text;
 
@@ -64,11 +61,11 @@ export const OnSubmit = (props) => {
                                 }
                             }
                             handleEvent(e, context, props, payload, text);
-                            form.reset();
+                            e.target.reset();
                         }}
                     >
                         {props.children}
-                    </form>
+                    </div>
                 );
             }}
         </SocketContext.Consumer>

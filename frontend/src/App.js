@@ -61,7 +61,7 @@ function App() {
                                     payload={{data: message}}
                                     onSend={() => setMessages([...messages, {from: "from-me", message}])}
                                 >
-                                    <div className={"input-container"}>
+                                    <form className={"input-container"}>
                                         <input
                                             className={"input"}
                                             type={"text"}
@@ -71,7 +71,7 @@ function App() {
                                         {/*<button className={"send-button"}>
                                             Send
                                         </button>*/}
-                                    </div>
+                                    </form>
 
                                 </OnSubmit>
                             </footer>
