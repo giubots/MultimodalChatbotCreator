@@ -1,6 +1,6 @@
-from mmcc_framework.framework import Response
+from mmcc_framework import Response, NoNluAdapter
 
-noNluList = ["name", "nickname", "age", "name_nickname"]
+nluAdapter = NoNluAdapter(["name", "nickname", "age", "name_nickname"])
 
 
 def start(data, kb, context):

@@ -1,6 +1,7 @@
+from mmcc_framework import NoNluAdapter
 from mmcc_framework.framework import Response
 
-noNluList = ["echo"]
+nluAdapter = NoNluAdapter(["echo"])
 
 
 def start(data, kb, context):

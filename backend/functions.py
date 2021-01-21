@@ -1,10 +1,10 @@
 import string
 import random
+import os.path
 from threading import Lock
 from urllib.parse import urlsplit, parse_qsl, urlencode
-from mmcc_framework.framework import Framework
-from mmcc_framework.nlu_adapters import NoNluAdapter
-from config.my_callbacks import get_callback, noNluList
+from mmcc_framework import Framework
+from config.my_callbacks import get_callback, nluAdapter
 from uuid import uuid4
 
 lock = Lock()
@@ -35,17 +35,15 @@ def add_params(url, params: dict):
 
 
 def create_framework():
-	# TODO: framework personalized for each user (Tutor)
-	# Prepare the state and the framework.
-	# self.state = {"show_name": False, "show_age": False, "show_choose_name": True, "show_choose_nickname": True,
-	#               "show_field": False, "field_contents": ""}
-	return Framework.from_file("config/my_process.json",
-														"config/my_kb.json",
-														{},
-														get_callback,
-														NoNluAdapter(noNluList),
-														lock
-	)
+    # TODO: framework personalized for each user (Tutor)
+    # Prepare the state and the framework.
+    return Framework.from_file(os.path.join("config", "my_process.json"),
+                               os.path.join("config", "my_kb.json"),
+                               {},
+                               get_callback,
+                               nluAdapter,
+                               lock
+                               )
 
 
 def welcome_message_framework(framework):
