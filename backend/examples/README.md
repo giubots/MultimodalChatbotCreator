@@ -80,14 +80,23 @@ You can see the process we described in [my_process.json](name_nickname/my_proce
 [my_callbacks.py](name_nickname/my_callbacks.py) describes how the process works, and must contain:
 * The `Response` object from the framework
 ```python
-from mmcc_framework.framework import Response
+from mmcc_framework import Response, NoNluAdapter
 ```
-* The list of names to give to the Natural Language Understanding
+or
 ```python
-noNluList = ["name", "nickname", "age", "name_nickname"]
+from mmcc_framework import Response, RasaNlu
 ```
+if you want to use a real Natural Language Understanding model.
+* The list of names to give to the Natural Language Understanding if not using rasa:
+```python
+nluAdapter = NoNluAdapter(["name", "nickname", "age", "name_nickname"])
+```
+or
+```python
+nluAdapter = RasaNlu(os.path.join("rasa_model", "nlu"))
+```
+if you want to use a Rasa NLU model. You can find an example of the contents of the `rasa_model` folder [here](../../framework/examples/rasa/rasa_model).
 
-[comment]: <> (TODO: explain better noNluList)
 
 * A function for each `Activity` of the process
 ```python
@@ -103,6 +112,8 @@ def insert_name(data, kb, context):
         return Response(kb, context, True, payload={"show_name": False, "show_age": True})
     return Response(kb, context, False, utterance=kb["insert_name_err"])
 ```
+
+You can find more info regarding how to write the callback functions in the [framework documentation](../../framework/README.md).
 
 [comment]: <> (TODO: explain better the callback functions, how to create them)
 
