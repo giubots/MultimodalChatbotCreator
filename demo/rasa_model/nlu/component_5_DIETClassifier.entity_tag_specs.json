@@ -1,0 +1,36 @@
+[
+  {
+    "tag_name": "entity",
+    "ids_to_tags": {
+      "1": "B-address",
+      "2": "I-address",
+      "3": "L-address",
+      "4": "U-address",
+      "5": "B-change",
+      "6": "I-change",
+      "7": "L-change",
+      "8": "U-change",
+      "9": "B-preference",
+      "10": "I-preference",
+      "11": "L-preference",
+      "12": "U-preference",
+      "0": "O"
+    },
+    "tags_to_ids": {
+      "B-address": 1,
+      "I-address": 2,
+      "L-address": 3,
+      "U-address": 4,
+      "B-change": 5,
+      "I-change": 6,
+      "L-change": 7,
+      "U-change": 8,
+      "B-preference": 9,
+      "I-preference": 10,
+      "L-preference": 11,
+      "U-preference": 12,
+      "O": 0
+    },
+    "num_tags": 13
+  }
+]

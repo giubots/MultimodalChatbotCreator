@@ -1,0 +1,113 @@
+version: "2.0"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+
+- intent: goodbye
+  examples: |
+    - good afternoon
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+
+- intent: state_preference
+  examples: |
+    - I would like the [trousers](preference)
+    - I like the [shoes](preference) a lot
+    - The [shirt](preference)
+    - I prefer the [blue](preference) ones
+    - I want the [small](preference) one
+    - I need some [trousers](preference)
+    - I will buy the [shoes](preference) please
+    - Just a [shirt](preference)
+    - The [large](preference) thanks
+    - I want the [gray](preference) one
+    - The [gray](preference)
+    - I want a new pair of [trousers](preference)
+    - Add the [shoes](preference) to cart
+    - I want the [medium](preference) size
+    - I want the [large](preference) size please
+
+- intent: change_something
+  examples: |
+    - I want to change the [size](change)
+    - Please let me change [color](change)
+    - I do not like this [address](change)
+    - The payment [details](change) are wrong
+    - The [size](change)
+    - Change the [color](change)
+    - Another [address](change)
+    - New payment [details](change)
+
+- intent: change_nothing
+  examples: |
+    - I don't want to change anything
+    - All ok
+    - That's it
+    - Continue
+    - Go on
+    - Next
+    - Nothing
+    - None
+
+- intent: give_address
+  examples: |
+    - Ship to [west avenue 15, London](address)
+    - [broad lane 164 in Budapest](address)
+    - To [churchill rd 34, manchester](address)
+    - I live in [final road 202, Rome](address)
+    - The address is [reverse plaza 11, madrid](address)
+
+- intent: payment_details
+examples: |
+  - The new card is [123456](details)
+  - This is the card number [279838](details)
+  - [375917](details)
+  - Use [830958](details) to pay
