@@ -2,7 +2,8 @@ import "./styles/ChatApp.css";
 import React, {useState} from "react";
 import {NetworkManager, Components} from "./react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
-import {Accordion, Icon, Card, Image, Button, Header, Divider} from 'semantic-ui-react'
+import {Accordion, Icon, Card, Image, Button, Label, Divider} from 'semantic-ui-react'
+import {ChatComponent} from "./components/ChatComponent";
 
 function App() {
 
@@ -16,6 +17,42 @@ function App() {
         const newIndex = activeIndex === index ? -1 : index
         setActiveIndex(newIndex);
     }
+
+    const data = [
+        {
+            source: "https://www.supremecommunity.com/u/season/fall-winter2020/sweatshirts/fa32443fd5f342a9801412f5725d38ee_sqr.jpg",
+            name: "Cross Box Logo Hooded Sweatshirt",
+            availability: 15,
+            sizes: ["Small", "Medium", "Large"],
+            colors: [
+                {
+                    source: "https://www.supremecommunity.com/u/season/fall-winter2020/sweatshirts/details/9d39875acfc240cb998112c6d3ed487d_sqr.jpg",
+                    color: "gray",
+                    name: "Heather Grey",
+                },
+                {
+                    source: "https://www.supremecommunity.com/u/season/add/202012033aa47654094d4deb8df2cf28ccd37b17_sqr.jpg",
+                    color: "black",
+                    name: "Black",
+                },
+                {
+                    source: "https://www.supremecommunity.com/u/season/add/202012033aa47654094d4deb8df2cf28ccd37b17_sqr.jpg",
+                    color: "violet",
+                    name: "Purple",
+                },
+            ]
+        },
+        {
+            source: "https://www.supremecommunity.com/u/season/fall-winter2020/hats/1a63b0dcba784cce9c14227daf492fe6_sqr.jpg",
+            name: "Reactive Print Camp Cap",
+            availability: 0,
+        },
+        {
+            source: "https://www.supremecommunity.com/u/season/fall-winter2020/skate/49ca0ec5caa045df82676a0f5fc481cd_sqr.jpg",
+            name: "Pills Skateboard",
+            availability: 0,
+        },
+    ]
 
     return (
         <>
@@ -105,57 +142,25 @@ function App() {
                                 alignItems: "center",
                             }}
                             >
-                                <Card
-                                    onClick={() => setActiveIndex(1)}
-                                    style={{margin: 20}}
-                                >
-                                    <Image src='https://www.supremecommunity.com/u/season/fall-winter2020/sweatshirts/fa32443fd5f342a9801412f5725d38ee_sqr.jpg' wrapped ui={false} />
-                                    <Card.Content style={{height: 70}}>
-                                        <Card.Header>Cross Box Logo Hooded Sweatshirt</Card.Header>
-                                        <Card.Meta>
-                                            <span className='date'>Joined in 2015</span>
-                                        </Card.Meta>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                        <a>
-                                            <Icon name='check' />
-                                            15 pairs available
-                                        </a>
-                                    </Card.Content>
-                                </Card>
-                                <Card style={{margin: 20}}>
-                                    <Image src='https://www.supremecommunity.com/u/season/fall-winter2020/hats/1a63b0dcba784cce9c14227daf492fe6_sqr.jpg' disabled />
-                                    <Card.Content style={{height: 70}}>
-                                        <Card.Header>Reactive Print Camp Cap</Card.Header>
-                                        <Card.Meta>
-                                            <span className='date'>Joined in 2015</span>
-                                        </Card.Meta>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                        <a>
-                                            <Icon name='remove' />
-                                            Not available in store
-                                        </a>
-                                    </Card.Content>
-                                </Card>
-                                <Card
-                                    onClick={() => setActiveIndex(1)}
-                                    style={{margin: 20}}
-                                >
-                                    <Image src='https://www.supremecommunity.com/u/season/fall-winter2020/skate/49ca0ec5caa045df82676a0f5fc481cd_sqr.jpg' disabled />
-                                    <Card.Content style={{height: 70}}>
-                                        <Card.Header>Pills Skateboard</Card.Header>
-                                        <Card.Meta>
-                                            <span className='date'>Joined in 2015</span>
-                                        </Card.Meta>
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                        <a>
-                                            <Icon name='remove' />
-                                            Not available in store
-                                        </a>
-                                    </Card.Content>
-                                </Card>
+                                {data.map((item, index) => {
+                                    return (
+                                        <Card
+                                            onClick={() => setActiveIndex(1)}
+                                            style={{margin: 20}}
+                                        >
+                                            <Image src={item.source} wrapped ui={false} style={{margin: 10}}/>
+                                            <Card.Content style={{height: 70}}>
+                                                <Card.Header>{item.name}</Card.Header>
+                                            </Card.Content>
+                                            <Card.Content extra>
+                                                <a>
+                                                    <Icon name={item.availability? 'check' : "remove"} />
+                                                    {item.availability || "No"} pairs available
+                                                </a>
+                                            </Card.Content>
+                                        </Card>
+                                    );
+                                })}
                             </div>
                         </Accordion.Content>
                         <Accordion.Title
@@ -184,13 +189,38 @@ function App() {
                                     <h3 style={{marginRight: 20}}>Choose color</h3>
                                     <Icon name={"paint brush"}/>
                                 </div>
-                                <Button.Group>
-                                    <Button>Navy</Button>
-                                    <Button.Or />
-                                    <Button>Black</Button>
-                                    <Button.Or />
-                                    <Button>Large</Button>
-                                </Button.Group>
+                                <div style={{
+                                    flex: 1,
+                                    flexDirection: "flex-row",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
+                                >
+                                    {data[0].colors.map((color, index) => {
+                                        return (
+                                            <Card
+                                                onClick={() => setActiveIndex(1)}
+                                                style={{margin: 20}}
+                                            >
+                                                <Image src={color.source} style={{margin: 10}}/>
+                                                <Card.Content style={{height: 35}}>
+                                                    <Card.Header>
+                                                        <Label as='a' tag color={color.color}>
+                                                            {color.name}
+                                                        </Label>
+                                                    </Card.Header>
+                                                </Card.Content>
+                                                <Card.Content extra>
+                                                    <a>
+                                                        <Icon name='check' />
+                                                        15 pairs available
+                                                    </a>
+                                                </Card.Content>
+                                            </Card>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </Accordion.Content>
 
@@ -238,6 +268,7 @@ function App() {
                         </Accordion.Content>
                     </Accordion>
                 </div>
+                    <ChatComponent />
                 </NetworkManager>
             }
         </>
@@ -245,7 +276,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
