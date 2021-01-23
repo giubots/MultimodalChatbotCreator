@@ -36,7 +36,7 @@ function App() {
                     name: "Black",
                 },
                 {
-                    source: "https://www.supremecommunity.com/u/season/add/202012033aa47654094d4deb8df2cf28ccd37b17_sqr.jpg",
+                    source: "https://www.supremecommunity.com/u/season/add/20201203017859abdba3487da8e720fb11ac402b_sqr.jpg",
                     color: "violet",
                     name: "Purple",
                 },
