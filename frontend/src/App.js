@@ -1,6 +1,6 @@
 import "./styles/ChatApp.css";
 import React, {useState} from "react";
-import {NetworkManager, Components} from "./react-chatbot-ui";
+import {NetworkManager} from "./react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
 import {Accordion, Icon, Card, Image, Button, Label, Divider} from 'semantic-ui-react'
 import {ChatComponent} from "./components/ChatComponent";
@@ -11,6 +11,7 @@ function App() {
     const [message, setMessage] = useState(undefined);
     const uid = sessionStorage.getItem("uid");
     const [activeIndex, setActiveIndex] = useState(0);
+    const [choice, setChoice] = useState(0);
 
     const handleClick = (e, titleProps) => {
         const { index } = titleProps
@@ -145,18 +146,21 @@ function App() {
                                 {data.map((item, index) => {
                                     return (
                                         <Card
-                                            onClick={() => setActiveIndex(1)}
+                                            onClick={() => {
+                                                if (item.availability) {
+                                                    setActiveIndex(1);
+                                                    setChoice(index);
+                                                }
+                                            }}
                                             style={{margin: 20}}
                                         >
-                                            <Image src={item.source} wrapped ui={false} style={{margin: 10}}/>
+                                            <Image src={item.source} disabled={!item.availability} style={{margin: 10}}/>
                                             <Card.Content style={{height: 70}}>
                                                 <Card.Header>{item.name}</Card.Header>
                                             </Card.Content>
                                             <Card.Content extra>
-                                                <a>
-                                                    <Icon name={item.availability? 'check' : "remove"} />
-                                                    {item.availability || "No"} pairs available
-                                                </a>
+                                                <Icon name={item.availability? 'check' : "remove"} />
+                                                {item.availability || "No"} pairs available
                                             </Card.Content>
                                         </Card>
                                     );
@@ -197,7 +201,7 @@ function App() {
                                     alignItems: "center",
                                 }}
                                 >
-                                    {data[0].colors.map((color, index) => {
+                                    {data[choice].colors.map((color, index) => {
                                         return (
                                             <Card
                                                 onClick={() => setActiveIndex(1)}
@@ -210,12 +214,6 @@ function App() {
                                                             {color.name}
                                                         </Label>
                                                     </Card.Header>
-                                                </Card.Content>
-                                                <Card.Content extra>
-                                                    <a>
-                                                        <Icon name='check' />
-                                                        15 pairs available
-                                                    </a>
                                                 </Card.Content>
                                             </Card>
                                         );

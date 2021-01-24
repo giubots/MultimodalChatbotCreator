@@ -7,10 +7,11 @@
  * @author [Davide Savoldelli](https://github.com/savdav96)
  */
 
-import React, {createContext} from "react";
+import React, {createContext, useContext} from "react";
 import PropTypes from "prop-types";
 
-export const NetworkContext = createContext("");
+export const NetworkContext = createContext({});
+export const useNetworkContext = () => useContext(NetworkContext);
 
 /**
  * The NetworkManager must be set as parent of all component which
@@ -49,29 +50,54 @@ export class NetworkManager extends React.Component {
                     this.setState({interaction: event.data});
                     return;
                 }
+                this.setState({
+                    interface: {
+                        ...this.state.interface,
+                        onMessage: event.data,
+                    }
+                });
                 this.props.onMessage && this.props.onMessage(event.data);
             }
 
             this.ws.onopen = (event) => {
                 console.info("[SocketManager] Connection opened!", event);
                 this.props.onOpen && this.props.onOpen(event);
+                this.setState({
+                    interface: {
+                        ...this.state.interface,
+                        onOpen: event,
+                    }
+                });
             }
 
             this.ws.onerror = (event) => {
                 console.error("[SocketManager] Error", event);
                 this.props.onError && this.props.onError(event);
+                this.setState({
+                    interface: {
+                        ...this.state.interface,
+                        onError: event,
+                    }
+                });
                 throw event;
             }
 
             this.ws.onclose = (event) => {
                 console.info("[SocketManager] Connection closed!", event);
                 this.props.onClose && this.props.onClose(event);
+                this.setState({
+                    interface: {
+                        ...this.state.interface,
+                        onClose: event,
+                    }
+                });
                 setTimeout(() => {
                     this.connect();
                 }, 1000);
             }
             this.setState({
                 interface: {
+                    ...this.state.interface,
                     send: (message) => this.__send(message),
                 }
             });

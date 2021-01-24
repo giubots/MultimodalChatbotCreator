@@ -1,7 +1,7 @@
 import {Icon} from "semantic-ui-react";
 import React, {useState} from "react";
 import "../styles/ChatApp.css";
-import {Components} from "../react-chatbot-ui";
+import {Components, NetworkManager} from "../react-chatbot-ui";
 
 export const ChatComponent = () => {
     const [visible, setVisible] = useState(false);
@@ -54,11 +54,12 @@ export const ChatComponent = () => {
                                 })}
                             </ul>
                         </div>
-                        <Components.onSubmit
+                        <Components.OnSubmit
                             stopPropagation
                             type={"utterance"}
                             payload={{data: message}}
                             onSend={() => setMessages([...messages, {from: "from-me", message}])}
+                            onOpen={() => {}/*setMessages([...messages, {from: "Socket", message: message}])*/}
                         >
                             <form className={"input-container"}>
                                 <input
@@ -68,7 +69,7 @@ export const ChatComponent = () => {
                                     placeholder={"Type message"}
                                 />
                             </form>
-                        </Components.onSubmit>
+                        </Components.OnSubmit>
                     </div>
         </div>)
         }
