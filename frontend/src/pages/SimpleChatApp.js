@@ -1,4 +1,4 @@
-import "../styles/ChatApp.css";
+import "../styles/Chat.css";
 import React, {useState, useEffect} from "react";
 import {NetworkManager, Components} from "../react-chatbot-ui";
 
@@ -77,7 +77,6 @@ const SimpleChatApp = () => {
                                 type={"utterance"}
                                 payload={{data: message}}
                                 onSend={() => setMessages([...messages, {from: "from-me", message}])}
-                                onOpen={() => {}/*setMessages([...messages, {from: "Socket", message: message}])*/}
                             >
                                 <form className={"input-container"}>
                                     <input

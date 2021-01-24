@@ -1,4 +1,3 @@
-import "../styles/ChatApp.css";
 import React, {useState} from "react";
 import {Components, NetworkManager} from "../react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
@@ -49,7 +48,7 @@ export function StoreApp() {
                     onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
                     onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
                 >
-                    <div style={{marginTop: 30, display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <div style={{...styles.container, marginTop: 30}}>
                         <Accordion style={{width: 1000}} styled>
 
                             {/** Item to buy **/}
@@ -63,14 +62,7 @@ export function StoreApp() {
                                 Choose the item to buy:
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 0}>
-                                <div style={{
-                                    flex: 1,
-                                    flexDirection: "flex-row",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                                >
+                                <div style={styles.container}>
                                     {data.map((item, index) => {
                                         return (
                                             <Card
@@ -109,14 +101,7 @@ export function StoreApp() {
                                 Choose size
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 1}>
-                                <div style={{
-                                    flex: 1,
-                                    flexDirection: "flex-row",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                                >
+                                <div style={styles.container}>
                                     <Button.Group>
                                         <Components.OnClick>
                                             <Button
@@ -163,14 +148,7 @@ export function StoreApp() {
                                 Choose color
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 2}>
-                                <div style={{
-                                    flex: 1,
-                                    flexDirection: "flex-row",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
-                                >
+                                <div style={styles.container}>
                                     {data[choice]?.colors.map((color, index) => {
                                         return (
                                             <Card
@@ -278,9 +256,19 @@ export function StoreApp() {
                             </Accordion.Content>
                         </Accordion>
                     </div>
-                    <ChatComponent/>
+                    <ChatComponent />
                 </NetworkManager>
             }
         </>
     );
+}
+
+const styles = {
+    container: {
+        flex: 1,
+        flexDirection: "flex-row",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
 }

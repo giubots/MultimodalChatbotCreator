@@ -1,5 +1,5 @@
 /*
-import "./styles/ChatApp.css";
+import "./styles/Chat.css";
 import React, {useState} from "react";
 import {Components, NetworkManager} from "./react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
