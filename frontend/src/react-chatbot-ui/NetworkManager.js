@@ -11,7 +11,6 @@ import React, {createContext, useContext} from "react";
 import PropTypes from "prop-types";
 
 export const NetworkContext = createContext({});
-export const useNetworkContext = () => useContext(NetworkContext);
 
 /**
  * The NetworkManager must be set as parent of all component which
@@ -24,6 +23,7 @@ export class NetworkManager extends React.Component {
         this.uid = props.uid;
         this.state = {
             interaction: null,
+            interface: {},
         };
     }
 
@@ -79,7 +79,6 @@ export class NetworkManager extends React.Component {
                         onError: event,
                     }
                 });
-                throw event;
             }
 
             this.ws.onclose = (event) => {
@@ -106,7 +105,11 @@ export class NetworkManager extends React.Component {
 
     __send(message) {
         if (this.ws) {
-            this.ws.send(message);
+            try {
+                this.ws.send(message);
+            } catch (error) {
+                console.error("[SocketManager] Error in sending the message", error);
+            }
         }
     }
 

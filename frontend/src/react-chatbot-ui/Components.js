@@ -7,8 +7,8 @@
  * @author [Davide Savoldelli](https://github.com/savdav96)
  */
 
-import React, {useEffect} from "react";
-import {useNetworkContext} from './NetworkManager';
+import React, {useEffect, useContext} from "react";
+import {NetworkContext} from './NetworkManager';
 import PropTypes from "prop-types";
 
 function handleEvent(event, context, props, payload, text) {
@@ -18,10 +18,11 @@ function handleEvent(event, context, props, payload, text) {
     if (props.type === "utterance") {
         message["utterance"] = text;
     } else {
-        message["payload"] = payload || props.payload;
+        message["payload"] = props.payload || payload;
     }
     props.onSend && props.onSend(message);
-    context.send(JSON.stringify(message));
+    //context.send(JSON.stringify(message));
+    console.info("MESSAGE:", message);
 }
 
 function setUpProps(props, context) {
@@ -36,7 +37,7 @@ function setUpProps(props, context) {
  * The onClick component handles all click events passed through its children.
  */
 const OnClick = (props) => {
-    const context = useNetworkContext();
+    const context = useContext(NetworkContext)
 
     useEffect(() => {
         setUpProps(props, context);
@@ -101,7 +102,7 @@ OnClick.propTypes = {
  * The onSubmit component handles all submit events passed through its children.
  */
 const OnSubmit = (props) => {
-    const context = useNetworkContext();
+    const context = useContext(NetworkContext);
 
     useEffect(() => {
         setUpProps(props, context);
@@ -111,7 +112,6 @@ const OnSubmit = (props) => {
         <div
             onSubmit={(e) => {
                 e.preventDefault();
-                console.log(e);
                 let payload = {};
                 let text;
 
@@ -124,8 +124,11 @@ const OnSubmit = (props) => {
                 else {
                     for (let i = 0; i < e.target.length; i++) {
                         let t = e.target[i];
+                        let value = (t.type === "checkbox" || t.type === "radio") ? t.checked : t.value;
                         if (t.name) {
-                            payload[t.name] = t.value;
+                            payload[t.name] = value;
+                        } else {
+                            payload[`field_${i}`] = value;
                         }
                     }
                 }
