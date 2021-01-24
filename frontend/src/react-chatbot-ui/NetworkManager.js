@@ -7,7 +7,7 @@
  * @author [Davide Savoldelli](https://github.com/savdav96)
  */
 
-import React, {createContext, useContext} from "react";
+import React, {createContext} from "react";
 import PropTypes from "prop-types";
 
 export const NetworkContext = createContext({});
@@ -170,4 +170,5 @@ NetworkManager.propTypes = {
      */
     useRest: PropTypes.bool,
 }
+
 

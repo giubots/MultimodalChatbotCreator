@@ -1,13 +1,12 @@
-/*
-import "./styles/ChatApp.css";
+import "../styles/ChatApp.css";
 import React, {useState} from "react";
-import {Components, NetworkManager} from "./react-chatbot-ui";
+import {Components, NetworkManager} from "../react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
 import {Accordion, Icon, Card, Image, Button, Label, Form} from 'semantic-ui-react'
-import {ChatComponent} from "./components/ChatComponent";
-import {data} from "./Constants";
+import {ChatComponent} from "../components/ChatComponent";
+import {data} from "../Constants";
 
-function App() {
+export function StoreApp() {
 
     const [messages, setMessages] = useState([]);
     const uid = sessionStorage.getItem("uid");
@@ -53,7 +52,7 @@ function App() {
                     <div style={{marginTop: 30, display: "flex", justifyContent: "center", alignItems: "center"}}>
                         <Accordion style={{width: 1000}} styled>
 
-                            {/!** Item to buy **!/}
+                            {/** Item to buy **/}
 
                             <Accordion.Title
                                 active={activeIndex === 0}
@@ -99,7 +98,7 @@ function App() {
                                 </div>
                             </Accordion.Content>
 
-                            {/!** Size **!/}
+                            {/** Size **/}
 
                             <Accordion.Title
                                 active={activeIndex === 1}
@@ -153,7 +152,7 @@ function App() {
                                 </div>
                             </Accordion.Content>
 
-                            {/!** Color **!/}
+                            {/** Color **/}
 
                             <Accordion.Title
                                 active={activeIndex === 2}
@@ -285,20 +284,3 @@ function App() {
         </>
     );
 }
-
-export default App;
-*/
-
-import React from 'react';
-import { Router } from 'react-router-dom';
-import history from './services/history';
-import Routes from './routes';
-
-function App() {
-    return (
-        <Router history={history}>
-            <Routes />
-        </Router>
-    );
-}
-export default App;

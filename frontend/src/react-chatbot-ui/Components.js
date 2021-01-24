@@ -21,8 +21,7 @@ function handleEvent(event, context, props, payload, text) {
         message["payload"] = props.payload || payload;
     }
     props.onSend && props.onSend(message);
-    //context.send(JSON.stringify(message));
-    console.info("MESSAGE:", message);
+    context.send(JSON.stringify(message));
 }
 
 function setUpProps(props, context) {
@@ -41,7 +40,7 @@ const OnClick = (props) => {
 
     useEffect(() => {
         setUpProps(props, context);
-    }, [context])
+    }, [context, props])
 
     return (
         <div
@@ -106,7 +105,7 @@ const OnSubmit = (props) => {
 
     useEffect(() => {
         setUpProps(props, context);
-    }, [context])
+    }, [context, props])
 
     return (
         <div
@@ -184,6 +183,4 @@ OnSubmit.propTypes = {
     onClose: PropTypes.func,
 }
 
-export default {
-    OnClick, OnSubmit
-};
+export default {OnClick, OnSubmit};
