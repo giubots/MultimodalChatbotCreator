@@ -1,7 +1,7 @@
 import {Form, Icon} from "semantic-ui-react";
 import React, {useState} from "react";
 import "../styles/Chat.css";
-import {Components, NetworkManager} from "../react-chatbot-ui";
+import {Components, NetworkManager} from "react-chatbot-ui";
 
 export const ChatComponent = () => {
     const [visible, setVisible] = useState(false);

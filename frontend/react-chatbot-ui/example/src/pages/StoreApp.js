@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Components, NetworkManager} from "../react-chatbot-ui";
+import {Components, NetworkManager} from "react-chatbot-ui";
 import 'semantic-ui-css/semantic.min.css'
 import {Accordion, Icon, Card, Image, Button, Label, Form} from 'semantic-ui-react'
 import {ChatComponent} from "../components/ChatComponent";

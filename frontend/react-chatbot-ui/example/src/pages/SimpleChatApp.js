@@ -1,6 +1,6 @@
 import "../styles/Chat.css";
 import React, {useState, useEffect} from "react";
-import {NetworkManager, Components} from "../react-chatbot-ui";
+import {NetworkManager, Components} from "react-chatbot-ui";
 
 const SimpleChatApp = () => {
 
