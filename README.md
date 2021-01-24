@@ -1,6 +1,6 @@
 # MMCC - MultiModalChatbotCreator
 
-* [frontend](frontend/README.md) documentation
+* [frontend](frontend/react-chatbot-ui/README.md) documentation
 * [backend](backend/README.md) documentation
 * [framework](framework/README.md) documentation
 
