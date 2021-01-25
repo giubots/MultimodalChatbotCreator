@@ -1,12 +1,16 @@
 import {Form, Icon} from "semantic-ui-react";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import "../styles/Chat.css";
 import {Components, NetworkManager} from "react-chatbot-ui";
 
-export const ChatComponent = () => {
+export const ChatComponent = ({messagesProps}) => {
     const [visible, setVisible] = useState(false);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState(undefined);
+
+    useEffect(() => {
+      setMessages([...messages, ...messagesProps])
+    }, [messagesProps])
 
     return (
         <div style={styles.overlay}>
@@ -33,8 +37,12 @@ export const ChatComponent = () => {
                             stopPropagation
                             type={"utterance"}
                             payload={{data: message}}
-                            onSend={() => setMessages([...messages, {from: "from-me", message}])}
-                            //onOpen={() => {setMessages([...messages, {from: "Socket", message: message}])}}
+                            onSend={(message) => {
+                              console.log("about to send:", message)
+                              setMessages([...messages, {from: "from-me", message}])
+                            }}
+                            //onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
+                          //onOpen={() => {setMessages([...messages, {from: "Socket", message: message}])}}
                             //onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
 
                         >
@@ -45,7 +53,7 @@ export const ChatComponent = () => {
                                     onChange={e => setMessage(e.target.value)}
                                     placeholder={"Type message"}
                                 />
-                                </Form>
+                            </Form>
                         </Components.OnSubmit>
                     </div>
                 </div>)

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:main" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="JupyterTrust" id="5117ae68-666c-4aad-9a15-80ba4d64387b" />
+  <component name="ProjectId" id="1nXCs5VY1Sb6XVNt9W7xo560fok" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/frontend/react-chatbot-ui/example/src" />
+    <property name="nodejs.jest.jest_package" value="$PROJECT_DIR$/frontend/react-chatbot-ui/node_modules/react-scripts" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/example/src" />
+      <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExampleComponent" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
+      <node-interpreter value="project" />
+      <node-options value="" />
+      <jest-package value="$PROJECT_DIR$/frontend/react-chatbot-ui/node_modules/react-scripts" />
+      <working-dir value="$PROJECT_DIR$/frontend/react-chatbot-ui" />
+      <envs />
+      <scope-kind value="SUITE" />
+      <test-file value="$PROJECT_DIR$/frontend/react-chatbot-ui/src/index.test.js" />
+      <test-names>
+        <test-name value="ExampleComponent" />
+      </test-names>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Jest.ExampleComponent" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="" />
+      <created>1611527251685</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1611527251685</updated>
+      <workItem from="1611527252848" duration="45000" />
+      <workItem from="1611527299983" duration="4839000" />
+      <workItem from="1611590370173" duration="3369000" />
+      <workItem from="1611594910927" duration="334000" />
+      <workItem from="1611595251165" duration="83000" />
+    </task>
+    <task id="LOCAL-00001" summary="added library framework and README.md">
+      <created>1611531697020</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1611531697020</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added library framework and README.md æ2">
+      <created>1611531718948</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1611531718948</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed readme links">
+      <created>1611531823279</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1611531823279</updated>
+    </task>
+    <task id="LOCAL-00004" summary="junction commit">
+      <created>1611590419341</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1611590419341</updated>
+    </task>
+    <task id="LOCAL-00005" summary="junction commit">
+      <created>1611590526908</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1611590526908</updated>
+    </task>
+    <task id="LOCAL-00006" summary="fixes">
+      <created>1611593226717</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1611593226717</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added library framework and README.md" />
+    <MESSAGE value="added library framework and README.md æ2" />
+    <MESSAGE value="fixed readme links" />
+    <MESSAGE value="junction commit" />
+    <MESSAGE value="fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="397" y="362" key="#Notifications" timestamp="1611595137609">
+      <screen x="0" y="25" width="1792" height="1030" />
+    </state>
+    <state x="397" y="362" key="#Notifications/0.25.1792.1030@0.25.1792.1030" timestamp="1611595137609" />
+    <state width="1750" height="275" key="GridCell.Tab.0.bottom" timestamp="1611532149584">
+      <screen x="0" y="25" width="1792" height="1019" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.bottom/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149584" />
+    <state width="1750" height="275" key="GridCell.Tab.0.center" timestamp="1611532149583">
+      <screen x="0" y="25" width="1792" height="1019" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.center/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149583" />
+    <state width="1750" height="275" key="GridCell.Tab.0.left" timestamp="1611532149582">
+      <screen x="0" y="25" width="1792" height="1019" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.left/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149582" />
+    <state width="1750" height="275" key="GridCell.Tab.0.right" timestamp="1611532149583">
+      <screen x="0" y="25" width="1792" height="1019" />
+    </state>
+    <state width="1750" height="275" key="GridCell.Tab.0.right/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149583" />
+    <state x="594" y="241" key="RollbackChangesDialog" timestamp="1611532068030">
+      <screen x="0" y="25" width="1792" height="1019" />
+    </state>
+    <state x="594" y="241" key="RollbackChangesDialog/0.25.1792.1019@0.25.1792.1019" timestamp="1611532068030" />
+    <state x="496" y="261" key="Vcs.Push.Dialog.v2" timestamp="1611595131069">
+      <screen x="0" y="25" width="1792" height="1030" />
+    </state>
+    <state x="496" y="258" key="Vcs.Push.Dialog.v2/0.25.1792.1019@0.25.1792.1019" timestamp="1611590534129" />
+    <state x="496" y="258" key="Vcs.Push.Dialog.v2/0.25.1792.1021@0.25.1792.1021" timestamp="1611531824688" />
+    <state x="496" y="260" key="Vcs.Push.Dialog.v2/0.25.1792.1026@0.25.1792.1026" timestamp="1611593659223" />
+    <state x="496" y="261" key="Vcs.Push.Dialog.v2/0.25.1792.1030@0.25.1792.1030" timestamp="1611595131069" />
+    <state x="697" y="455" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1611595318157">
+      <screen x="0" y="25" width="1792" height="1030" />
+    </state>
+    <state x="697" y="452" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1023@0.25.1792.1023" timestamp="1611590649211" />
+    <state x="697" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1026@0.25.1792.1026" timestamp="1611591096016" />
+    <state x="697" y="455" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1030@0.25.1792.1030" timestamp="1611595318157" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$websocket_client_depr.coverage" NAME="websocket_client_depr Coverage Results" MODIFIED="1608163255170" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$websocket_client_interrupted_interaction.coverage" NAME="websocket_client_interrupted_interaction Coverage Results" MODIFIED="1609696839484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$Flask__backend_app_py_.coverage" NAME="Flask (backend/app.py) Coverage Results" MODIFIED="1607550706202" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$websocket_server.coverage" NAME="websocket_server Coverage Results" MODIFIED="1611504234008" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$Flask__backend_.coverage" NAME="Flask (backend/app.py) Coverage Results" MODIFIED="1607113438463" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$helloWorld.coverage" NAME="helloWorld Coverage Results" MODIFIED="1607112028057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$rest_server.coverage" NAME="rest_server Coverage Results" MODIFIED="1609525945482" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+  </component>
+</project>

@@ -31,6 +31,7 @@ const SimpleChatApp = () => {
                 <NetworkManager
                     url={"ws://localhost:8765"}
                     uid={uid}
+                    onSend={(m) => console.log(m)}
                     onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
                     onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
                     onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}

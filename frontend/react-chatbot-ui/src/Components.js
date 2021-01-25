@@ -18,8 +18,13 @@ function handleEvent(event, context, props, payload, text) {
     if (props.type === "utterance") {
         message["utterance"] = text;
     } else {
-        message["payload"] = props.payload || payload;
+      if (Object.keys(payload).length) {
+        message["payload"] = payload
+      } else {
+        message["payload"] = props.payload;
+      }
     }
+    console.log("MESSAGE:", message);
     props.onSend && props.onSend(message);
     context.send(JSON.stringify(message));
 }

@@ -256,7 +256,7 @@ export function StoreApp() {
                             </Accordion.Content>
                         </Accordion>
                     </div>
-                    <ChatComponent />
+                    <ChatComponent messagesProps={messages} />
                 </NetworkManager>
             }
         </>
