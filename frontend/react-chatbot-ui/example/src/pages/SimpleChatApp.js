@@ -10,7 +10,7 @@ const SimpleChatApp = () => {
 
     useEffect(() => {
             let elem = document.getElementById('messageList');
-            elem.scrollTop = elem.scrollHeight;
+            elem.scrollTop = elem?.scrollHeight;
     }, [messages])
 
     return (
