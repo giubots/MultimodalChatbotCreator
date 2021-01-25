@@ -1,4 +1,3 @@
-import collections
 import json
 from collections import deque
 from enum import Enum
@@ -76,7 +75,7 @@ class Framework(object):
         The process file must contain a Process description that will be handled by Process.fromDict().
         The kb and context files must contain a dictionary, the context can also be provided directly.
         The kb will be saved back to its file when the process is completed.
-        If exists the possibility that the files will be handled by more than one Framework instance at the time, it is
+        If the possibility exists that the files will be handled by more than one Framework instance at the time, it is
         necessary to provide a unique lock shared by all the instances. This will allow the framework to correctly
         handle the concurrency.
 
@@ -498,21 +497,23 @@ class ActivityType(Enum):
     Its Response must contain True and can be used to prepare the state using the payload.
     """
     END = "end"
-    """ A "sink" state, that represents the termination of the process. """
+    """ A "sink" state that represents the termination of the process. """
     PARALLEL = "parallel"
-    """ A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can choose which one to execute.
     This is completed when all options have been chosen at least once.
-    Its callback must return the id of the chosen activity if the user input was valid.
+    Its callback must return the id of the chosen activity if the user input was valid, None to move on to the next
+    task.
     """
     XOR = "xor"
-    """ A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can choose which one to execute.
     This allows the user to choose exactly one of the options.
     Its callback must return the id of the chosen activity if the user input was valid.
     """
     OR = "or"
-    """ A task that gives some options to the user, the user can chose which one to execute.
+    """ A task that gives some options to the user, the user can choose which one to execute.
     This is completed when the user has chosen at least one of the options.
-    Its callback must return the id of the chosen activity if the user input was valid.
+    Its callback must return the id of the chosen activity if the user input was valid, None to move on to the next
+    task.
     """
 
     @staticmethod
