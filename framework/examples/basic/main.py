@@ -1,8 +1,7 @@
 import tkinter as tk
 
 from examples.basic.my_callbacks import get_callback
-from mmcc_framework.framework import Framework
-from mmcc_framework.nlu_adapters import NoNluAdapter
+from mmcc_framework import Framework, NoNluAdapter
 
 
 # A helper function that extracts the information from the payload of the response and returns an updated state.

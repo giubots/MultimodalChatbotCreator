@@ -1,4 +1,4 @@
-from mmcc_framework.framework import Response
+from mmcc_framework import Response
 
 
 def start(data, kb, context):

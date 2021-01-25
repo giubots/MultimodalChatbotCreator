@@ -1,9 +1,7 @@
-import os
 import tkinter as tk
 
 from examples.rasa.my_callbacks import get_callback
-from mmcc_framework.framework import Framework
-from mmcc_framework.nlu_adapters import RasaNlu
+from mmcc_framework import Framework, RasaNlu
 
 
 # A helper function that extracts the information from the payload of the response and returns an updated state.
@@ -33,7 +31,7 @@ class Application(tk.Frame):
                                              "my_kb.json",
                                              {},
                                              get_callback,
-                                             RasaNlu(os.path.join("rasa_model", "nlu")))
+                                             RasaNlu())
         self.master = master
         self.pack()
 

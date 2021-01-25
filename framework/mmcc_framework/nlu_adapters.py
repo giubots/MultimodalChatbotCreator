@@ -1,4 +1,6 @@
+import json
 from abc import ABC, abstractmethod
+from http.client import HTTPConnection
 from typing import Dict, Any, List
 
 
@@ -14,16 +16,17 @@ class NluAdapter(ABC):
 class NoNluAdapter(NluAdapter):
     """ This adapter does not use a NLU engine, and simply takes the input and puts it into a dictionary.
 
+    The list of keys to use in the dictionary must be provided to the NoNluAdapter constructor.
+
     Example:
         Suppose that the framework callbacks use only the following keys: "name" and "occupation".
-        Suppose that it is time to insert the name.
+        Initialize the adapter: `my_adapter = NoNluAdapter(["name", "occupation"])`.
 
-        If it is necessary to insert it as text, my_framework.handle_text_input("Mark") will call the callback
-        corresponding to the current activity passing as data:
+        Suppose that it is time to insert the name. If it is necessary to insert it as text use:
+        `my_framework.handle_text_input("Mark")`. The callback corresponding to the current activity will receive:
+        `{"name": "Mark", "occupation": "Mark"}`.
 
-        {"name": "Mark", "occupation": "Mark"}
-
-        The method my_framework.handle_data_input should be called, for example, with {"name": "Mark"}.
+        If it is necessary to insert the name as data use: `my_framework.handle_data_input({"name": "Mark"})`.
 
     :ivar keys: the list of keys that are used in the callbacks
     """
@@ -45,37 +48,31 @@ class NoNluAdapter(NluAdapter):
 
 
 class RasaNlu(NluAdapter):
-    """ This adapter uses RASA, to use this adapter it is necessary to first setup and train the interpreter.
+    """ This adapter uses Rasa, to use this adapter it is necessary to first setup and train the interpreter.
 
-    The instructions to use rasa are available on rasa's website, and consists basically in the following steps:
-    * Install rasa and its dependencies;
-    * Run rasa init in your folder of choice;
-    * Edit the data/nlu file with the utterances used for training;
-    * Run rasa train nlu to produce a model.
-    Then it is necessary to decompress the model folder, this will contain a "nlu" subdirectory.
+    The instructions on how to use Rasa are available on Rasa's website, and consist basically in the following steps:
+
+    - Install Rasa and its dependencies;
+    - Run `rasa init` in your folder of choice;
+    - Edit the `data/nlu` file with the utterances used for training;
+    - Run `rasa train nlu` to produce a model;
+    - Start rasa on port 5005 and pass the location of the model:
+      for example `rasa run --enable-api -m models/nlu-20201228-183937.tar.gz`
 
     Example:
         Suppose that the nlu is trained with, among the others, the intent "insert_name" with a entity "name".
-        Suppose that it is time to insert the name.
+        Initialize the adapter: `my_adapter = RasaNlu()`
 
-        If it is necessary to insert it as text, my_framework.handle_text_input("Mark") will call the callback
-        corresponding to the current activity passing as data, if the intent is correctly recognized:
+        Suppose that it is time to insert the name. If it is necessary to insert it as text use:
+        `my_framework.handle_text_input("Mark")`. The callback corresponding to the current activity will receive
+        (if the intent is recognized): `{"intent": "insert_name", "name": "Mark"}`.
 
-        {"intent": "insert_name", "name": "Mark"}
-
-        The method my_framework.handle_data_input should be called, for example, with RasaNlu.dict("insert_name",
-        {"name": "Mark"}), which will pass to the callback the same structure above.
+        If it is necessary to insert the name as data use:
+        `my_framework.handle_data_input(RasaNlu.dict("insert_name", {"name": "Mark"}))`, which will pass to the callback
+        the same structure as above.
 
     :ivar interpreter: the instance of the rasa interpreter used by this adapter
     """
-
-    def __init__(self, path: str) -> None:
-        """ Initializes this adapter with an interpreter from a rasa project.
-
-        :param path: path of the (decompressed) model "nlu" subdirectory, for example "PathToMyModel/nlu"
-        """
-        from rasa.nlu.model import Interpreter
-        self.interpreter = Interpreter.load(model_dir=path)
 
     def parse(self, utterance: str) -> Dict[str, Any]:
         """ Runs the interpreter to parse the given utterance and returns a dictionary containing the parsed data.
@@ -85,9 +82,11 @@ class RasaNlu(NluAdapter):
         :param utterance: the text input from the user
         :return: a dictionary containing the detected intent and corresponding entities if any exists.
         """
-        response = self.interpreter.parse(text=utterance)
+        connection = HTTPConnection("rasa:5005") # TODO modify here to use without docker
+        connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
+        response = json.loads(connection.getresponse().read())
         if response["intent"]["name"] is None:
-            return {}
+            return {"intent": ""}
         return self.dict(response["intent"]["name"],
                          {item['entity']: item["value"] for item in response["entities"]})
 
