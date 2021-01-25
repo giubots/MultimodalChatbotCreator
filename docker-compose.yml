@@ -1,7 +1,7 @@
-version: "3.9"
+version: "3.0"
 services:
   mmcc:
-    build: .
+    image: giubots/mmcc
     volumes:
      - ./demo/config:/usr/src/mmcc/config
     ports:
@@ -11,7 +11,7 @@ services:
     ports:
       - 5005:5005
     volumes:
-      - ./rasa:/app
+      - ./demo/rasa:/app
     command: >
       run
       --enable-api
