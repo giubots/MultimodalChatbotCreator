@@ -82,7 +82,7 @@ class RasaNlu(NluAdapter):
         :param utterance: the text input from the user
         :return: a dictionary containing the detected intent and corresponding entities if any exists.
         """
-        connection = HTTPConnection("rasa:5005") # TODO modify here to use without docker
+        connection = HTTPConnection("localhost:5005") # TODO modify here to use without docker
         connection.request("POST", "/model/parse", json.dumps({"text": utterance}))
         response = json.loads(connection.getresponse().read())
         if response["intent"]["name"] is None:
