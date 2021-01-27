@@ -197,13 +197,25 @@ export function StoreApp() {
                             <Accordion.Content active={activeIndex === 4}>
                                 <Components.OnSubmit>
                                     <Form>
-                                        <Form.Group unstackable widths={2}>
-                                            <Form.Input label='First name' placeholder='First name'/>
-                                            <Form.Input label='Last name' placeholder='Last name'/>
+                                        <Form.Group widths={2}>
+                                            <Form.Field>
+                                                <label>First Name</label>
+                                                <input placeholder={'First Name'} type={'text'}/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <label>Last Name</label>
+                                                <input placeholder={'Last Name'} type={'text'}/>
+                                            </Form.Field>
                                         </Form.Group>
                                         <Form.Group widths={2}>
-                                            <Form.Input label='Address' placeholder='Address'/>
-                                            <Form.Input label='Phone' placeholder='Phone'/>
+                                            <Form.Field>
+                                                <label>Address</label>
+                                                <input placeholder={'Address'} type={'text'}/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <label>Phone</label>
+                                                <input placeholder={'Phone'} type={'text'}/>
+                                            </Form.Field>
                                         </Form.Group>
                                         <Form.Checkbox label='I agree to the Terms and Conditions'/>
                                         <Button type='submit'>Confirm</Button>

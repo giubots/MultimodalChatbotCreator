@@ -121,11 +121,29 @@ const OnSubmit = (props) => {
 
                 // Standard OnSubmit type
                 else {
+                    // for each element in the form
                     for (let i = 0; i < e.target.length; i++) {
                         let t = e.target[i];
+                        let label;
+                        t.parentNode
+                            .childNodes.forEach((childNode) => {
+                                if (childNode.nodeName === 'LABEL') {
+                                    label = childNode.textContent
+                                }
+                            }
+                        );
+                        /* t.parentNode should be formatted this way:
+                            <div class="field">
+                                <label>First Name</label>
+                                <input placeholder="First Name" type="text">
+                            </div>
+                        */
                         let value = (t.type === "checkbox" || t.type === "radio") ? t.checked : t.value;
                         if (t.name) {
                             payload[t.name] = value;
+                        } else if (label)
+                        {
+                            payload[label] = value;
                         } else {
                             payload[`field_${i}`] = value;
                         }
