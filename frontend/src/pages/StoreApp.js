@@ -66,26 +66,30 @@ export function StoreApp() {
                                 <div style={styles.container}>
                                     {data.map((item, index) => {
                                         return (
-                                            <Card
-                                                raised={choice === index}
-                                                onClick={() => {
-                                                    if (item.availability) {
-                                                        setActiveIndex(1);
-                                                        setChoice(index);
-                                                    }
-                                                }}
-                                                style={{margin: 20}}
+                                            <Components.OnClick
+                                                payload={{intent: "state_preference", preference: item.key}}
                                             >
-                                                <Image src={item.source} disabled={!item.availability}
-                                                       style={{margin: 10}}/>
-                                                <Card.Content style={{height: 70}}>
-                                                    <Card.Header>{item.name}</Card.Header>
-                                                </Card.Content>
-                                                <Card.Content extra>
-                                                    <Icon name={item.availability ? 'check' : "remove"}/>
-                                                    {item.availability || "No"} pairs available
-                                                </Card.Content>
-                                            </Card>
+                                                <Card
+                                                    raised={choice === index}
+                                                    onClick={() => {
+                                                        if (item.availability) {
+                                                            setActiveIndex(1);
+                                                            setChoice(index);
+                                                        }
+                                                    }}
+                                                    style={{margin: 20}}
+                                                >
+                                                    <Image src={item.source} disabled={!item.availability}
+                                                           style={{margin: 10}}/>
+                                                    <Card.Content style={{height: 70}}>
+                                                        <Card.Header>{item.name}</Card.Header>
+                                                    </Card.Content>
+                                                    <Card.Content extra>
+                                                        <Icon name={item.availability ? 'check' : "remove"}/>
+                                                        {item.availability || "No"} pairs available
+                                                    </Card.Content>
+                                                </Card>
+                                            </Components.OnClick>
                                         );
                                     })}
                                 </div>

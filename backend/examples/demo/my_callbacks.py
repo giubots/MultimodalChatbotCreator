@@ -24,7 +24,8 @@ def start(data, kb, context):
 
 def choose_item(data, kb, context):
     if data["intent"] == "state_preference":
-        if "preference" in data and data["preference"].lower() in kb["items"]:
+        print(kb["items"])
+        if "preference" in data and data["preference"] in kb["items"]:
             context["item"] = data["preference"]
             return Response(kb, context, True)
         return Response(kb, context, False, utterance=kb["wrong_item"])
