@@ -104,36 +104,21 @@ export function StoreApp() {
                             <Accordion.Content active={activeIndex === 1}>
                                 <div style={styles.container}>
                                     <Button.Group>
-                                        <Components.OnClick>
-                                            <Button
-                                                color={size === "s" && 'teal'}
-                                                onClick={() => setSize("s")}
-                                                active={size === "s"}
-                                            >Small
-                                            </Button>
-                                        </Components.OnClick>
-
-                                        <Button.Or/>
-
-                                        <Components.OnClick>
-                                            <Button
-                                                color={size === "m" && 'teal'}
-                                                onClick={() => setSize("m")}
-                                                active={size === 'm'}
-                                            >Medium
-                                            </Button>
-                                        </Components.OnClick>
-                                        <Button.Or/>
-
-                                        <Components.OnClick>
-                                            <Button
-                                                color={size === "l" && 'teal'}
-                                                onClick={() => setSize("l")}
-                                                active={size === 'l'}
-                                            >
-                                                Large
-                                            </Button>
-                                        </Components.OnClick>
+                                        {data[choice]?.sizes.map((s, i) => {
+                                            return (
+                                                <>
+                                                    {i !== 0 && (<Button.Or/>)}
+                                                    <Components.OnClick>
+                                                        <Button
+                                                            color={size === s.key && 'teal'}
+                                                            onClick={() => setSize(s.key)}
+                                                            active={size === s.key}
+                                                        >{s.name}
+                                                        </Button>
+                                                    </Components.OnClick>
+                                                </>
+                                            )
+                                        })}
                                     </Button.Group>
                                 </div>
                             </Accordion.Content>
@@ -160,7 +145,7 @@ export function StoreApp() {
                                                 <Image src={color.source} style={{margin: 10}}/>
                                                 <Card.Content style={{height: 35}}>
                                                     <Card.Header>
-                                                        <Label as='a' tag color={color.color}>
+                                                        <Label as='a' tag color={color.key}>
                                                             {color.name}
                                                         </Label>
                                                     </Card.Header>

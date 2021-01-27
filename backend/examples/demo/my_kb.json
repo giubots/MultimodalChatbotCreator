@@ -4,18 +4,18 @@
   "bot_challenge": "Yes I am a bot, but let's continue with our task!",
   "choose_item": "To continue, choose an item you want to buy",
   "items": [
-    "trousers",
-    "trouser",
-    "shirt",
-    "shoes"
+    "sweatshirt",
+    "cap",
+    "skateboard"
   ],
   "wrong_item": "I am sorry, but the item you ar looking for is not available, try picking one from the list.",
   "customize": "Do you prefer to choose the color or the size?",
   "wrong_customize": "You have to choose the color or the size.",
   "select_color": "Type the color you would like",
   "colors": [
-    "blue",
-    "gray"
+    "grey",
+    "black",
+    "violet"
   ],
   "wrong_color": "The color you chose is not available.",
   "select_size": "Insert the size you prefer",

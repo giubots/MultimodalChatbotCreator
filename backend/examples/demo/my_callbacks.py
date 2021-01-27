@@ -1,6 +1,6 @@
-from mmcc_framework import CTX_COMPLETED, RasaNlu, Response
+from mmcc_framework import CTX_COMPLETED, NoNluAdapter, Response
 
-nluAdapter = RasaNlu()
+nluAdapter = NoNluAdapter([])
 
 
 def handle_other(data, kb):
