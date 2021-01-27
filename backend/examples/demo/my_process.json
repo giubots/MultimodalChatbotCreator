@@ -1,0 +1,58 @@
+{
+  "activities": [
+    {
+      "my_id": "start",
+      "next_id": "choose_item",
+      "my_type": "START"
+    },
+    {
+      "my_id": "choose_item",
+      "next_id": "customize",
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "customize",
+      "next_id": "change_info",
+      "my_type": "PARALLEL",
+      "choices": [
+        "select_color",
+        "select_size"
+      ]
+    },
+    {
+      "my_id": "select_color",
+      "next_id": null,
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "select_size",
+      "next_id": null,
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "change_info",
+      "next_id": "end",
+      "my_type": "OR",
+      "choices": [
+        "change_address",
+        "change_payment"
+      ]
+    },
+    {
+      "my_id": "change_address",
+      "next_id": null,
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "change_payment",
+      "next_id": null,
+      "my_type": "TASK"
+    },
+    {
+      "my_id": "end",
+      "next_id": null,
+      "my_type": "END"
+    }
+  ],
+  "first_activity_id": "start"
+}

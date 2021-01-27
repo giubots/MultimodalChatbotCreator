@@ -1,0 +1,37 @@
+{
+  "start": "Welcome!",
+  "not_understand": "I am very sorry, but I could not understand what you mean, please try to say it in a different way",
+  "bot_challenge": "Yes I am a bot, but let's continue with our task!",
+  "choose_item": "To continue, choose an item you want to buy",
+  "items": [
+    "trousers",
+    "trouser",
+    "shirt",
+    "shoes"
+  ],
+  "wrong_item": "I am sorry, but the item you ar looking for is not available, try picking one from the list.",
+  "customize": "Do you prefer to choose the color or the size?",
+  "wrong_customize": "You have to choose the color or the size.",
+  "select_color": "Type the color you would like",
+  "colors": [
+    "blue",
+    "gray"
+  ],
+  "wrong_color": "The color you chose is not available.",
+  "select_size": "Insert the size you prefer",
+  "sizes": [
+    "small",
+    "medium",
+    "large"
+  ],
+  "wrong_size": "The size you chose is not available.",
+  "change_info": "Would you like to change the shipping or payment details?",
+  "wrong_change": "You can change the address or the payment details",
+  "change_address": "Insert your new shipping address",
+  "address_error": "The address you typed could not be found.",
+  "change_payment": "Please provide your new payment details",
+  "payment_error": "The payment details you provided are not valid.",
+  "end": "All done! Your item is scheduled for shipping.",
+  "last_address": "road 134",
+  "last_payment": "123456"
+}

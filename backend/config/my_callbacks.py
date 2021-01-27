@@ -1,1 +1,1 @@
-../examples/quickstart/my_callbacks.py
+../examples/demo/my_callbacks.py
