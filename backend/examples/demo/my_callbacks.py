@@ -34,7 +34,10 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
     return {
         "useful_variables": info,
         "show_items": int(state == "start"),  # [enable user to] select items to buy
-        "choose_customize": int(state == "choose_item"),  # [] choose to change size or color
+        "choose_customize": int(
+            state == "choose_item" or (state == "select_size" and action == "") or
+            state == "customize"
+        ),  # [] choose to change size or color
         "show_size": int(state == "customize" and action == "size"),  # [] change size
         "show_color": int(state == "customize" and action == "color"),  # [] change color
         "custom_completed": int(  # this means if we are selecting size and we already have the color, and vice versa
