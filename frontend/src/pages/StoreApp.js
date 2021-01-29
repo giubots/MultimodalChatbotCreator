@@ -10,7 +10,7 @@ export function StoreApp() {
     const [messages, setMessages] = useState([]);
     const uid = sessionStorage.getItem("uid");
     const [activeIndex, setActiveIndex] = useState(0);
-    const [activeIndexSub, setActiveIndexSub] = useState(0);
+    const [activeIndexSub, setActiveIndexSub] = useState(-1);
 
     const [size, setSize] = useState(0);
 
@@ -24,8 +24,11 @@ export function StoreApp() {
         const {index} = titleProps
         const newIndex = activeIndex === index ? -1 : index
         setActiveIndex(newIndex);
-        setActiveIndexSub(undefined);
+        setActiveIndexSub(-1);
     }
+
+    console.log({activeIndex});
+    console.log({activeIndexSub});
 
     return (
         <>
@@ -110,20 +113,23 @@ export function StoreApp() {
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 1}>
                                 <div style={styles.innerContainer}>
-                                    <Accordion styled>
+                                    <Accordion style={{flex: 1, width: "100%"}}>
+
                                         {/** Size **/}
-                                        <Components.OnClick
-                                            payload={{intent: "change_something", change: "size"}}
+
+
+                                        <Accordion.Title
+                                            active={activeIndexSub === 0}
+                                            index={0}
+                                            onClick={() => setActiveIndexSub(0)}
                                         >
-                                            <Accordion.Title
-                                                active={activeIndexSub === 0}
-                                                index={0}
-                                                onClick={() => setActiveIndexSub(0)}
+                                            <Components.OnClick
+                                                payload={{intent: "change_something", change: "size"}}
                                             >
                                                 <Icon name='dropdown'/>
                                                 Choose size
-                                            </Accordion.Title>
-                                        </Components.OnClick>
+                                            </Components.OnClick>
+                                        </Accordion.Title>
                                         <Accordion.Content active={activeIndexSub === 0}>
                                             <div style={styles.container}>
                                                 <Button.Group>
@@ -139,7 +145,10 @@ export function StoreApp() {
                                                                 >
                                                                     <Button
                                                                         color={size === s.key && 'teal'}
-                                                                        onClick={() => setSize(s.key)}
+                                                                        onClick={() => {
+                                                                            setSize(s.key);
+                                                                            setActiveIndexSub(-1);
+                                                                        }}
                                                                         active={size === s.key}
                                                                     >{s.name}
                                                                     </Button>
@@ -169,6 +178,7 @@ export function StoreApp() {
                                                 {data[choice]?.colors.map((color, index) => {
                                                     return (
                                                         <Components.OnClick
+
                                                             key={index}
                                                             payload={{
                                                                 intent: "state_preference",
@@ -176,9 +186,12 @@ export function StoreApp() {
                                                             }}
                                                         >
                                                             <Card
-                                                                onClick={() => setColorChoice(index)}
-                                                                raised={colorChoice === index}
                                                                 style={{margin: 20}}
+                                                                onClick={() => {
+                                                                    setColorChoice(index);
+                                                                    setActiveIndexSub(-1);
+                                                                }}
+                                                                raised={colorChoice === index}
                                                             >
                                                                 <Image src={color.source} style={{margin: 10}}/>
                                                                 <Card.Content style={{height: 35}}>
@@ -198,11 +211,18 @@ export function StoreApp() {
                                     <Components.OnClick
                                         payload={{intent: "change_nothing"}}
                                     >
-                                        <Button style={styles.button}>Continue</Button>
+                                        <Button
+                                            style={styles.button}
+                                            onClick={() => setActiveIndex(3)}
+                                        >
+                                            <Icon name={"angle double down"}/>
+                                            Continue
+                                        </Button>
                                     </Components.OnClick>
                                 </div>
                             </Accordion.Content>
 
+                            {/** Details **/}
 
                             <Accordion.Title
                                 active={activeIndex === 3}
@@ -214,17 +234,18 @@ export function StoreApp() {
                             </Accordion.Title>
                             <Accordion.Content active={activeIndex === 3}>
                                 <div style={styles.innerContainer}>
-                                    <Accordion styled>
-                                        <Components.OnClick payload={{intent: "change_something", change: "payment_details"}}>
-                                            <Accordion.Title
-                                                active={activeIndexSub === 0}
-                                                index={0}
-                                                onClick={() => setActiveIndexSub(0)}
-                                            >
-                                                <Icon name='dropdown'/>
-                                                Payment method
-                                            </Accordion.Title>
+                                    <Accordion style={{flex: 1, width: "100%"}}>
+
+                                        <Accordion.Title
+                                            active={activeIndexSub === 0}
+                                            index={0}
+                                            onClick={() => setActiveIndexSub(0)}
+                                        ><Components.OnClick
+                                            payload={{intent: "change_something", change: "payment_details"}}>
+                                            <Icon name='dropdown'/>
+                                            Payment method
                                         </Components.OnClick>
+                                        </Accordion.Title>
                                         <Accordion.Content active={activeIndexSub === 0}>
                                             <Components.OnSubmit payload={{payment}}>
                                                 <Form>
@@ -293,7 +314,10 @@ export function StoreApp() {
                                     <Components.OnClick
                                         payload={{intent: "change_nothing"}}
                                     >
-                                        <Button style={styles.button}>Continue</Button>
+                                        <Button style={styles.button}>
+                                            <Icon name={"angle double down"}/>
+                                            Continue
+                                        </Button>
                                     </Components.OnClick>
                                 </div>
                             </Accordion.Content>
@@ -337,6 +361,6 @@ const styles = {
     },
     button: {
         marginTop: 20,
-        width: "60%",
-    }
+        width:"100%",
+    },
 }
