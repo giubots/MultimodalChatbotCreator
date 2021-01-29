@@ -9,6 +9,8 @@ import {data} from "../Constants";
 export function StoreApp() {
 
     const [messages, setMessages] = useState([]);
+    const [payload, setPayload] = useState({});
+
     const uid = sessionStorage.getItem("uid");
     const [activeIndex, setActiveIndex] = useState(0);
     const [activeIndexSub, setActiveIndexSub] = useState(-1);
@@ -21,15 +23,18 @@ export function StoreApp() {
     const [payment, setPayment] = useState();
 
 
-    const handleClick = (e, titleProps) => {
-        const {index} = titleProps
-        const newIndex = activeIndex === index ? -1 : index
-        setActiveIndex(newIndex);
-        setActiveIndexSub(-1);
+    const handleClick = (e, titleProps, key) => {
+        if (payload[key]) {
+            const {index} = titleProps
+            const newIndex = activeIndex === index ? -1 : index
+            setActiveIndex(newIndex);
+            setActiveIndexSub(-1);
+        }
     }
 
     const process = [
         {
+            key: "show_items",
             title: "Choose the item to buy",
             content: () => {
                 return (
@@ -69,6 +74,7 @@ export function StoreApp() {
             },
         },
         {
+            key: "choose_customize",
             title: "Customization",
             content: () => {
                 return (
@@ -138,7 +144,6 @@ export function StoreApp() {
                                         {data[choice]?.colors.map((color, index) => {
                                             return (
                                                 <Components.OnClick
-
                                                     key={index}
                                                     payload={{
                                                         intent: "state_preference",
@@ -169,9 +174,11 @@ export function StoreApp() {
                                 </Accordion.Content>
                             </Accordion>
                             <Components.OnClick
+                                disabled={!payload["custom_completed"]}
                                 payload={{intent: "change_nothing"}}
                             >
                                 <Button
+                                    disabled={!payload["custom_completed"]}
                                     style={styles.button}
                                     onClick={() => setActiveIndex(2)}
                                 >
@@ -184,6 +191,7 @@ export function StoreApp() {
             }
         },
         {
+            key: "choose_info",
             title: "Details",
             content: () => {
                 return (
@@ -278,6 +286,7 @@ export function StoreApp() {
             }
         },
         {
+            key: "complete",
             title: "Summary",
             content: () => {
                 return (
@@ -305,7 +314,10 @@ export function StoreApp() {
                 <NetworkManager
                     url={"ws://localhost:8765"}
                     uid={uid}
-                    onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
+                    onMessage={(m) => {
+                        setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}]);
+                        setPayload(JSON.parse(m).payload);
+                    }}
                     onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
                     onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
                     onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
@@ -318,7 +330,7 @@ export function StoreApp() {
                                         <Accordion.Title
                                             active={activeIndex === i}
                                             index={i}
-                                            onClick={handleClick}
+                                            onClick={(ev, p) => handleClick(ev, p, e.key)}
                                         >
                                             <Icon name='dropdown'/>
                                             {e.title}

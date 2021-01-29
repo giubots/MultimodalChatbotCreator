@@ -12,8 +12,11 @@ import {NetworkContext} from './NetworkManager';
 import PropTypes from "prop-types";
 
 function handleEvent(event, context, props, payload, text) {
+    if (props.disabled) {
+        return;
+    }
     let message = {
-        type: "data", //props.type || event.type,
+        type: props.type || "data",
     }
     if (props.type === "utterance") {
         message["utterance"] = text;
