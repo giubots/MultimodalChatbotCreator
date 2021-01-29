@@ -203,7 +203,7 @@ export function StoreApp() {
                                 index={0}
                                 onClick={() => setActiveIndexSub(0)}
                             ><Components.OnClick
-                                payload={{intent: "change_something", change: "payment_details"}}>
+                                payload={{intent: "change_something", change: "payment"}}>
                                 <Icon name='dropdown'/>
                                 Payment method
                             </Components.OnClick>
