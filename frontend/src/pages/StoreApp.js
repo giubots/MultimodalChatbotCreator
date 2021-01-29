@@ -5,6 +5,7 @@ import {Accordion, Icon, Card, Image, Button, Label, Form} from 'semantic-ui-rea
 import {ChatComponent} from "../components/ChatComponent";
 import {data} from "../Constants";
 
+
 export function StoreApp() {
 
     const [messages, setMessages] = useState([]);
@@ -27,8 +28,264 @@ export function StoreApp() {
         setActiveIndexSub(-1);
     }
 
-    console.log({activeIndex});
-    console.log({activeIndexSub});
+    const process = [
+        {
+            title: "Choose the item to buy",
+            content: () => {
+                return (
+                    <div style={styles.container}>
+                            {data.map((item, index) => {
+                                return (
+                                    <div key={index}>
+                                        <Components.OnClick
+                                            payload={{intent: "state_preference", preference: item.key}}
+                                        >
+                                            <Card
+                                                raised={choice === index}
+                                                onClick={() => {
+                                                    if (item.availability) {
+                                                        setActiveIndex(1);
+                                                        setChoice(index);
+                                                    }
+                                                }}
+                                                style={{margin: 20}}
+                                            >
+                                                <Image src={item.source} disabled={!item.availability}
+                                                       style={{margin: 10}}/>
+                                                <Card.Content style={{height: 70}}>
+                                                    <Card.Header>{item.name}</Card.Header>
+                                                </Card.Content>
+                                                <Card.Content extra>
+                                                    <Icon name={item.availability ? 'check' : "remove"}/>
+                                                    {item.availability || "No"} pairs available
+                                                </Card.Content>
+                                            </Card>
+                                        </Components.OnClick>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                );
+            },
+        },
+        {
+            title: "Customization",
+            content: () => {
+                return (
+                    <div style={styles.innerContainer}>
+                            <Accordion style={{flex: 1, width: "100%"}}>
+
+                                {/** Size **/}
+
+                                <Accordion.Title
+                                    active={activeIndexSub === 0}
+                                    index={0}
+                                    onClick={() => setActiveIndexSub(0)}
+                                >
+                                    <Components.OnClick
+                                        payload={{intent: "change_something", change: "size"}}
+                                    >
+                                        <Icon name='dropdown'/>
+                                        Choose size
+                                    </Components.OnClick>
+                                </Accordion.Title>
+                                <Accordion.Content active={activeIndexSub === 0}>
+                                    <div style={styles.container}>
+                                        <Button.Group>
+                                            {data[choice]?.sizes.map((s, index) => {
+                                                return (
+                                                    <>
+                                                        {index !== 0 && (<Button.Or/>)}
+                                                        <Components.OnClick
+                                                            payload={{
+                                                                intent: "state_preference",
+                                                                preference: s.key
+                                                            }}
+                                                        >
+                                                            <Button
+                                                                color={size === s.key && 'teal'}
+                                                                onClick={() => {
+                                                                    setSize(s.key);
+                                                                    setActiveIndexSub(-1);
+                                                                }}
+                                                                active={size === s.key}
+                                                            >{s.name}
+                                                            </Button>
+                                                        </Components.OnClick>
+                                                    </>
+                                                )
+                                            })}
+                                        </Button.Group>
+                                    </div>
+                                </Accordion.Content>
+
+                                {/** Color **/}
+
+                                <Components.OnClick
+                                    payload={{intent: "change_something", change: "color"}}
+                                >
+                                    <Accordion.Title
+                                        active={activeIndexSub === 1}
+                                        index={1}
+                                        onClick={() => setActiveIndexSub(1)}
+                                    >
+                                        <Icon name='dropdown'/>
+                                        Choose color
+                                    </Accordion.Title>
+                                </Components.OnClick>
+                                <Accordion.Content active={activeIndexSub === 1}>
+                                    <div style={styles.container}>
+                                        {data[choice]?.colors.map((color, index) => {
+                                            return (
+                                                <Components.OnClick
+
+                                                    key={index}
+                                                    payload={{
+                                                        intent: "state_preference",
+                                                        preference: color.key
+                                                    }}
+                                                >
+                                                    <Card
+                                                        style={{margin: 20}}
+                                                        onClick={() => {
+                                                            setColorChoice(index);
+                                                            setActiveIndexSub(-1);
+                                                        }}
+                                                        raised={colorChoice === index}
+                                                    >
+                                                        <Image src={color.source} style={{margin: 10}}/>
+                                                        <Card.Content style={{height: 35}}>
+                                                            <Card.Header>
+                                                                <Label as='a' tag color={color.key}>
+                                                                    {color.name}
+                                                                </Label>
+                                                            </Card.Header>
+                                                        </Card.Content>
+                                                    </Card>
+                                                </Components.OnClick>
+                                            );
+                                        })}
+                                    </div>
+                                </Accordion.Content>
+                            </Accordion>
+                            <Components.OnClick
+                                payload={{intent: "change_nothing"}}
+                            >
+                                <Button
+                                    style={styles.button}
+                                    onClick={() => setActiveIndex(2)}
+                                >
+                                    <Icon name={"angle double down"}/>
+                                    Continue
+                                </Button>
+                            </Components.OnClick>
+                        </div>
+                );
+            }
+        },
+        {
+            title: "Details",
+            content: () => {
+                return (
+                    <div style={styles.innerContainer}>
+                        <Accordion style={{flex: 1, width: "100%"}}>
+
+                            <Accordion.Title
+                                active={activeIndexSub === 0}
+                                index={0}
+                                onClick={() => setActiveIndexSub(0)}
+                            ><Components.OnClick
+                                payload={{intent: "change_something", change: "payment_details"}}>
+                                <Icon name='dropdown'/>
+                                Payment method
+                            </Components.OnClick>
+                            </Accordion.Title>
+                            <Accordion.Content active={activeIndexSub === 0}>
+                                <Components.OnSubmit payload={{payment}}>
+                                    <Form>
+                                        <Form.Group>
+                                            <Form.Radio
+                                                label='Credit card (ending with -5698)'
+                                                value='credit_card'
+                                                checked={payment === 'credit_card'}
+                                                onChange={() => setPayment("credit_card")}
+                                            />
+                                            <Form.Radio
+                                                label='PayPal account (gino@outlook.com)'
+                                                value='paypal'
+                                                checked={payment === 'paypal'}
+                                                onChange={() => setPayment("paypal")}
+                                            />
+                                            <Button type='submit'>Confirm</Button>
+                                        </Form.Group>
+                                    </Form>
+                                </Components.OnSubmit>
+                            </Accordion.Content>
+                            <Components.OnClick
+                                payload={{intent: "change_something", change: "address"}}
+                            >
+                                <Accordion.Title
+                                    active={activeIndexSub === 1}
+                                    index={1}
+                                    onClick={() => setActiveIndexSub(1)}
+                                >
+                                    <Icon name='dropdown'/>
+                                    Address
+                                </Accordion.Title>
+                            </Components.OnClick>
+
+                            <Accordion.Content active={activeIndexSub === 1}>
+                                <Components.OnSubmit
+                                    payload={{}}
+                                >
+                                    <Form>
+                                        <Form.Group widths={2}>
+                                            <Form.Field>
+                                                <label>First Name</label>
+                                                <input placeholder={'First Name'} type={'text'}/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <label>Last Name</label>
+                                                <input placeholder={'Last Name'} type={'text'}/>
+                                            </Form.Field>
+                                        </Form.Group>
+                                        <Form.Group widths={2}>
+                                            <Form.Field>
+                                                <label>Address</label>
+                                                <input placeholder={'Address'} type={'text'}/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <label>Phone</label>
+                                                <input placeholder={'Phone'} type={'text'}/>
+                                            </Form.Field>
+                                        </Form.Group>
+                                        <Form.Checkbox label='I agree to the Terms and Conditions'/>
+                                        <Button type='submit'>Confirm</Button>
+                                    </Form>
+                                </Components.OnSubmit>
+                            </Accordion.Content>
+                        </Accordion>
+                        <Components.OnClick
+                            payload={{intent: "change_nothing"}}
+                        >
+                            <Button style={styles.button}>
+                                <Icon name={"angle double down"}/>
+                                Continue
+                            </Button>
+                        </Components.OnClick>
+                    </div>
+                );
+            }
+        },
+        {
+            title: "Summary",
+            content: () => {
+                return (
+                    <Button>Complete purchase</Button>
+                );
+            }
+        },
+    ];
 
     return (
         <>
@@ -55,285 +312,25 @@ export function StoreApp() {
                 >
                     <div style={{...styles.container, marginTop: 30}}>
                         <Accordion style={{width: 1000}} styled>
-
-                            {/** Item to buy **/}
-
-                            <Accordion.Title
-                                active={activeIndex === 0}
-                                index={0}
-                                onClick={handleClick}
-                            >
-                                <Icon name='dropdown'/>
-                                Choose the item to buy:
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 0}>
-                                <div style={styles.container}>
-                                    {data.map((item, index) => {
-                                        return (
-                                            <div key={index}>
-                                                <Components.OnClick
-                                                    payload={{intent: "state_preference", preference: item.key}}
-                                                >
-                                                    <Card
-                                                        raised={choice === index}
-                                                        onClick={() => {
-                                                            if (item.availability) {
-                                                                setActiveIndex(1);
-                                                                setChoice(index);
-                                                            }
-                                                        }}
-                                                        style={{margin: 20}}
-                                                    >
-                                                        <Image src={item.source} disabled={!item.availability}
-                                                               style={{margin: 10}}/>
-                                                        <Card.Content style={{height: 70}}>
-                                                            <Card.Header>{item.name}</Card.Header>
-                                                        </Card.Content>
-                                                        <Card.Content extra>
-                                                            <Icon name={item.availability ? 'check' : "remove"}/>
-                                                            {item.availability || "No"} pairs available
-                                                        </Card.Content>
-                                                    </Card>
-                                                </Components.OnClick>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </Accordion.Content>
-
-                            {/** Customization **/}
-
-                            <Accordion.Title
-                                active={activeIndex === 1}
-                                index={1}
-                                onClick={handleClick}
-                            >
-                                <Icon name='dropdown'/>
-                                Customization
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 1}>
-                                <div style={styles.innerContainer}>
-                                    <Accordion style={{flex: 1, width: "100%"}}>
-
-                                        {/** Size **/}
-
-
+                            {process.map((e, i) => {
+                                return (
+                                    <>
                                         <Accordion.Title
-                                            active={activeIndexSub === 0}
-                                            index={0}
-                                            onClick={() => setActiveIndexSub(0)}
+                                            active={activeIndex === i}
+                                            index={i}
+                                            onClick={handleClick}
                                         >
-                                            <Components.OnClick
-                                                payload={{intent: "change_something", change: "size"}}
-                                            >
-                                                <Icon name='dropdown'/>
-                                                Choose size
-                                            </Components.OnClick>
-                                        </Accordion.Title>
-                                        <Accordion.Content active={activeIndexSub === 0}>
-                                            <div style={styles.container}>
-                                                <Button.Group>
-                                                    {data[choice]?.sizes.map((s, index) => {
-                                                        return (
-                                                            <>
-                                                                {index !== 0 && (<Button.Or/>)}
-                                                                <Components.OnClick
-                                                                    payload={{
-                                                                        intent: "state_preference",
-                                                                        preference: s.key
-                                                                    }}
-                                                                >
-                                                                    <Button
-                                                                        color={size === s.key && 'teal'}
-                                                                        onClick={() => {
-                                                                            setSize(s.key);
-                                                                            setActiveIndexSub(-1);
-                                                                        }}
-                                                                        active={size === s.key}
-                                                                    >{s.name}
-                                                                    </Button>
-                                                                </Components.OnClick>
-                                                            </>
-                                                        )
-                                                    })}
-                                                </Button.Group>
-                                            </div>
-                                        </Accordion.Content>
-
-                                        {/** Color **/}
-                                        <Components.OnClick
-                                            payload={{intent: "change_something", change: "color"}}
-                                        >
-                                            <Accordion.Title
-                                                active={activeIndexSub === 1}
-                                                index={1}
-                                                onClick={() => setActiveIndexSub(1)}
-                                            >
-                                                <Icon name='dropdown'/>
-                                                Choose color
-                                            </Accordion.Title>
-                                        </Components.OnClick>
-                                        <Accordion.Content active={activeIndexSub === 1}>
-                                            <div style={styles.container}>
-                                                {data[choice]?.colors.map((color, index) => {
-                                                    return (
-                                                        <Components.OnClick
-
-                                                            key={index}
-                                                            payload={{
-                                                                intent: "state_preference",
-                                                                preference: color.key
-                                                            }}
-                                                        >
-                                                            <Card
-                                                                style={{margin: 20}}
-                                                                onClick={() => {
-                                                                    setColorChoice(index);
-                                                                    setActiveIndexSub(-1);
-                                                                }}
-                                                                raised={colorChoice === index}
-                                                            >
-                                                                <Image src={color.source} style={{margin: 10}}/>
-                                                                <Card.Content style={{height: 35}}>
-                                                                    <Card.Header>
-                                                                        <Label as='a' tag color={color.key}>
-                                                                            {color.name}
-                                                                        </Label>
-                                                                    </Card.Header>
-                                                                </Card.Content>
-                                                            </Card>
-                                                        </Components.OnClick>
-                                                    );
-                                                })}
-                                            </div>
-                                        </Accordion.Content>
-                                    </Accordion>
-                                    <Components.OnClick
-                                        payload={{intent: "change_nothing"}}
-                                    >
-                                        <Button
-                                            style={styles.button}
-                                            onClick={() => setActiveIndex(3)}
-                                        >
-                                            <Icon name={"angle double down"}/>
-                                            Continue
-                                        </Button>
-                                    </Components.OnClick>
-                                </div>
-                            </Accordion.Content>
-
-                            {/** Details **/}
-
-                            <Accordion.Title
-                                active={activeIndex === 3}
-                                index={3}
-                                onClick={handleClick}
-                            >
-                                <Icon name='dropdown'/>
-                                Details
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 3}>
-                                <div style={styles.innerContainer}>
-                                    <Accordion style={{flex: 1, width: "100%"}}>
-
-                                        <Accordion.Title
-                                            active={activeIndexSub === 0}
-                                            index={0}
-                                            onClick={() => setActiveIndexSub(0)}
-                                        ><Components.OnClick
-                                            payload={{intent: "change_something", change: "payment_details"}}>
                                             <Icon name='dropdown'/>
-                                            Payment method
-                                        </Components.OnClick>
+                                            {e.title}
                                         </Accordion.Title>
-                                        <Accordion.Content active={activeIndexSub === 0}>
-                                            <Components.OnSubmit payload={{payment}}>
-                                                <Form>
-                                                    <Form.Group>
-                                                        <Form.Radio
-                                                            label='Credit card (ending with -5698)'
-                                                            value='credit_card'
-                                                            checked={payment === 'credit_card'}
-                                                            onChange={() => setPayment("credit_card")}
-                                                        />
-                                                        <Form.Radio
-                                                            label='PayPal account (gino@outlook.com)'
-                                                            value='paypal'
-                                                            checked={payment === 'paypal'}
-                                                            onChange={() => setPayment("paypal")}
-                                                        />
-                                                        <Button type='submit'>Confirm</Button>
-                                                    </Form.Group>
-                                                </Form>
-                                            </Components.OnSubmit>
+                                        <Accordion.Content active={activeIndex === i}>
+                                            {e.content()}
                                         </Accordion.Content>
-                                        <Components.OnClick
-                                            payload={{intent: "change_something", change: "address"}}
-                                        >
-                                            <Accordion.Title
-                                                active={activeIndexSub === 1}
-                                                index={1}
-                                                onClick={() => setActiveIndexSub(1)}
-                                            >
-                                                <Icon name='dropdown'/>
-                                                Address
-                                            </Accordion.Title>
-                                        </Components.OnClick>
-
-                                        <Accordion.Content active={activeIndexSub === 1}>
-                                            <Components.OnSubmit
-                                                payload={{}}
-                                            >
-                                                <Form>
-                                                    <Form.Group widths={2}>
-                                                        <Form.Field>
-                                                            <label>First Name</label>
-                                                            <input placeholder={'First Name'} type={'text'}/>
-                                                        </Form.Field>
-                                                        <Form.Field>
-                                                            <label>Last Name</label>
-                                                            <input placeholder={'Last Name'} type={'text'}/>
-                                                        </Form.Field>
-                                                    </Form.Group>
-                                                    <Form.Group widths={2}>
-                                                        <Form.Field>
-                                                            <label>Address</label>
-                                                            <input placeholder={'Address'} type={'text'}/>
-                                                        </Form.Field>
-                                                        <Form.Field>
-                                                            <label>Phone</label>
-                                                            <input placeholder={'Phone'} type={'text'}/>
-                                                        </Form.Field>
-                                                    </Form.Group>
-                                                    <Form.Checkbox label='I agree to the Terms and Conditions'/>
-                                                    <Button type='submit'>Confirm</Button>
-                                                </Form>
-                                            </Components.OnSubmit>
-                                        </Accordion.Content>
-                                    </Accordion>
-                                    <Components.OnClick
-                                        payload={{intent: "change_nothing"}}
-                                    >
-                                        <Button style={styles.button}>
-                                            <Icon name={"angle double down"}/>
-                                            Continue
-                                        </Button>
-                                    </Components.OnClick>
-                                </div>
-                            </Accordion.Content>
-
-                            <Accordion.Title
-                                active={activeIndex === 5}
-                                index={5}
-                                onClick={handleClick}
-                            >
-                                <Icon name='dropdown'/>
-                                Your purchase
-                            </Accordion.Title>
-                            <Accordion.Content active={activeIndex === 5}>
-                                <Button>Complete purchase</Button>
-                            </Accordion.Content>
+                                    </>
+                                );
+                            })}
                         </Accordion>
+
                     </div>
                     <ChatComponent messagesProps={messages} setMessagesProps={(messages => setMessages(messages))}/>
                 </NetworkManager>
