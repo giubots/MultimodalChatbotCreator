@@ -3,14 +3,36 @@ from mmcc_framework import CTX_COMPLETED, NoNluAdapter, Response
 nluAdapter = NoNluAdapter([])
 
 
-def payload_enabled_items(state: str, action: str = ""):
+def payload_enabled_items(context: dict, state: str, action: str = ""):
     """
 
+    :param context: to send useful info about the state of the framework
     :param state: the state is the state it's coming from
     :param action: the action performed in the state
     :return: what to show in the frontend ui to the user, given the last interaction
     """
+
+    info = {}
+    if (
+          (state == "select_size" and action == "color") or
+          (state == "select_color" and action == "size") or
+          action == "choose_info"
+    ):
+        info = {
+            "last_address": context["address"],
+            "last_payment": context["details"]
+        }
+    elif action == "end":
+        info = {
+            "item": context["item"],
+            "size": context["size"],
+            "color": context["color"],
+            "address": context["address"],
+            "payment": context["details"]
+        }
+
     return {
+        "useful_variables": info,
         "show_items": int(state == "start"),  # [enable user to] select items to buy
         "choose_customize": int(state == "choose_item"),  # [] choose to change size or color
         "show_size": int(state == "customize" and action == "size"),  # [] change size
@@ -49,7 +71,7 @@ def start(data, kb, context):
     context["details"] = kb["last_payment"]
     print(context)
     return Response(kb, context, True, utterance=kb["start"],
-                    payload=payload_enabled_items("start"))
+                    payload=payload_enabled_items(context, "start"))
 
 
 def choose_item(data, kb, context):
@@ -57,39 +79,39 @@ def choose_item(data, kb, context):
         if "preference" in data and data["preference"] in kb["items"]:
             context["item"] = data["preference"]
             return Response(kb, context, True,
-                            payload=payload_enabled_items("choose_item"))
+                            payload=payload_enabled_items(context, "choose_item"))
         return Response(kb, context, False, utterance=kb["wrong_item"],
-                        payload=payload_enabled_items("start"))
+                        payload=payload_enabled_items(context, "start"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("start"))
+                    payload=payload_enabled_items(context, "start"))
 
 
 def customize(data, kb, context):
     if data["intent"] == "change_something":
         if "change" in data and data["change"] == "size":
             return Response(kb, context, True, choice="select_size",
-                            payload=payload_enabled_items(
+                            payload=payload_enabled_items(context, 
                                 "customize_with_chosen_color" if "color" in context else
                                 "customize",
                                 "size"
                             ))
         if "change" in data and data["change"] == "color":
             return Response(kb, context, True, choice="select_color",
-                            payload=payload_enabled_items(
+                            payload=payload_enabled_items(context, 
                                 "customize_with_chosen_size" if "size" in context else
                                 "customize",
                                 "color"
                             ))
         return Response(kb, context, False, utterance=kb["wrong_customize"],
-                        payload=payload_enabled_items("choose_item"))
+                        payload=payload_enabled_items(context, "choose_item"))
     if data["intent"] == "change_nothing" or data["intent"] == "deny":
         if "customize" in context[CTX_COMPLETED]:
             return Response(kb, context, True, choice=None,
-                            payload=payload_enabled_items("choose_item"))
+                            payload=payload_enabled_items(context, "choose_item"))
         return Response(kb, context, False, utterance=kb["wrong_customize"],
-                        payload=payload_enabled_items("choose_item"))
+                        payload=payload_enabled_items(context, "choose_item"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("choose_item"))
+                    payload=payload_enabled_items(context, "choose_item"))
 
 
 def select_size(data, kb, context):
@@ -97,11 +119,11 @@ def select_size(data, kb, context):
         if "preference" in data and data["preference"] in kb["sizes"]:
             context["size"] = data["preference"]
             return Response(kb, context, True,
-                            payload=payload_enabled_items("select_size", "color" if "color" in context else ""))
+                            payload=payload_enabled_items(context, "select_size", "color" if "color" in context else ""))
         return Response(kb, context, False, utterance=kb["wrong_size"],
-                        payload=payload_enabled_items("customize", "size"))
+                        payload=payload_enabled_items(context, "customize", "size"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("customize", "size"))
+                    payload=payload_enabled_items(context, "customize", "size"))
 
 
 def select_color(data, kb, context):
@@ -110,27 +132,27 @@ def select_color(data, kb, context):
             context["color"] = data["preference"]
             # if we have the size, then we can proceed with the process
             return Response(kb, context, True,
-                            payload=payload_enabled_items("select_color", "size" if "size" in context else ""))
+                            payload=payload_enabled_items(context, "select_color", "size" if "size" in context else ""))
         return Response(kb, context, False, utterance=kb["wrong_color"],
-                        payload=payload_enabled_items("customize", "color"))
+                        payload=payload_enabled_items(context, "customize", "color"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("customize", "color"))
+                    payload=payload_enabled_items(context, "customize", "color"))
 
 
 def change_info(data, kb, context):
     if data["intent"] == "change_something":
         if "change" in data and data["change"] == "address":
             return Response(kb, context, True, choice="change_address",
-                            payload=payload_enabled_items("change_info", "address"))
+                            payload=payload_enabled_items(context, "change_info", "address"))
         if "change" in data and data["change"] == "details":
             return Response(kb, context, True, choice="change_payment",
-                            payload=payload_enabled_items("change_info", "payment"))
+                            payload=payload_enabled_items(context, "change_info", "payment"))
         return Response(kb, context, False, utterance=kb["wrong_change"])
     if data["intent"] == "change_nothing" or data["intent"] == "deny":
         return Response(kb, context, True, choice=None, utterance=final_recap(context),
-                        payload=payload_enabled_items("change_info", "end"))
+                        payload=payload_enabled_items(context, "change_info", "end"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("change_info", "choose_info"))
+                    payload=payload_enabled_items(context, "change_info", "choose_info"))
 
 
 def change_address(data, kb, context):
@@ -139,11 +161,11 @@ def change_address(data, kb, context):
             context["address"] = data["address"]
             kb["last_address"] = data["address"]
             return Response(kb, context, True,
-                            payload=payload_enabled_items("change_address", "choose_info"))
+                            payload=payload_enabled_items(context, "change_address", "choose_info"))
         return Response(kb, context, False, utterance=kb["address_error"],
-                        payload=payload_enabled_items("change_address", "choose_info"))
+                        payload=payload_enabled_items(context, "change_address", "choose_info"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("change_address", "choose_info"))
+                    payload=payload_enabled_items(context, "change_address", "choose_info"))
 
 
 def change_payment(data, kb, context):
@@ -152,11 +174,11 @@ def change_payment(data, kb, context):
             context["details"] = data["details"]
             kb["last_payment"] = data["payment"]
             return Response(kb, context, True,
-                            payload=payload_enabled_items("change_payment", "choose_info"))
+                            payload=payload_enabled_items(context, "change_payment", "choose_info"))
         return Response(kb, context, False, utterance=kb["payment_error"],
-                        payload=payload_enabled_items("change_payment", "choose_info"))
+                        payload=payload_enabled_items(context, "change_payment", "choose_info"))
     return Response(kb, context, False, utterance=handle_other(data, kb),
-                    payload=payload_enabled_items("change_payment", "choose_info"))
+                    payload=payload_enabled_items(context, "change_payment", "choose_info"))
 
 
 def get_callback(activity_id: str):
