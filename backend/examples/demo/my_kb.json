@@ -20,9 +20,9 @@
   "wrong_color": "The color you chose is not available.",
   "select_size": "Insert the size you prefer",
   "sizes": [
-    "small",
-    "medium",
-    "large"
+    "S",
+    "M",
+    "L"
   ],
   "wrong_size": "The size you chose is not available.",
   "change_info": "Would you like to change the shipping or payment details?",

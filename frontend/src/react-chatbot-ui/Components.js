@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 
 function handleEvent(event, context, props, payload, text) {
     let message = {
-        type: props.type || event.type,
+        type: "data", //props.type || event.type,
     }
     if (props.type === "utterance") {
         message["utterance"] = text;
@@ -21,6 +21,7 @@ function handleEvent(event, context, props, payload, text) {
         message["payload"] = props.payload || payload;
     }
     props.onSend && props.onSend(message);
+    console.log("[handleEvent]:", message);
     context.send(JSON.stringify(message));
 }
 
