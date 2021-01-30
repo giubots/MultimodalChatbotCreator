@@ -14,7 +14,7 @@ export const ChatComponent = ({messagesProps, setMessagesProps}) => {
         if (messagesList) {
             messagesList.scrollTop = messagesList.scrollHeight;
         }
-    }, [messagesProps, messages])
+    }, [messagesProps, messagesList, messages])
 
     return (
         <div style={styles.overlay}>
