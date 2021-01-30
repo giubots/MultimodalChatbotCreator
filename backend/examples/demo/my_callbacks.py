@@ -94,13 +94,13 @@ def customize(data, kb, context):
     if data["intent"] == "change_something":
         if "change" in data and data["change"] == "size":
             return Response(kb, context, True, choice="select_size",
-                            payload=payload_enabled_items(context, 
+                            payload=payload_enabled_items(context,
                                 "customize",
                                 "size"
                             ))
         if "change" in data and data["change"] == "color":
             return Response(kb, context, True, choice="select_color",
-                            payload=payload_enabled_items(context, 
+                            payload=payload_enabled_items(context,
                                 "customize",
                                 "color"
                             ))
@@ -174,7 +174,7 @@ def change_payment(data, kb, context):
     if data["intent"] == "payment_details":
         if "details" in data:
             context["details"] = data["details"]
-            kb["last_payment"] = data["payment"]
+            kb["last_payment"] = data["details"]
             return Response(kb, context, True,
                             payload=payload_enabled_items(context, "change_payment", "change_info"))
         return Response(kb, context, False, utterance=kb["payment_error"],

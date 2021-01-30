@@ -26,33 +26,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/logo192.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/logo512.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/manifest.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/public/robots.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/App.test.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/Constants.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/ChatComponent.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/SimpleChatApp.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/react-chatbot-ui/Components.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/react-chatbot-ui/NetworkManager.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/react-chatbot-ui/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/react-chatbot-ui/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/reportWebVitals.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/routes/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/services/history.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/setupTests.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/styles/Chat.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/examples/demo/my_callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/examples/demo/my_callbacks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/react-mmcc/Components.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/react-mmcc/Components.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +67,11 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs.jest.jest_package" value="$PROJECT_DIR$/frontend/react-chatbot-ui/node_modules/react-scripts" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -95,7 +79,7 @@
       <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/src" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.Wesocket Server">
     <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
@@ -109,24 +93,45 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ExampleComponent" type="JavaScriptTestRunnerJest" temporary="true" nameIsGenerated="true">
-      <node-interpreter value="project" />
-      <node-options value="" />
-      <jest-package value="$PROJECT_DIR$/frontend/react-chatbot-ui/node_modules/react-scripts" />
-      <working-dir value="$PROJECT_DIR$/frontend/react-chatbot-ui" />
-      <envs />
-      <scope-kind value="SUITE" />
-      <test-file value="$PROJECT_DIR$/frontend/react-chatbot-ui/src/index.test.js" />
-      <test-names>
-        <test-name value="ExampleComponent" />
-      </test-names>
+    <configuration name="Wesocket Server" type="PythonConfigurationType" factoryName="Python">
+      <module name="MultimodalChatbotCreator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/usr/local/bin/python3.9" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/backend" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/backend/websocket_server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Jest.ExampleComponent" />
-      </list>
-    </recent_temporary>
+    <configuration default="true" type="js.build_tools.npm">
+      <command value="start" />
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="start" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/frontend/package.json" />
+      <command value="start" />
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.start" />
+      <item itemvalue="Python.Wesocket Server" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -143,6 +148,9 @@
       <workItem from="1611595251165" duration="83000" />
       <workItem from="1611768946702" duration="167000" />
       <workItem from="1611769557068" duration="255000" />
+      <workItem from="1611947328460" duration="2487000" />
+      <workItem from="1611955376025" duration="6936000" />
+      <workItem from="1612021599161" duration="12187000" />
     </task>
     <task id="LOCAL-00001" summary="added library framework and README.md">
       <created>1611531697020</created>
@@ -186,7 +194,49 @@
       <option name="project" value="LOCAL" />
       <updated>1611593226717</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="added callback events">
+      <created>1611957264643</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1611957264643</updated>
+    </task>
+    <task id="LOCAL-00008" summary="fixed style">
+      <created>1611959073879</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1611959073879</updated>
+    </task>
+    <task id="LOCAL-00009" summary="refactor">
+      <created>1611959948650</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1611959948650</updated>
+    </task>
+    <task id="LOCAL-00010" summary="controlled with payloads">
+      <created>1611961289311</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1611961289311</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fixed styles and triggering opening">
+      <created>1612025204008</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1612025204008</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fixes">
+      <created>1612025458962</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1612025458962</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,46 +271,19 @@
     <MESSAGE value="added library framework and README.md æ2" />
     <MESSAGE value="fixed readme links" />
     <MESSAGE value="junction commit" />
+    <MESSAGE value="added callback events" />
+    <MESSAGE value="fixed style" />
+    <MESSAGE value="refactor" />
+    <MESSAGE value="controlled with payloads" />
+    <MESSAGE value="fixed styles and triggering opening" />
     <MESSAGE value="fixes" />
     <option name="LAST_COMMIT_MESSAGE" value="fixes" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="397" y="362" key="#Notifications" timestamp="1611595137609">
-      <screen x="0" y="25" width="1792" height="1030" />
-    </state>
-    <state x="397" y="362" key="#Notifications/0.25.1792.1030@0.25.1792.1030" timestamp="1611595137609" />
-    <state width="1750" height="275" key="GridCell.Tab.0.bottom" timestamp="1611532149584">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state width="1750" height="275" key="GridCell.Tab.0.bottom/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149584" />
-    <state width="1750" height="275" key="GridCell.Tab.0.center" timestamp="1611532149583">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state width="1750" height="275" key="GridCell.Tab.0.center/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149583" />
-    <state width="1750" height="275" key="GridCell.Tab.0.left" timestamp="1611532149582">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state width="1750" height="275" key="GridCell.Tab.0.left/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149582" />
-    <state width="1750" height="275" key="GridCell.Tab.0.right" timestamp="1611532149583">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state width="1750" height="275" key="GridCell.Tab.0.right/0.25.1792.1019@0.25.1792.1019" timestamp="1611532149583" />
-    <state x="594" y="241" key="RollbackChangesDialog" timestamp="1611532068030">
-      <screen x="0" y="25" width="1792" height="1019" />
-    </state>
-    <state x="594" y="241" key="RollbackChangesDialog/0.25.1792.1019@0.25.1792.1019" timestamp="1611532068030" />
-    <state x="496" y="261" key="Vcs.Push.Dialog.v2" timestamp="1611595131069">
-      <screen x="0" y="25" width="1792" height="1030" />
-    </state>
-    <state x="496" y="258" key="Vcs.Push.Dialog.v2/0.25.1792.1019@0.25.1792.1019" timestamp="1611590534129" />
-    <state x="496" y="258" key="Vcs.Push.Dialog.v2/0.25.1792.1021@0.25.1792.1021" timestamp="1611531824688" />
-    <state x="496" y="260" key="Vcs.Push.Dialog.v2/0.25.1792.1026@0.25.1792.1026" timestamp="1611593659223" />
-    <state x="496" y="261" key="Vcs.Push.Dialog.v2/0.25.1792.1030@0.25.1792.1030" timestamp="1611595131069" />
-    <state x="697" y="455" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1611595318157">
-      <screen x="0" y="25" width="1792" height="1030" />
-    </state>
-    <state x="697" y="452" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1023@0.25.1792.1023" timestamp="1611590649211" />
-    <state x="697" y="453" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1026@0.25.1792.1026" timestamp="1611591096016" />
-    <state x="697" y="455" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1792.1030@0.25.1792.1030" timestamp="1611595318157" />
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$Wesocket_Server.coverage" NAME="Wesocket Server Coverage Results" MODIFIED="1612032142376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>

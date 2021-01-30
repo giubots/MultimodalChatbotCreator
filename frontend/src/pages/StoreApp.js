@@ -17,11 +17,6 @@ export function StoreApp() {
     const [choice, setChoice] = useState();
     const [colorChoice, setColorChoice] = useState();
 
-    const [payment, setPayment] = useState();
-
-
-    console.log(payload);
-
     const process = [
         {
             key: "show_items",
@@ -180,6 +175,39 @@ export function StoreApp() {
                     <div style={styles.innerContainer}>
                         <Accordion style={{flex: 1, width: "100%"}}>
 
+                            {/** Address **/}
+
+                            <Accordion.Title
+                                active={payload["show_address"]}
+                                index={1}
+                            >
+                                <Components.OnClick
+                                    payload={{intent: "change_something", change: "address"}}
+                                >
+                                    <Icon name='dropdown'/>
+                                    Address
+                                </Components.OnClick>
+                            </Accordion.Title>
+                            <Accordion.Content active={payload["show_address"]}>
+                                <div style={styles.container}>
+                                    <Components.OnSubmit
+                                        intent={"give_address"}
+                                        keyType={"label"}
+                                    >
+                                        <Form style={{flexDirection: "column", flex: 1, display: "flex", alignItems: "center"}}>
+                                            <Form.Field>
+                                                <label>address</label>
+                                                <input style={{width: 700}} placeholder={'Type your address here'} type={'text'}/>
+                                            </Form.Field>
+                                            <Button style={{width: 200}} size={"normal"} type='submit'>Confirm</Button>
+                                        </Form>
+                                    </Components.OnSubmit>
+                                </div>
+
+                            </Accordion.Content>
+
+                            {/** Payment **/}
+
                             <Accordion.Title
                                 active={payload["show_payment"]}
                                 index={0}
@@ -191,65 +219,22 @@ export function StoreApp() {
                                 </Components.OnClick>
                             </Accordion.Title>
                             <Accordion.Content active={payload["show_payment"]}>
-                                <Components.OnSubmit payload={{payment}}>
-                                    <Form>
-                                        <Form.Group>
-                                            <Form.Radio
-                                                label='Credit card (ending with -5698)'
-                                                value='credit_card'
-                                                checked={payment === 'credit_card'}
-                                                onChange={() => setPayment("credit_card")}
-                                            />
-                                            <Form.Radio
-                                                label='PayPal account (gino@outlook.com)'
-                                                value='paypal'
-                                                checked={payment === 'paypal'}
-                                                onChange={() => setPayment("paypal")}
-                                            />
-                                            <Button type='submit'>Confirm</Button>
-                                        </Form.Group>
-                                    </Form>
-                                </Components.OnSubmit>
-                            </Accordion.Content>
-                            <Components.OnClick
-                                payload={{intent: "change_something", change: "address"}}
-                            >
-                                <Accordion.Title
-                                    active={payload["show_address"]}
-                                    index={1}
-                                >
-                                    <Icon name='dropdown'/>
-                                    Address
-                                </Accordion.Title>
-                            </Components.OnClick>
-
-                            <Accordion.Content active={payload["show_address"]}>
                                 <Components.OnSubmit
-                                    payload={{}}
+                                    keyType={"attribute"}
+                                    attributeName={"name"}
+                                    intent={"payment_details"}
+                                    blacklist={["submit"]}
                                 >
-                                    <Form>
-                                        <Form.Group widths={2}>
-                                            <Form.Field>
-                                                <label>First Name</label>
-                                                <input placeholder={'First Name'} type={'text'}/>
-                                            </Form.Field>
-                                            <Form.Field>
-                                                <label>Last Name</label>
-                                                <input placeholder={'Last Name'} type={'text'}/>
-                                            </Form.Field>
+                                    <Form style={{marginBottom: 40, marginTop: 20}}>
+                                        <Form.Group style={{flexDirection: "row", flex: 1, display: "flex", alignItems: "center"}}>
+                                            <Form.Input
+                                                style={{width: 700}}
+                                                placeholder='Credit card number'
+                                                name={"details"}
+                                                icon={"credit card"}
+                                            />
+                                            <Form.Button content='Submit' size={"big"}/>
                                         </Form.Group>
-                                        <Form.Group widths={2}>
-                                            <Form.Field>
-                                                <label>Address</label>
-                                                <input placeholder={'Address'} type={'text'}/>
-                                            </Form.Field>
-                                            <Form.Field>
-                                                <label>Phone</label>
-                                                <input placeholder={'Phone'} type={'text'}/>
-                                            </Form.Field>
-                                        </Form.Group>
-                                        <Form.Checkbox label='I agree to the Terms and Conditions'/>
-                                        <Button type='submit'>Confirm</Button>
                                     </Form>
                                 </Components.OnSubmit>
                             </Accordion.Content>

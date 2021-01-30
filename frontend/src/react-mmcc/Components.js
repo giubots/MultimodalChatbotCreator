@@ -22,6 +22,9 @@ function handleEvent(event, context, props, payload, text) {
         message["utterance"] = text;
     } else {
         message["payload"] = props.payload || payload;
+        if (props.intent) {
+            message.payload = {...message.payload, intent: props.intent};
+        }
     }
     props.onSend && props.onSend(message);
     console.log("[handleEvent]:", message);
@@ -70,6 +73,10 @@ OnClick.propTypes = {
      */
     payload: PropTypes.object.isRequired,
     /**
+     * Sets the intent field to be set in the payload.
+     */
+    intent: PropTypes.string,
+    /**
      * A callback function which triggers the send event.
      * @param: {Object} message The message ready to be sent.
      */
@@ -106,6 +113,11 @@ OnClick.propTypes = {
     disabled: PropTypes.bool,
 }
 
+OnClick.defaultProps = {
+    stopPropagation: false,
+    disabled: false,
+}
+
 /**
  * The onSubmit component handles all submit events passed through its children.
  */
@@ -133,28 +145,34 @@ const OnSubmit = (props) => {
                     // for each element in the form
                     for (let i = 0; i < e.target.length; i++) {
                         let t = e.target[i];
-                        let label;
-                        t.parentNode
-                            .childNodes.forEach((childNode) => {
-                                if (childNode.nodeName === 'LABEL') {
-                                    label = childNode.textContent
+
+                        if (!props.blacklist || !props.blacklist.includes(t.type)) {
+                            let value = (t.type === "checkbox" || t.type === "radio") ? t.checked : t.value;
+
+                            switch (props.keyType) {
+                                case "attribute": {
+                                    payload[t[props.attributeName]] = value;
+                                    break;
+                                }
+                                case "label": {
+                                    t.parentNode
+                                        .childNodes.forEach((child) => {
+                                            if (child.nodeName === 'LABEL') {
+                                                let label = child.textContent
+                                                payload[label] = value;
+                                            }
+                                        }
+                                    );
+                                    break;
+                                }
+                                case "custom": {
+                                    payload[`${props.customPrefix}${i}`] = value;
+                                    break;
+                                }
+                                default: {
+                                    break;
                                 }
                             }
-                        );
-                        /* t.parentNode should be formatted this way:
-                            <div class="field">
-                                <label>First Name</label>
-                                <input placeholder="First Name" type="text">
-                            </div>
-                        */
-                        let value = (t.type === "checkbox" || t.type === "radio") ? t.checked : t.value;
-                        if (t.name) {
-                            payload[t.name] = value;
-                        } else if (label)
-                        {
-                            payload[label] = value;
-                        } else {
-                            payload[`field_${i}`] = value;
                         }
                     }
                 }
@@ -183,6 +201,10 @@ OnSubmit.propTypes = {
      * It can be any object. Must be predefined in the process configuration.
      */
     payload: PropTypes.object.isRequired,
+    /**
+     * Sets the intent field to be set in the payload.
+     */
+    intent: PropTypes.string,
     /**
      * A callback function which triggers the send event.
      * @param: {Object} message The message ready to be sent.
@@ -213,6 +235,36 @@ OnSubmit.propTypes = {
      * Default is false.
      */
     disabled: PropTypes.bool,
+    /**
+     * Sets how to get the key name for the payload in the form.
+     * It can be set to "attribute", "label" or "custom".
+     */
+    keyType: PropTypes.string.isRequired,
+    /**
+     * Sets the name of the attribute from which get the key name
+     * for the payload in the form.
+     * It must be set in every input elements.
+     */
+    attributeName: PropTypes.string,
+    /**
+     * Sets the prefix of the custom key name
+     * for the payload in the form.
+     * It must be used if keyType is set to "custom".
+     */
+    customPrefix: PropTypes.string,
+    /**
+     * Sets the attribute input types whose names are to be
+     * excluded in the payload.
+     */
+    blacklist: PropTypes.arrayOf(PropTypes.string),
+}
+
+OnSubmit.defaultProps = {
+    keyType: "attribute",
+    attributeName: "name",
+    customPrefix: "",
+    blacklist: ["submit"],
+    disabled: false,
 }
 
 export default {OnClick, OnSubmit};
