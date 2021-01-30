@@ -21,7 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-/src/react-chatbot-ui/.SocketManager.js.swp
+/src/react-mmcc/.SocketManager.js.swp
 
 #cache
 .eslintcache

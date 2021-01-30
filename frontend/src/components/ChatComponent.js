@@ -1,24 +1,31 @@
-import {Form, Icon} from "semantic-ui-react";
+import {Icon} from "semantic-ui-react";
 import React, {useState, useEffect} from "react";
 import "../styles/Chat.css";
-import {Components, NetworkManager} from "../react-chatbot-ui";
+import {Components} from "../react-mmcc";
 
 export const ChatComponent = ({messagesProps, setMessagesProps}) => {
     const [visible, setVisible] = useState(false);
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState(undefined);
+    let messagesList = null;
 
     useEffect(() => {
         setMessages(messagesProps);
-    }, [messagesProps])
+        if (messagesList) {
+            messagesList.scrollTop = messagesList.scrollHeight;
+        }
+    }, [messagesProps, messages])
 
     return (
         <div style={styles.overlay}>
             {visible && (
                 <div style={styles.outerContainer}>
                     <div style={styles.innerContainer}>
-                        <div className='messages' style={{display: "flex"}} id='messageList'>
-                            <ul style={{width: "100%"}}>
+                        <div
+                            ref={r => messagesList = r}
+                            className='messages'
+                            style={{display: "flex"}}>
+                            <ul style={{width: "100%", paddingInlineStart: 0}}>
                                 {messages.map((m, i) => {
                                     return (
                                         <div key={i} className={`message ${m.from}`}>
@@ -38,18 +45,15 @@ export const ChatComponent = ({messagesProps, setMessagesProps}) => {
                             type={"utterance"}
                             payload={{data: message}}
                             onSend={() => setMessagesProps([...messages, {from: "from-me", message}])}
-                            //onOpen={() => {setMessages([...messages, {from: "Socket", message: message}])}}
-                            //onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
-
                         >
-                            <Form className={"input-container"}>
-                                <Form.Input
+                            <form className={"input-container"}>
+                                <input
                                     className={"input"}
                                     type={"text"}
                                     onChange={e => setMessage(e.target.value)}
                                     placeholder={"Type message"}
                                 />
-                                </Form>
+                            </form>
                         </Components.OnSubmit>
                     </div>
                 </div>)
@@ -81,7 +85,6 @@ const styles = {
         borderRadius: 10,
         height: 700,
         width: 500,
-        backgroundColor: "white",
         marginBottom: 10,
         border: '1px solid rgba(0, 0, 0, 0.25)',
     },

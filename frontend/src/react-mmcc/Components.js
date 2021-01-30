@@ -99,6 +99,11 @@ OnClick.propTypes = {
      * @param: {Object} event The received close event.
      */
     onClose: PropTypes.func,
+    /**
+     * Disables the activity of the OnClick
+     * Default is false.
+     */
+    disabled: PropTypes.bool,
 }
 
 /**
@@ -203,6 +208,11 @@ OnSubmit.propTypes = {
      * @param: {Object} event The received close event.
      */
     onClose: PropTypes.func,
+    /**
+     * Disables the activity of the OnSubmit
+     * Default is false.
+     */
+    disabled: PropTypes.bool,
 }
 
 export default {OnClick, OnSubmit};

@@ -6,8 +6,11 @@
 .messages {
   overflow-y: scroll;
   overflow-x: hidden;
-  flex-grow: 1;
+  flex: 1;
   padding: 20px;
+  width: 100%;
+  background-color: white;
+  border-radius: 10px;
 }
 
 .footer {
@@ -74,13 +77,13 @@
 
 .message {
   margin-bottom: 20px;
+  border-width: thin;
 }
 .message-body {
   max-width: 80%;
   display: inline-block;
   padding: 20px;
   background-color: #eee;
-  border: 1px;
   border-radius: 5px;
   padding-right: 50px;
   white-space: pre-wrap;

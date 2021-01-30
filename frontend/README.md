@@ -1,4 +1,5 @@
-# react-chatbot-ui
+# react-mmcc
+A Multi Modal Chatbot Creator adapter for React
 
 [![NPM](https://img.shields.io/npm/v/react-chatbot-ui.svg)](https://www.npmjs.com/package/react-chatbot-ui) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
@@ -11,7 +12,7 @@ To work with it, you need to set up a backend chatbot service before. More infor
 ## Install
 
 ```bash
-npm install --save react-chatbot-ui
+npm install --save react-mmcc
 ```
 
 ## Usage
@@ -85,6 +86,7 @@ The onClick component handles all click events passed through its children.
 | `type` | `String` | `event.type` | The type of the provided event. |
 | `payload` | `Object` | `{}` | The payload to be sent. It can be any object. Must be predefined in the process configuration. |
 | `stopPropagation` | `boolean` | `false` | A boolean which stops the down propagation of the click event to children. |
+| `disabled` | `boolean` | `false` | A boolean which disables the activity of the OnClick. |
 
 #### Events
 | Event | Returns  | Note |
@@ -104,6 +106,7 @@ The onClick component handles all click events passed through its children.
 | --- | --- | --- | --- |
 | `type` | `String` | `event.type` | The type of the provided event. As onSubmit can be used for wrapping all kinds of forms, it can be useful to specify the type "utterance" the form is used just to handle input. In this case it must be provided with the first child as `<input type="text" />` |
 | `payload` | `Object` | `{}` | The payload to be sent. It can be any object. Must be predefined in the process configuration. |
+| `disabled` | `boolean` | `false` | A boolean which disables the activity of the OnSubmit. |
 
 #### Events
 | Event | Returns  | Note |

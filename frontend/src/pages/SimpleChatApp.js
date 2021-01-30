@@ -1,17 +1,12 @@
 import "../styles/Chat.css";
-import React, {useState, useEffect} from "react";
-import {NetworkManager, Components} from "../react-chatbot-ui";
+import React, {useState} from "react";
+import {NetworkManager, Components} from "../react-mmcc";
 
 const SimpleChatApp = () => {
 
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState(undefined);
     const uid = sessionStorage.getItem("uid");
-
-    /*useEffect(() => {
-            let elem = document.getElementById('messageList');
-            elem.scrollTop = elem.scrollHeight;
-    }, [messages])*/
 
     return (
         <>
