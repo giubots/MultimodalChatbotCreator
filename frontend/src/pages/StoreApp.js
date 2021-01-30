@@ -159,6 +159,8 @@ export function StoreApp() {
                             <Button
                                 disabled={!payload["custom_completed"]}
                                 style={styles.button}
+                                color={"yellow"}
+                                size={"big"}
                             >
                                 <Icon name={"angle double down"}/>
                                 Continue
@@ -254,7 +256,7 @@ export function StoreApp() {
                         <Components.OnClick
                             payload={{intent: "change_nothing"}}
                         >
-                            <Button style={styles.button}>
+                            <Button color={"yellow"} style={styles.button} size={"big"}>
                                 <Icon name={"angle double down"}/>
                                 Continue
                             </Button>

@@ -17,10 +17,6 @@ export const data = [
                 key: "L",
                 name: "Large"
             },
-            {
-                key: "XL",
-                name: "Extra Large"
-            }
         ],
         colors: [
             {
