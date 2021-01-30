@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Components, NetworkManager} from "../react-mmcc";
 import 'semantic-ui-css/semantic.min.css'
-import {Accordion, Icon, Card, Image, Button, Label, Form} from 'semantic-ui-react'
+import {Accordion, Icon, Card, Image, Button, Label, Form, Table} from 'semantic-ui-react'
 import {ChatComponent} from "../components/ChatComponent";
 import {data} from "../Constants";
 
@@ -27,9 +27,7 @@ export function StoreApp() {
                         {data.map((item, index) => {
                             return (
                                 <div key={index}>
-                                    <Components.OnClick
-                                        payload={{intent: "state_preference", preference: item.key}}
-                                    >
+                                    <Components.OnClick payload={{intent: "state_preference", preference: item.key}}>
                                         <Card
                                             raised={choice === index}
                                             onClick={() => {
@@ -37,10 +35,15 @@ export function StoreApp() {
                                                     setChoice(index);
                                                 }
                                             }}
-                                            style={{margin: 20}}
+                                            style={{margin: 20,}}
                                         >
-                                            <Image src={item.source} disabled={!item.availability}
-                                                   style={{margin: 10}}/>
+                                            <Image
+                                                src={item.source} disabled={!item.availability}
+                                                style={{
+                                                    margin: 10,
+                                                    cursor: !item.availability && "not-allowed",
+                                                }}
+                                            />
                                             <Card.Content style={{height: 70}}>
                                                 <Card.Header>{item.name}</Card.Header>
                                             </Card.Content>
@@ -131,9 +134,7 @@ export function StoreApp() {
                                             >
                                                 <Card
                                                     style={{margin: 20}}
-                                                    onClick={() => {
-                                                        setColorChoice(index)
-                                                    }}
+                                                    onClick={() => setColorChoice(index)}
                                                     raised={colorChoice === index}
                                                 >
                                                     <Image src={color.source} style={{margin: 10}}/>
@@ -194,10 +195,16 @@ export function StoreApp() {
                                         intent={"give_address"}
                                         keyType={"label"}
                                     >
-                                        <Form style={{flexDirection: "column", flex: 1, display: "flex", alignItems: "center"}}>
+                                        <Form style={{
+                                            flexDirection: "column",
+                                            flex: 1,
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}>
                                             <Form.Field>
                                                 <label>address</label>
-                                                <input style={{width: 700}} placeholder={'Type your address here'} type={'text'}/>
+                                                <input style={{width: 700}} placeholder={'Type your address here'}
+                                                       type={'text'}/>
                                             </Form.Field>
                                             <Button style={{width: 200}} size={"normal"} type='submit'>Confirm</Button>
                                         </Form>
@@ -226,7 +233,12 @@ export function StoreApp() {
                                     blacklist={["submit"]}
                                 >
                                     <Form style={{marginBottom: 40, marginTop: 20}}>
-                                        <Form.Group style={{flexDirection: "row", flex: 1, display: "flex", alignItems: "center"}}>
+                                        <Form.Group style={{
+                                            flexDirection: "row",
+                                            flex: 1,
+                                            display: "flex",
+                                            alignItems: "center"
+                                        }}>
                                             <Form.Input
                                                 style={{width: 700}}
                                                 placeholder='Credit card number'
@@ -255,8 +267,58 @@ export function StoreApp() {
             key: "complete",
             title: "Summary",
             content: () => {
+                let purchase = payload["useful_variables"];
+                let item = data.find(e => e.key === purchase?.item);
+                let color = item?.colors.find(c => c.key === purchase?.color)
+
                 return (
-                    <Button>Complete purchase</Button>
+                    <>
+                        {item && (
+                            <div style={styles.container}>
+                                <Table definition style={{margin: 10}}>
+                                    <Table.Header>
+                                        <Table.Row>
+                                            <Table.HeaderCell />
+                                            <Table.HeaderCell>Your purchase details</Table.HeaderCell>
+                                        </Table.Row>
+                                    </Table.Header>
+
+                                    <Table.Body>
+                                        <Table.Row>
+                                            <Table.Cell>Item name</Table.Cell>
+                                            <Table.Cell>{item.name}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Size</Table.Cell>
+                                            <Table.Cell>{purchase.size}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Color</Table.Cell>
+                                            <Table.Cell>{color.name}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Delivery address</Table.Cell>
+                                            <Table.Cell>{purchase.address}</Table.Cell>
+                                        </Table.Row>
+                                        <Table.Row>
+                                            <Table.Cell>Payment details</Table.Cell>
+                                            <Table.Cell>{purchase.payment}</Table.Cell>
+                                        </Table.Row>
+                                    </Table.Body>
+                                </Table>
+                                <Card style={{margin: 10}}>
+                                    <Image src={color.source} style={{margin: 10}}/>
+                                    <Card.Content style={{height: 35}}>
+                                        <Card.Header>
+                                            <Label as='a' tag color={color.key}>
+                                                {color.name}
+                                            </Label>
+                                        </Card.Header>
+                                    </Card.Content>
+                                </Card>
+                            </div>
+                        )}
+                    </>
                 );
             }
         },
@@ -289,18 +351,23 @@ export function StoreApp() {
                     onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
                 >
                     <div style={{...styles.container, marginTop: 30}}>
-                        <Accordion style={{width: 1000}} styled>
+                        <Accordion style={{width: 1200}} styled>
                             {process.map((e, i) => {
+                                let active = payload[e.key];
                                 return (
                                     <>
                                         <Accordion.Title
-                                            active={payload[e.key]}
+                                            style={{
+                                                backgroundColor: !active && "whitesmoke",
+                                                cursor: !active && "not-allowed",
+                                            }}
+                                            active={active}
                                             index={i}
                                         >
                                             <Icon name='dropdown'/>
                                             {e.title}
                                         </Accordion.Title>
-                                        <Accordion.Content active={payload[e.key]}>
+                                        <Accordion.Content active={active}>
                                             {e.content()}
                                         </Accordion.Content>
                                     </>
@@ -309,7 +376,7 @@ export function StoreApp() {
                         </Accordion>
 
                     </div>
-                    <div>
+                    {/*<div>
                         PAYLOAD:
                         {Object.keys(payload).map(k => {
                             return (
@@ -319,7 +386,7 @@ export function StoreApp() {
                                 </div>
                             );
                         })}
-                    </div>
+                    </div>*/}
                     <ChatComponent messagesProps={messages} setMessagesProps={(messages => setMessages(messages))}/>
                 </NetworkManager>
             }

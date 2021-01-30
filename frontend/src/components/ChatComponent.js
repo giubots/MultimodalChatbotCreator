@@ -65,6 +65,9 @@ export const ChatComponent = ({messagesProps, setMessagesProps}) => {
                 color={'teal'}
                 size={"big"}
                 name='chat'
+                style={{
+                    boxShadow: "0px 4px 13px 6px rgba(0,0,0,0.20)",
+                }}
             />
         </div>
     );
@@ -87,6 +90,7 @@ const styles = {
         width: 500,
         marginBottom: 10,
         border: '1px solid rgba(0, 0, 0, 0.25)',
+        boxShadow: "0px 4px 30px 6px rgba(0,0,0,0.20)",
     },
     innerContainer: {
         display: "flex",

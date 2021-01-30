@@ -26,7 +26,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ChatComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ChatComponent.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,7 +148,7 @@
       <workItem from="1611769557068" duration="255000" />
       <workItem from="1611947328460" duration="2487000" />
       <workItem from="1611955376025" duration="6936000" />
-      <workItem from="1612021599161" duration="12377000" />
+      <workItem from="1612021599161" duration="17662000" />
     </task>
     <task id="LOCAL-00001" summary="added library framework and README.md">
       <created>1611531697020</created>
@@ -238,7 +241,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612035868352</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="fixes #2">
+      <created>1612036040716</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1612036040716</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -279,7 +289,8 @@
     <MESSAGE value="controlled with payloads" />
     <MESSAGE value="fixed styles and triggering opening" />
     <MESSAGE value="fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixes" />
+    <MESSAGE value="fixes #2" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixes #2" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
