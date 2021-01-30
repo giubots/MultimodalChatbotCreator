@@ -13,7 +13,7 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
     """
 
     info = {}
-    if (
+    if (  # choose_info is 1
           (state == "customize" and action == "skip") or
           (state == "change_info" and action != "end") or
           action == "change_info"
@@ -22,7 +22,7 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
             "last_address": context["address"],
             "last_payment": context["details"]
         }
-    elif action == "end":
+    elif action == "end":  # complete is 1
         info = {
             "item": context["item"],
             "size": context["size"],
@@ -41,16 +41,16 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
         ),  # [] choose to change size or color
         "show_size": int(state == "customize" and action == "size"),  # [] change size
         "show_color": int(state == "customize" and action == "color"),  # [] change color
-        "custom_completed": int(  # this means if we are selecting size and we already have the color, and vice versa
+        "custom_completed": int(  # this means if we have selected size and we already have the color, and vice versa
             (state == "select_size" and action == "color") or
             (state == "select_color" and action == "size")
         ),  # [] proceed to choose info when he clicks on continue (because both color/size has already been chosen)
-            # so the user can choose go to choose info
-        "choose_info": int(  # this means if we are selecting size and we already have the color, and vice versa
+            # so the user can choose go to change info
+        "choose_info": int(  # this means that he went from customize to here (clicking continue)
             (state == "customize" and action == "skip") or
             (state == "change_info" and action != "end") or
             action == "change_info"
-        ),  # [] go to the next step to choose if he wants to change address or payment info
+        ),  # [] choose to change address or payment info
         "show_address": int(state == "change_info" and action == "address"),
         "show_payment": int(state == "change_info" and action == "payment"),
         "complete": int(action == "end")
