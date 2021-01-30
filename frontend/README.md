@@ -85,6 +85,7 @@ The onClick component handles all click events passed through its children.
 | --- | --- | --- | --- |
 | `type` | `String` | `event.type` | The type of the provided event. |
 | `payload` | `Object` | `{}` | The payload to be sent. It can be any object. Must be predefined in the process configuration. |
+| `intent` | `string` | `undefined` | Sets the intent field to be set in the payload. |
 | `stopPropagation` | `boolean` | `false` | A boolean which stops the down propagation of the click event to children. |
 | `disabled` | `boolean` | `false` | A boolean which disables the activity of the OnClick. |
 
@@ -106,6 +107,7 @@ The onClick component handles all click events passed through its children.
 | --- | --- | --- | --- |
 | `type` | `String` | `event.type` | The type of the provided event. As onSubmit can be used for wrapping all kinds of forms, it can be useful to specify the type "utterance" the form is used just to handle input. In this case it must be provided with the first child as `<input type="text" />` |
 | `payload` | `Object` | `{}` | The payload to be sent. It can be any object. Must be predefined in the process configuration. |
+| `intent` | `string` | `undefined` | Sets the intent field to be set in the payload. |
 | `disabled` | `boolean` | `false` | A boolean which disables the activity of the OnSubmit. |
 | `keyType` | `"attribute"` &#124; `"label"` &#124; `"custom"`  | `"attribute"` | Sets how to get the key name for the payload in the form. |
 | `attributeName` | `string` | `"name"` | Sets the name of the attribute from which get the key name for the payload in the form |
