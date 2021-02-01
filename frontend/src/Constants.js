@@ -32,7 +32,7 @@ export const data = [
             {
                 source: "https://www.supremecommunity.com/u/season/add/20201203017859abdba3487da8e720fb11ac402b_sqr.jpg",
                 key: "violet",
-                name: "Purple",
+                name: "Violet",
             },
         ]
     },

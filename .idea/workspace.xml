@@ -76,20 +76,7 @@
       <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Wesocket Server">
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="npm.start">
     <configuration name="Wesocket Server" type="PythonConfigurationType" factoryName="Python">
       <module name="MultimodalChatbotCreator" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -112,6 +99,21 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="" />
+          <option name="buildCliOptions" value="" />
+          <option name="buildOnly" value="true" />
+          <option name="command" value="" />
+          <option name="containerName" value="" />
+          <option name="entrypoint" value="" />
+          <option name="commandLineOptions" value="" />
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="js.build_tools.npm">
       <command value="start" />
       <node-interpreter value="project" />
@@ -128,7 +130,13 @@
     <list>
       <item itemvalue="npm.start" />
       <item itemvalue="Python.Wesocket Server" />
+      <item itemvalue="Docker.Dockerfile" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Docker.Dockerfile" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -147,7 +155,9 @@
       <workItem from="1611769557068" duration="255000" />
       <workItem from="1611947328460" duration="2487000" />
       <workItem from="1611955376025" duration="6936000" />
-      <workItem from="1612021599161" duration="17997000" />
+      <workItem from="1612021599161" duration="18037000" />
+      <workItem from="1612213697353" duration="559000" />
+      <workItem from="1612214330922" duration="2611000" />
     </task>
     <task id="LOCAL-00001" summary="added library framework and README.md">
       <created>1611531697020</created>
@@ -254,7 +264,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612044922790</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="finished frontend #2">
+      <created>1612045206638</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1612045206638</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -297,13 +314,14 @@
     <MESSAGE value="fixes" />
     <MESSAGE value="fixes #2" />
     <MESSAGE value="finished frontend" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished frontend" />
+    <MESSAGE value="finished frontend #2" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished frontend #2" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
     <select />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$Wesocket_Server.coverage" NAME="Wesocket Server Coverage Results" MODIFIED="1612032142376" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
+    <SUITE FILE_PATH="coverage/MultimodalChatbotCreator$Wesocket_Server.coverage" NAME="Wesocket Server Coverage Results" MODIFIED="1612214639544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/backend" />
   </component>
 </project>

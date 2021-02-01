@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Components, NetworkManager} from "../react-mmcc";
 import 'semantic-ui-css/semantic.min.css'
-import {Accordion, Icon, Card, Image, Button, Label, Form, Table} from 'semantic-ui-react'
+import {Accordion, Icon, Card, Image, Button, Label, Form, Table, Message} from 'semantic-ui-react'
 import {ChatComponent} from "../components/ChatComponent";
 import {data} from "../Constants";
 
@@ -9,6 +9,7 @@ import {data} from "../Constants";
 export function StoreApp() {
 
     const [messages, setMessages] = useState([]);
+    const [incomingMessage, setIncomingMessage] = useState("");
     const [payload, setPayload] = useState({});
     const uid = sessionStorage.getItem("uid");
 
@@ -23,40 +24,46 @@ export function StoreApp() {
             title: "Choose the item to buy",
             content: () => {
                 return (
-                    <div style={styles.container}>
-                        {data.map((item, index) => {
-                            return (
-                                <div key={index}>
-                                    <Components.OnClick payload={{intent: "state_preference", preference: item.key}}>
-                                        <Card
-                                            raised={choice === index}
-                                            onClick={() => {
-                                                if (item.availability) {
-                                                    setChoice(index);
-                                                }
-                                            }}
-                                            style={{margin: 20,}}
+                    <>
+                        <div style={styles.container}>
+                            {data.map((item, index) => {
+                                return (
+                                    <div key={index}>
+                                        <Components.OnClick
+                                            disabled={!item.availability}
+                                            payload={{intent: "state_preference", preference: item.key}}
                                         >
-                                            <Image
-                                                src={item.source} disabled={!item.availability}
-                                                style={{
-                                                    margin: 10,
-                                                    cursor: !item.availability && "not-allowed",
+                                            <Card
+                                                raised={choice === index}
+                                                onClick={() => {
+                                                    if (item.availability) {
+                                                        setChoice(index);
+                                                    }
                                                 }}
-                                            />
-                                            <Card.Content style={{height: 70}}>
-                                                <Card.Header>{item.name}</Card.Header>
-                                            </Card.Content>
-                                            <Card.Content extra>
-                                                <Icon name={item.availability ? 'check' : "remove"}/>
-                                                {item.availability || "No"} pairs available
-                                            </Card.Content>
-                                        </Card>
-                                    </Components.OnClick>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                                style={{margin: 20,}}
+                                            >
+                                                <Image
+                                                    src={item.source} disabled={!item.availability}
+                                                    style={{
+                                                        margin: 10,
+                                                        cursor: !item.availability && "not-allowed",
+                                                    }}
+                                                />
+                                                <Card.Content style={{height: 70}}>
+                                                    <Card.Header>{item.name}</Card.Header>
+                                                </Card.Content>
+                                                <Card.Content extra>
+                                                    <Icon name={item.availability ? 'check' : "remove"}/>
+                                                    {item.availability || "No"} pairs available
+                                                </Card.Content>
+                                            </Card>
+                                        </Components.OnClick>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </>
+
                 );
             },
         },
@@ -73,8 +80,13 @@ export function StoreApp() {
                             <Accordion.Title
                                 active={payload["show_size"]}
                                 index={0}
+                                style={{
+                                    backgroundColor: payload["show_color"] === 1 && "whitesmoke",
+                                    cursor: payload["show_color"] === 1 && "not-allowed",
+                                }}
                             >
                                 <Components.OnClick
+                                    disabled={payload["show_color"] === 1}
                                     payload={{intent: "change_something", change: "size"}}
                                 >
                                     <Icon name='dropdown'/>
@@ -111,11 +123,16 @@ export function StoreApp() {
                             {/** Color **/}
 
                             <Components.OnClick
+                                disabled={payload["show_size"] === 1}
                                 payload={{intent: "change_something", change: "color"}}
                             >
                                 <Accordion.Title
                                     active={payload["show_color"]}
                                     index={1}
+                                    style={{
+                                        backgroundColor: payload["show_size"] === 1 && "whitesmoke",
+                                        cursor: payload["show_size"] === 1 && "not-allowed",
+                                    }}
                                 >
                                     <Icon name='dropdown'/>
                                     Choose color
@@ -174,94 +191,121 @@ export function StoreApp() {
             key: "choose_info",
             title: "Details",
             content: () => {
+                if (payload["useful_variables"] && Object.keys(payload["useful_variables"]).length) {
+                    var payment = payload["useful_variables"].last_payment
+                    var address = payload["useful_variables"].last_address
+                }
                 return (
-                    <div style={styles.innerContainer}>
-                        <Accordion style={{flex: 1, width: "100%"}}>
+                    <>
+                        {(payment && address) && <Message info>
+                            <Message.Header>Last information inserted</Message.Header>
+                            <Message.List
+                                items={[
+                                    "Payment: " + payment,
+                                    "Address: " + address,
+                                ]}
+                            />
+                        </Message>}
+                        <div style={styles.innerContainer}>
+                            <Accordion style={{flex: 1, width: "100%"}}>
 
-                            {/** Address **/}
+                                {/** Address **/}
 
-                            <Accordion.Title
-                                active={payload["show_address"]}
-                                index={1}
-                            >
-                                <Components.OnClick
-                                    payload={{intent: "change_something", change: "address"}}
+                                <Accordion.Title
+                                    active={payload["show_address"]}
+                                    index={1}
+                                    style={{
+                                        backgroundColor: payload["show_payment"] === 1 && "whitesmoke",
+                                        cursor: payload["show_payment"] === 1 && "not-allowed",
+                                    }}
                                 >
-                                    <Icon name='dropdown'/>
-                                    Address
-                                </Components.OnClick>
-                            </Accordion.Title>
-                            <Accordion.Content active={payload["show_address"]}>
-                                <div style={styles.container}>
-                                    <Components.OnSubmit
-                                        intent={"give_address"}
-                                        keyType={"label"}
+                                    <Components.OnClick
+                                        disabled={payload["show_payment"] === 1}
+                                        payload={{intent: "change_something", change: "address"}}
                                     >
-                                        <Form style={{
-                                            flexDirection: "column",
-                                            flex: 1,
-                                            display: "flex",
-                                            alignItems: "center"
-                                        }}>
-                                            <Form.Field>
-                                                <label>address</label>
-                                                <input style={{width: 700}} placeholder={'Type your address here'}
-                                                       type={'text'}/>
-                                            </Form.Field>
-                                            <Button style={{width: 200}} size={"normal"} type='submit'>Confirm</Button>
+                                        <Icon name='dropdown'/>
+                                        Address
+                                    </Components.OnClick>
+                                </Accordion.Title>
+                                <Accordion.Content active={payload["show_address"]}>
+                                    <div style={styles.container}>
+                                        <Components.OnSubmit
+                                            intent={"give_address"}
+                                            keyType={"label"}
+                                        >
+                                            <Form style={{
+                                                flexDirection: "column",
+                                                flex: 1,
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}>
+                                                <Form.Field>
+                                                    <label>address</label>
+                                                    <input style={{width: 700}} placeholder={'Type your address here'}
+                                                           type={'text'}/>
+                                                </Form.Field>
+                                                <Button style={{width: 200}} size={"normal"}
+                                                        type='submit'>Confirm</Button>
+                                            </Form>
+                                        </Components.OnSubmit>
+                                    </div>
+
+                                </Accordion.Content>
+
+                                {/** Payment **/}
+
+                                <Accordion.Title
+                                    active={payload["show_payment"]}
+                                    index={0}
+                                    style={{
+                                        backgroundColor: payload["show_address"] === 1 && "whitesmoke",
+                                        cursor: payload["show_address"] === 1 && "not-allowed",
+                                    }}
+                                >
+                                    <Components.OnClick
+                                        disabled={payload["show_address"] === 1}
+                                        payload={{intent: "change_something", change: "payment"}}>
+                                        <Icon name='dropdown'/>
+                                        Payment method
+                                    </Components.OnClick>
+                                </Accordion.Title>
+                                <Accordion.Content active={payload["show_payment"]}>
+                                    <Components.OnSubmit
+                                        keyType={"attribute"}
+                                        attributeName={"name"}
+                                        intent={"payment_details"}
+                                        blacklist={["submit"]}
+                                    >
+                                        <Form style={{marginBottom: 40, marginTop: 20}}>
+                                            <Form.Group style={{
+                                                flexDirection: "row",
+                                                flex: 1,
+                                                display: "flex",
+                                                alignItems: "center"
+                                            }}>
+                                                <Form.Input
+                                                    style={{width: 700}}
+                                                    placeholder='Credit card number'
+                                                    name={"details"}
+                                                    icon={"credit card"}
+                                                />
+                                                <Form.Button content='Submit' size={"big"}/>
+                                            </Form.Group>
                                         </Form>
                                     </Components.OnSubmit>
-                                </div>
-
-                            </Accordion.Content>
-
-                            {/** Payment **/}
-
-                            <Accordion.Title
-                                active={payload["show_payment"]}
-                                index={0}
+                                </Accordion.Content>
+                            </Accordion>
+                            <Components.OnClick
+                                payload={{intent: "change_nothing"}}
                             >
-                                <Components.OnClick
-                                    payload={{intent: "change_something", change: "payment"}}>
-                                    <Icon name='dropdown'/>
-                                    Payment method
-                                </Components.OnClick>
-                            </Accordion.Title>
-                            <Accordion.Content active={payload["show_payment"]}>
-                                <Components.OnSubmit
-                                    keyType={"attribute"}
-                                    attributeName={"name"}
-                                    intent={"payment_details"}
-                                    blacklist={["submit"]}
-                                >
-                                    <Form style={{marginBottom: 40, marginTop: 20}}>
-                                        <Form.Group style={{
-                                            flexDirection: "row",
-                                            flex: 1,
-                                            display: "flex",
-                                            alignItems: "center"
-                                        }}>
-                                            <Form.Input
-                                                style={{width: 700}}
-                                                placeholder='Credit card number'
-                                                name={"details"}
-                                                icon={"credit card"}
-                                            />
-                                            <Form.Button content='Submit' size={"big"}/>
-                                        </Form.Group>
-                                    </Form>
-                                </Components.OnSubmit>
-                            </Accordion.Content>
-                        </Accordion>
-                        <Components.OnClick
-                            payload={{intent: "change_nothing"}}
-                        >
-                            <Button color={"yellow"} style={styles.button} size={"big"}>
-                                <Icon name={"angle double down"}/>
-                                Continue
-                            </Button>
-                        </Components.OnClick>
-                    </div>
+                                <Button color={"yellow"} style={styles.button} size={"big"}>
+                                    <Icon name={"angle double down"}/>
+                                    Continue
+                                </Button>
+                            </Components.OnClick>
+                        </div>
+                    </>
+
                 );
             }
         },
@@ -280,7 +324,7 @@ export function StoreApp() {
                                 <Table definition style={{margin: 10}}>
                                     <Table.Header>
                                         <Table.Row>
-                                            <Table.HeaderCell />
+                                            <Table.HeaderCell/>
                                             <Table.HeaderCell>Your purchase details</Table.HeaderCell>
                                         </Table.Row>
                                     </Table.Header>
@@ -347,6 +391,7 @@ export function StoreApp() {
                     onMessage={(m) => {
                         setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}]);
                         setPayload(JSON.parse(m).payload);
+                        setIncomingMessage(JSON.parse(m).utterance);
                     }}
                     onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
                     onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
@@ -370,6 +415,11 @@ export function StoreApp() {
                                             {e.title}
                                         </Accordion.Title>
                                         <Accordion.Content active={active}>
+                                            {i !== process.length - 1 && <Message
+                                                style={{height: 60}}
+                                                floating
+                                                header={incomingMessage}
+                                            />}
                                             {e.content()}
                                         </Accordion.Content>
                                     </>
