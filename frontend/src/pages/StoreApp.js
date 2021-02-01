@@ -229,7 +229,7 @@ export function StoreApp() {
                                         payload={{intent: "change_something", change: "address"}}
                                     >
                                         <Icon name='dropdown'/>
-                                        Address
+                                        Shipping address
                                     </Components.OnClick>
                                 </Accordion.Title>
                                 <Accordion.Content active={payload["show_address"]}>
@@ -271,7 +271,7 @@ export function StoreApp() {
                                         disabled={payload["show_address"] === 1}
                                         payload={{intent: "change_something", change: "payment"}}>
                                         <Icon name='dropdown'/>
-                                        Payment method
+                                        Payment details
                                     </Components.OnClick>
                                 </Accordion.Title>
                                 <Accordion.Content active={payload["show_payment"]}>
