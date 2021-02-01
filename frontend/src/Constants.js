@@ -22,7 +22,7 @@ export const data = [
             {
                 source: "https://www.supremecommunity.com/u/season/fall-winter2020/sweatshirts/details/9d39875acfc240cb998112c6d3ed487d_sqr.jpg",
                 key: "grey",
-                name: "Heather Grey",
+                name: "Grey",
             },
             {
                 source: "https://www.supremecommunity.com/u/season/add/202012033aa47654094d4deb8df2cf28ccd37b17_sqr.jpg",

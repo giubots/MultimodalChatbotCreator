@@ -3,7 +3,7 @@
  * This file contains all wrappers to be added to the pre-existing
  * ui elements in order to add network functionalities.
  *
- * @version 1.1.0
+ * @version 1.2.0
  * @author [Davide Savoldelli](https://github.com/savdav96)
  */
 
@@ -267,4 +267,5 @@ OnSubmit.defaultProps = {
     disabled: false,
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {OnClick, OnSubmit};

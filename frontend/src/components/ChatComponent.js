@@ -56,7 +56,8 @@ export const ChatComponent = ({messagesProps, setMessagesProps}) => {
                             </form>
                         </Components.OnSubmit>
                     </div>
-                </div>)
+                </div>
+            )
             }
             <Icon
                 onClick={() => setVisible(!visible)}
@@ -91,6 +92,7 @@ const styles = {
         marginBottom: 10,
         border: '1px solid rgba(0, 0, 0, 0.25)',
         boxShadow: "0px 4px 30px 6px rgba(0,0,0,0.20)",
+        overflow: "hidden",
     },
     innerContainer: {
         display: "flex",

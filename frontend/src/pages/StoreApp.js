@@ -197,14 +197,19 @@ export function StoreApp() {
                 }
                 return (
                     <>
-                        {(payment && address) && <Message info>
-                            <Message.Header>Last information inserted</Message.Header>
-                            <Message.List
-                                items={[
-                                    "Payment: " + payment,
-                                    "Address: " + address,
-                                ]}
-                            />
+                        {(payment && address) && <Message icon info>
+                            <Icon name={"hand point right outline"} />
+                            <Message.Content>
+                                <Message.Header>We already have this info!</Message.Header>
+                                <Message.List
+                                    items={[
+                                        "Payment: " + payment,
+                                        "Address: " + address,
+                                    ]}
+                                />
+                                <p>If you don't need any change, you can click continue</p>
+                            </Message.Content>
+
                         </Message>}
                         <div style={styles.innerContainer}>
                             <Accordion style={{flex: 1, width: "100%"}}>
@@ -397,7 +402,7 @@ export function StoreApp() {
                     onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
                     onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
                 >
-                    <div style={{...styles.container, marginTop: 30}}>
+                    <div style={{...styles.container, paddingTop: 100}}>
                         <Accordion style={{width: 1200}} styled>
                             {process.map((e, i) => {
                                 let active = payload[e.key];

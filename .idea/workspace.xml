@@ -27,8 +27,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/examples/demo/my_kb.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/Constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/Constants.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ChatComponent.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/ChatComponent.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/styles/Chat.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/styles/Chat.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +46,6 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="JupyterTrust" id="5117ae68-666c-4aad-9a15-80ba4d64387b" />
   <component name="ProjectId" id="1nXCs5VY1Sb6XVNt9W7xo560fok" />
@@ -128,9 +130,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Docker.Dockerfile" />
       <item itemvalue="npm.start" />
       <item itemvalue="Python.Wesocket Server" />
-      <item itemvalue="Docker.Dockerfile" />
     </list>
     <recent_temporary>
       <list>
@@ -157,7 +159,7 @@
       <workItem from="1611955376025" duration="6936000" />
       <workItem from="1612021599161" duration="18037000" />
       <workItem from="1612213697353" duration="559000" />
-      <workItem from="1612214330922" duration="2611000" />
+      <workItem from="1612214330922" duration="4026000" />
     </task>
     <task id="LOCAL-00001" summary="added library framework and README.md">
       <created>1611531697020</created>
@@ -271,7 +273,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612045206638</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="fixed some stuff">
+      <created>1612217136356</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1612217136356</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -315,7 +324,8 @@
     <MESSAGE value="fixes #2" />
     <MESSAGE value="finished frontend" />
     <MESSAGE value="finished frontend #2" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished frontend #2" />
+    <MESSAGE value="fixed some stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some stuff" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
