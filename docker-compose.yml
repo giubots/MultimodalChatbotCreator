@@ -3,19 +3,24 @@ services:
   mmcc:
     image: giubots/mmcc
     volumes:
+
+    # This should point to your configuration files. Do not change the part on the right of the colon.
      - ./demo/config:/usr/src/mmcc/config
+
     ports:
       - 8765:8765
   rasa:
     image: rasa/rasa:2.2.6-full
-    ports:
-      - 5005:5005
     volumes:
+
+    # This should point to your Rasa project folder. Below change your trained nlu model.
       - ./demo/rasa:/app
     command: >
       run
       --enable-api
       -m models/nlu-20210201-191322.tar.gz
+
+# Remove the following if you are not running the demo
   frontend:
     build: ./frontend/.
     ports:
