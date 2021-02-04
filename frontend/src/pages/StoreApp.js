@@ -17,6 +17,7 @@ export function StoreApp() {
 
     const [choice, setChoice] = useState();
     const [colorChoice, setColorChoice] = useState();
+    const [error, setError] = useState();
 
     const process = [
         {
@@ -40,7 +41,7 @@ export function StoreApp() {
                                                         setChoice(index);
                                                     }
                                                 }}
-                                                style={{margin: 20,}}
+                                                style={{margin: 20}}
                                             >
                                                 <Image
                                                     src={item.source} disabled={!item.availability}
@@ -54,7 +55,7 @@ export function StoreApp() {
                                                 </Card.Content>
                                                 <Card.Content extra>
                                                     <Icon name={item.availability ? 'check' : "remove"}/>
-                                                    {item.availability || "No"} pairs available
+                                                    {item.availability || "No"} items available
                                                 </Card.Content>
                                             </Card>
                                         </Components.OnClick>
@@ -197,17 +198,18 @@ export function StoreApp() {
                 }
                 return (
                     <>
-                        {(payment && address) && <Message icon info>
-                            <Icon name={"hand point right outline"} />
+                        {(payment || address) && <Message icon info>
+                            <Icon name={"hand point right outline"}/>
                             <Message.Content>
                                 <Message.Header>We already have this info!</Message.Header>
                                 <Message.List
                                     items={[
-                                        "Payment: " + payment,
-                                        "Address: " + address,
+                                        payment && "Payment: " + payment,
+                                        address && "Address: " + address,
                                     ]}
                                 />
-                                <p>If you don't need any change, you can click continue</p>
+                                <br/>
+                                <em>If you don't need to change anything, you can click on "Continue" button.</em>
                             </Message.Content>
 
                         </Message>}
@@ -398,52 +400,42 @@ export function StoreApp() {
                         setPayload(JSON.parse(m).payload);
                         setIncomingMessage(JSON.parse(m).utterance);
                     }}
-                    onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
-                    onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
-                    onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
+                    onError={(err) => setError(err)}
+                    onOpen={() => setError(undefined)}
                 >
                     <div style={{...styles.container, paddingTop: 100}}>
-                        <Accordion style={{width: 1200}} styled>
-                            {process.map((e, i) => {
-                                let active = payload[e.key];
-                                return (
-                                    <>
-                                        <Accordion.Title
-                                            style={{
-                                                backgroundColor: !active && "whitesmoke",
-                                                cursor: !active && "not-allowed",
-                                            }}
-                                            active={active}
-                                            index={i}
-                                        >
-                                            <Icon name='dropdown'/>
-                                            {e.title}
-                                        </Accordion.Title>
-                                        <Accordion.Content active={active}>
-                                            {i !== process.length - 1 && <Message
-                                                style={{height: 60}}
-                                                floating
-                                                header={incomingMessage}
-                                            />}
-                                            {e.content()}
-                                        </Accordion.Content>
-                                    </>
-                                );
-                            })}
-                        </Accordion>
-
+                        <div style={{display: "flex", flexDirection: "column"}}>
+                            {error && <Message error>Error in connection! Please retry.</Message>}
+                            <Accordion style={{width: 1200}} styled>
+                                {process.map((e, i) => {
+                                    let active = payload[e.key];
+                                    return (
+                                        <>
+                                            <Accordion.Title
+                                                style={{
+                                                    backgroundColor: !active && "whitesmoke",
+                                                    cursor: !active && "not-allowed",
+                                                }}
+                                                active={active}
+                                                index={i}
+                                            >
+                                                <Icon name='dropdown'/>
+                                                {e.title}
+                                            </Accordion.Title>
+                                            <Accordion.Content active={active}>
+                                                {i !== process.length - 1 && <Message
+                                                    style={{height: 60}}
+                                                    floating
+                                                    header={incomingMessage}
+                                                />}
+                                                {e.content()}
+                                            </Accordion.Content>
+                                        </>
+                                    );
+                                })}
+                            </Accordion>
+                        </div>
                     </div>
-                    {/*<div>
-                        PAYLOAD:
-                        {Object.keys(payload).map(k => {
-                            return (
-                                <div style={{flexDirection: "row", display: "flex"}}>
-                                    <p>{k}:</p>
-                                    <p>{JSON.stringify(payload[k])}</p>
-                                </div>
-                            );
-                        })}
-                    </div>*/}
                     <ChatComponent messagesProps={messages} setMessagesProps={(messages => setMessages(messages))}/>
                 </NetworkManager>
             }
