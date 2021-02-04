@@ -1,12 +1,10 @@
 # MULTIMODAL CHATBOT CREATOR - FRAMEWORK
 
-This project is based on the paper "A Conceptual Framework for Multi-modal Process-driven Conversational
-Agents" [TODO WIP LINK]. It provides a framework that, if kept updated with the inputs from the user, guides him through
-an appropriately defined process, regardless of the input type.
+This project is based on the paper "A Conceptual Framework for Multi-modal Process-driven Conversational Agents".
+It provides a framework that, if kept updated with the inputs from the user, guides him through an appropriately defined process, regardless of the input type.
 
-This is the core component that implements the logic of the framework, you can use it in a standalone application; if
-instead you are interested in a React implementation, take a look at the [backend](../backend/README.md)
-and [frontend](../frontend/src/react-mmcc/README.md).
+This is the core component that implements the logic of the framework, you can use it in a standalone application;
+if instead you are interested in a React implementation, take a look at the [backend](../backend/README.md) and [frontend](../frontend/src/react-mmcc/README.md).
 
 # Installation
 
@@ -16,19 +14,22 @@ To use the framework in a python application, run
 # Usage
 
 There are two examples that show how to use the framework with a simple Tkinter application.
-The [basic example](./examples/basic/README.md) uses a `NoNluAdapter`, the [rasa example](./examples/rasa/README.md)
-uses [Rasa](https://rasa.com/). To use Rasa you will have to install it, or use [Docker](https://www.docker.com/).
+The [basic example](./examples/basic/README.md) uses a `NoNluAdapter`, meaning no NLU is performed;
+the [rasa example](./examples/rasa/README.md) uses [Rasa](https://rasa.com/).
+To use Rasa you will have to install it, or use [Docker](https://www.docker.com/).
 
 A developer that wants to use this framework has to:
 
-- Provide a [process description](#the-process-description)
-- Provide a set of [callbacks](#the-callbacks-and-the-responses)
-- Provide a [knowledge base](#the-knowledge-base-and-the-context)
-- Provide a [context](#the-knowledge-base-and-the-context)
-- Choose a [NluAdapter](#the-nlu-adapter)
-- Create a [Framework](#the-framework) object
-- Call `handle_text_input` or `handle_data_input` whenever an input from the user is received
-- Display back to the user the contents of the `Response` returned by the methods.
+1) Provide a [process description](#the-process-description)
+1) Provide a set of [callbacks](#the-callbacks-and-the-responses)
+1) Provide a [knowledge base](#the-knowledge-base-and-the-context)
+1) Provide a [context](#the-knowledge-base-and-the-context)
+1) Choose a [NluAdapter](#the-nlu-adapter)
+1) Create a [Framework](#the-framework) object
+1) Call `handle_text_input` or `handle_data_input` whenever an input from the user is received
+1) Display back to the user the contents of the `Response` returned by the methods.
+
+If you plan to use the provided backend, you just have to provide the first three and the NLU.
 
 ### The Framework
 
