@@ -9,9 +9,9 @@
     "skateboard"
   ],
   "wrong_item": "I am sorry, but the item you ar looking for is not available, try picking one from the list.",
-  "customize": "Do you prefer to choose the color or the size?",
-  "wrong_customize": "You have to choose the color or the size.",
-  "select_color": "Type the color you would like",
+  "customize": "You can choose the color and the size, which would you like to change next?",
+  "wrong_customize": "You have to choose both the color and the size.",
+  "select_color": "Choose the color you would like",
   "colors": [
     "grey",
     "black",
@@ -31,10 +31,10 @@
   "change_info": "Would you like to change the shipping or payment details?",
   "wrong_change": "You can change the address or the payment details",
   "change_address": "Insert your new shipping address",
-  "address_error": "The address you typed could not be found.",
+  "address_error": "The address you inserted could not be found.",
   "change_payment": "Please provide your new payment details",
   "payment_error": "The payment details you provided are not valid.",
   "end": "All done! Your item is scheduled for shipping.",
-  "last_address": "Miralago",
-  "last_payment": "6767667676767676676767"
+  "last_address": "Broad street 1, NY",
+  "last_payment": "129012901290901290"
 }
