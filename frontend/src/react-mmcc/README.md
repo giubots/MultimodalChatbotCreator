@@ -21,7 +21,7 @@ Firstly, you need to wrap your all your application components that need a netwo
 ```jsx
 import React from 'react'
 
-import {NetworkManager, Components} from "react-chatbot-ui";
+import {NetworkManager, Components} from "react-mmcc";
 
 const App = () => {
     return (
