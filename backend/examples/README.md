@@ -16,7 +16,7 @@ This is as simple as it gets! It's a single interaction with the chatbot, and th
 * Move [my_callbacks.py](quickstart/my_callbacks.py), [my_kb.json](quickstart/my_kb.json), and [my_process.json](quickstart/my_process.json) to the [config](../config) folder
 * Run the [rest_server](../rest_server.py) or the [websocket_server](../websocket_server.py)
 * Run one of the [example_clients](quickstart/example_clients/) to learn how to perform the connection in a real web client.
-* Run the [frontend](../../frontend/README.md) to see how it works in a simple chatbot web app.
+* Run the [frontend](../../frontend/src/react-mmcc/README.md) to see how it works in a simple chatbot web app.
 * Adapt your website to handle the connection just like the example clients do.
 * You are ready to move on to the next example, Name Nickname!
 

@@ -7,7 +7,7 @@ guides him through an appropriately defined process, regardless of the input typ
 The framework provides the core functionalities, it is a python package that can be used in any application.
 The frontend provides an implementation of React components that use the framework via a backend.
 
-* [frontend](frontend/react-chatbot-ui/README.md) documentation
+* [frontend](frontend/src/react-mmcc/README.md) documentation
 * [backend](backend/README.md) documentation
 * [framework](framework/README.md) documentation
 

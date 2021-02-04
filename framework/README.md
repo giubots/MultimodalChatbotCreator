@@ -6,7 +6,7 @@ an appropriately defined process, regardless of the input type.
 
 This is the core component that implements the logic of the framework, you can use it in a standalone application; if
 instead you are interested in a React implementation, take a look at the [backend](../backend/README.md)
-and [frontend](../frontend/README.md).
+and [frontend](../frontend/src/react-mmcc/README.md).
 
 # Installation
 

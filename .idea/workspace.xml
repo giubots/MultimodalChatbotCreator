@@ -27,7 +27,11 @@
   <component name="ChangeListManager">
     <list default="true" id="e4755058-727d-4be9-b306-51522bd7417c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/StoreApp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/examples/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/backend/examples/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/framework/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/framework/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/react-mmcc/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/react-mmcc/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,6 +87,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/example/src" />
       <recent name="$PROJECT_DIR$/frontend/react-chatbot-ui/src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/react-mmcc" />
     </key>
   </component>
   <component name="RunManager" selected="Python.Wesocket Server">
@@ -171,7 +178,7 @@
       <workItem from="1612218914521" duration="1442000" />
       <workItem from="1612283474132" duration="431000" />
       <workItem from="1612360142879" duration="11000" />
-      <workItem from="1612455158928" duration="1674000" />
+      <workItem from="1612455158928" duration="3278000" />
     </task>
     <task id="LOCAL-00001" summary="added library framework and README.md">
       <created>1611531697020</created>
@@ -306,7 +313,14 @@
       <option name="project" value="LOCAL" />
       <updated>1612219095795</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="graphic fixes">
+      <created>1612457094386</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1612457094386</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -353,7 +367,8 @@
     <MESSAGE value="fixed some stuff" />
     <MESSAGE value="fixed *a lot of* stuff" />
     <MESSAGE value="#2" />
-    <option name="LAST_COMMIT_MESSAGE" value="#2" />
+    <MESSAGE value="graphic fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="graphic fixes" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
