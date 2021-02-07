@@ -1,6 +1,6 @@
-from mmcc_framework import CTX_COMPLETED, RasaNlu, Response
+from mmcc_framework import CTX_COMPLETED, NoNluAdapter, Response
 
-nluAdapter = RasaNlu()
+nluAdapter = NoNluAdapter([])
 
 
 def payload_enabled_items(context: dict, state: str, action: str = ""):
@@ -14,13 +14,19 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
 
     info = {}
     if (  # choose_info is 1
-          (state == "customize" and action == "skip") or
-          (state == "change_info" and action != "end") or
-          action == "change_info"
+            (state == "customize" and action == "skip") or
+            (state == "change_info" and action != "end") or
+            action == "change_info"
     ):
         info = {
             "last_address": context["address"],
             "last_payment": context["details"]
+        }
+    elif (state == "choose_item" or # choose_customize is 1
+          state in ["select_size", "select_color"] or
+          (state == "customize" and action != "skip")):
+        info = {
+            "item": context["item"],
         }
     elif action == "end":  # complete is 1
         info = {
@@ -45,7 +51,7 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
             (state == "select_size" and action == "color") or
             (state == "select_color" and action == "size")
         ),  # [] proceed to choose info when he clicks on continue (because both color/size has already been chosen)
-            # so the user can choose go to change info
+        # so the user can choose go to change info
         "choose_info": int(  # this means that he went from customize to here (clicking continue)
             (state == "customize" and action == "skip") or
             (state == "change_info" and action != "end") or
@@ -95,15 +101,15 @@ def customize(data, kb, context):
         if "change" in data and data["change"] == "size":
             return Response(kb, context, True, choice="select_size",
                             payload=payload_enabled_items(context,
-                                "customize",
-                                "size"
-                            ))
+                                                          "customize",
+                                                          "size"
+                                                          ))
         if "change" in data and data["change"] == "color":
             return Response(kb, context, True, choice="select_color",
                             payload=payload_enabled_items(context,
-                                "customize",
-                                "color"
-                            ))
+                                                          "customize",
+                                                          "color"
+                                                          ))
         return Response(kb, context, False, utterance=kb["wrong_customize"],
                         payload=payload_enabled_items(context, "choose_item"))
     if data["intent"] == "change_nothing" or data["intent"] == "deny":

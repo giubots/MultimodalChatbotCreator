@@ -21,7 +21,7 @@ services:
       -m models/nlu-20210201-191322.tar.gz
 
 # Remove the following if you are not running the demo
-  frontend:
-    build: ./frontend/.
-    ports:
-      - 3000:3000
+#  frontend:
+#    build: ./frontend/.
+#    ports:
+#      - 3000:3000

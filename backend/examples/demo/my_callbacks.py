@@ -22,6 +22,12 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
             "last_address": context["address"],
             "last_payment": context["details"]
         }
+    elif (state == "choose_item" or # choose_customize is 1
+          state in ["select_size", "select_color"] or
+          (state == "customize" and action != "skip")):
+        info = {
+            "item": context["item"],
+        }
     elif action == "end":  # complete is 1
         info = {
             "item": context["item"],

@@ -97,7 +97,7 @@ export function StoreApp() {
                             <Accordion.Content active={payload["show_size"]}>
                                 <div style={styles.container}>
                                     <Button.Group>
-                                        {data[choice]?.sizes.map((s, index) => {
+                                        {data.find(d => d.key === payload["useful_variables"]?.item)?.sizes?.map((s, index) => {
                                             return (
                                                 <>
                                                     {index !== 0 && (<Button.Or/>)}
@@ -141,7 +141,7 @@ export function StoreApp() {
                             </Components.OnClick>
                             <Accordion.Content active={payload["show_color"]}>
                                 <div style={styles.container}>
-                                    {data[choice]?.colors.map((color, index) => {
+                                    {data.find(d => d.key === payload["useful_variables"]?.item)?.colors.map((color, index) => {
                                         return (
                                             <Components.OnClick
                                                 key={index}
@@ -322,7 +322,7 @@ export function StoreApp() {
             content: () => {
                 let purchase = payload["useful_variables"];
                 let item = data.find(e => e.key === purchase?.item);
-                let color = item?.colors.find(c => c.key === purchase?.color)
+                let color = item?.colors?.find(c => c.key === purchase?.color)
 
                 return (
                     <>
@@ -339,32 +339,32 @@ export function StoreApp() {
                                     <Table.Body>
                                         <Table.Row>
                                             <Table.Cell>Item name</Table.Cell>
-                                            <Table.Cell>{item.name}</Table.Cell>
+                                            <Table.Cell>{item?.name}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Size</Table.Cell>
-                                            <Table.Cell>{purchase.size}</Table.Cell>
+                                            <Table.Cell>{purchase?.size}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Color</Table.Cell>
-                                            <Table.Cell>{color.name}</Table.Cell>
+                                            <Table.Cell>{color?.name}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Delivery address</Table.Cell>
-                                            <Table.Cell>{purchase.address}</Table.Cell>
+                                            <Table.Cell>{purchase?.address}</Table.Cell>
                                         </Table.Row>
                                         <Table.Row>
                                             <Table.Cell>Payment details</Table.Cell>
-                                            <Table.Cell>{purchase.payment}</Table.Cell>
+                                            <Table.Cell>{purchase?.payment}</Table.Cell>
                                         </Table.Row>
                                     </Table.Body>
                                 </Table>
                                 <Card style={{margin: 10}}>
-                                    <Image src={color.source} style={{margin: 10}}/>
+                                    <Image src={color?.source} style={{margin: 10}}/>
                                     <Card.Content style={{height: 35}}>
                                         <Card.Header>
-                                            <Label as='a' tag color={color.key}>
-                                                {color.name}
+                                            <Label as='a' tag color={color?.key}>
+                                                {color?.name}
                                             </Label>
                                         </Card.Header>
                                     </Card.Content>
@@ -465,3 +465,6 @@ const styles = {
         width: "100%",
     },
 }
+
+
+// {data.find(d => d.key === payload["useful_variables"]?.item)?.sizes.map((s, index) => {
