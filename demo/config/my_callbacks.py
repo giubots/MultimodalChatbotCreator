@@ -1,6 +1,6 @@
-from mmcc_framework import CTX_COMPLETED, NoNluAdapter, Response
+from mmcc_framework import CTX_COMPLETED, RasaNlu, Response
 
-nluAdapter = NoNluAdapter([])
+nluAdapter = RasaNlu()
 
 
 def payload_enabled_items(context: dict, state: str, action: str = ""):
@@ -22,13 +22,23 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
             "last_address": context["address"],
             "last_payment": context["details"]
         }
-    elif (state == "choose_item" or # choose_customize is 1
+    if (state == "choose_item" or # choose_customize is 1
           state in ["select_size", "select_color"] or
           (state == "customize" and action != "skip")):
         info = {
             "item": context["item"],
         }
-    elif action == "end":  # complete is 1
+    if state == "customize" and action == "size": # show_size is 1
+        info = {
+            "item": context["item"],
+            "size": context.get("size", ""),
+        }
+    if state == "customize" and action == "color": # show_color is 1
+        info = {
+            "item": context["item"],
+            "color": context.get("color", ""),
+        }
+    if action == "end":  # complete is 1
         info = {
             "item": context["item"],
             "size": context["size"],
@@ -124,7 +134,16 @@ def customize(data, kb, context):
 
 def select_size(data, kb, context):
     if data["intent"] == "state_preference":
-        if "preference" in data and data["preference"] in kb["sizes"]:
+        if "preference" in data and data["preference"] in ["small", "medium", "large"]:
+            obj = {
+                "small": "S",
+                "medium": "M",
+                "large": "L"
+            }
+            context["size"] = obj[data["preference"]]
+            return Response(kb, context, True,
+                            payload=payload_enabled_items(context, "select_size", "color" if "color" in context else ""))
+        elif "preference" in data and data["preference"] in kb["sizes"]:
             context["size"] = data["preference"]
             return Response(kb, context, True,
                             payload=payload_enabled_items(context, "select_size", "color" if "color" in context else ""))

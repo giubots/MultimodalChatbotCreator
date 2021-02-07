@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {Components, NetworkManager} from "../react-mmcc";
 import 'semantic-ui-css/semantic.min.css'
 import {Accordion, Icon, Card, Image, Button, Label, Form, Table, Message} from 'semantic-ui-react'
@@ -18,6 +18,11 @@ export function StoreApp() {
     const [choice, setChoice] = useState();
     const [colorChoice, setColorChoice] = useState();
     const [error, setError] = useState();
+
+    useEffect(() => {
+        payload.useful_variables?.size && setSize(payload.useful_variables.size);
+        payload.useful_variables?.color && setColorChoice(payload.useful_variables.color);
+    }, [payload])
 
     const process = [
         {
@@ -151,7 +156,7 @@ export function StoreApp() {
                                                 }}
                                             >
                                                 <Card
-                                                    style={{margin: 20}}
+                                                    style={{margin: 20, }}
                                                     onClick={() => setColorChoice(index)}
                                                     raised={colorChoice === index}
                                                 >
