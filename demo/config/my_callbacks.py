@@ -69,6 +69,10 @@ def payload_enabled_items(context: dict, state: str, action: str = ""):
         ),  # [] choose to change address or payment info
         "show_address": int(state == "change_info" and action == "address"),
         "show_payment": int(state == "change_info" and action == "payment"),
+        "info_completed": int(
+            (state == "customize" and action == "skip") or
+            action == "change_info"
+        ),
         "complete": int(action == "end")
     }
 

@@ -114,7 +114,7 @@ export function StoreApp() {
                                                     >
                                                         <Button
                                                             color={size === s.key && 'teal'}
-                                                            onClick={() => setSize(s.key)}
+                                                            onClick={() => {}}
                                                             active={size === s.key}
                                                         >{s.name}
                                                         </Button>
@@ -156,9 +156,9 @@ export function StoreApp() {
                                                 }}
                                             >
                                                 <Card
-                                                    style={{margin: 20, }}
-                                                    onClick={() => setColorChoice(index)}
-                                                    raised={colorChoice === index}
+                                                    style={{margin: 20, border: colorChoice === color.key && "2px solid rgba(43, 43, 43, 0.5)"}}
+                                                    onClick={() => {}}
+                                                    raised={colorChoice === color.key}
                                                 >
                                                     <Image src={color.source} style={{margin: 10}}/>
                                                     <Card.Content style={{height: 35}}>
@@ -310,7 +310,7 @@ export function StoreApp() {
                             <Components.OnClick
                                 payload={{intent: "change_nothing"}}
                             >
-                                <Button color={"yellow"} style={styles.button} size={"big"}>
+                                <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["info_completed"]}>
                                     <Icon name={"angle double down"}/>
                                     Continue
                                 </Button>
