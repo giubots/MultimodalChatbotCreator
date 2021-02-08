@@ -24,6 +24,7 @@ const SimpleChatApp = () => {
                     </form>
                 </div> :
                 <NetworkManager
+
                     url={"ws://localhost:8765"}
                     uid={uid}
                     onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
