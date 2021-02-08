@@ -223,7 +223,7 @@ kept clean, meaning that when a gateway is exited, the corresponding entry is re
 
 The framework can be used with data (with the method `handle_data_input`) or with text (with `handle_text_input`). The
 callbacks expect to receive data as their input, not text. To transform text into data an `NluAdapter` is used. There
-are two kinds of adapters: `NoNluAdapter` and `RasaAdapter`
+are two kinds of adapters: `NoNluAdapter` and `RasaNlu`
 
 **NoNluAdapter** does not use a NLU engine, and simply takes the input and puts it into a dictionary. The list of keys
 to use in the dictionary must be provided to the NoNluAdapter constructor.
@@ -247,7 +247,7 @@ data = {"name": "Mark", "occupation": "Mark"}
 my_framework.handle_data_input({"name": "Mark"})
 ```
 
-**RasaAdapter** uses [Rasa](https://rasa.com/), to use this adapter it is necessary to first setup and train the
+**RasaNlu** uses [Rasa](https://rasa.com/), to use this adapter it is necessary to first setup and train the
 interpreter. The instructions on how to use Rasa are available on Rasa's website, and consist basically in the following
 steps:
 
