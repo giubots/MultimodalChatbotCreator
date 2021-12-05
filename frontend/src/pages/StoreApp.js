@@ -20,8 +20,14 @@ export function StoreApp() {
     const [error, setError] = useState();
 
     useEffect(() => {
-        payload.useful_variables?.size && setSize(payload.useful_variables.size);
-        payload.useful_variables?.color && setColorChoice(payload.useful_variables.color);
+        try {
+            payload.useful_variables?.size && setSize(payload.useful_variables.size);
+            payload.useful_variables?.color && setColorChoice(payload.useful_variables.color);
+        } catch (e) {
+            console.log(payload)
+            console.log(e)
+        }
+
     }, [payload])
 
     const process = [
@@ -37,7 +43,8 @@ export function StoreApp() {
                                     <div key={index}>
                                         <Components.OnClick
                                             disabled={!item.availability}
-                                            payload={{intent: "state_preference", preference: item.key}}
+                                            type={"utterance"}
+                                            payload={item.key}
                                         >
                                             <Card
                                                 raised={choice === index}
@@ -92,8 +99,9 @@ export function StoreApp() {
                                 }}
                             >
                                 <Components.OnClick
+                                    type={"utterance"}
                                     disabled={payload["show_color"] === 1}
-                                    payload={{intent: "change_something", change: "size"}}
+                                    payload={"size"}
                                 >
                                     <Icon name='dropdown'/>
                                     Choose size
@@ -107,10 +115,8 @@ export function StoreApp() {
                                                 <>
                                                     {index !== 0 && (<Button.Or/>)}
                                                     <Components.OnClick
-                                                        payload={{
-                                                            intent: "state_preference",
-                                                            preference: s.key
-                                                        }}
+                                                        type={"utterance"}
+                                                        payload={s.key}
                                                     >
                                                         <Button
                                                             color={size === s.key && 'teal'}
@@ -129,8 +135,9 @@ export function StoreApp() {
                             {/** Color **/}
 
                             <Components.OnClick
+                                type={"utterance"}
                                 disabled={payload["show_size"] === 1}
-                                payload={{intent: "change_something", change: "color"}}
+                                payload={"color"}
                             >
                                 <Accordion.Title
                                     active={payload["show_color"]}
@@ -149,11 +156,9 @@ export function StoreApp() {
                                     {data.find(d => d.key === payload["useful_variables"]?.item)?.colors.map((color, index) => {
                                         return (
                                             <Components.OnClick
+                                                type={"utterance"}
                                                 key={index}
-                                                payload={{
-                                                    intent: "state_preference",
-                                                    preference: color.key
-                                                }}
+                                                payload={color.key}
                                             >
                                                 <Card
                                                     style={{margin: 20, border: colorChoice === color.key && "2px solid rgba(43, 43, 43, 0.5)"}}
@@ -176,8 +181,9 @@ export function StoreApp() {
                             </Accordion.Content>
                         </Accordion>
                         <Components.OnClick
+                            type={"utterance"}
                             disabled={!payload["custom_completed"]}
-                            payload={{intent: "change_nothing"}}
+                            payload={"change_nothing"}
                         >
                             <Button
                                 disabled={!payload["custom_completed"]}
@@ -233,7 +239,8 @@ export function StoreApp() {
                                 >
                                     <Components.OnClick
                                         disabled={payload["show_payment"] === 1}
-                                        payload={{intent: "change_something", change: "address"}}
+                                        type={"utterance"}
+                                        payload={"address"}
                                     >
                                         <Icon name='dropdown'/>
                                         Shipping address
@@ -242,6 +249,7 @@ export function StoreApp() {
                                 <Accordion.Content active={payload["show_address"]}>
                                     <div style={styles.container}>
                                         <Components.OnSubmit
+                                            type={"utterance"}
                                             intent={"give_address"}
                                             keyType={"label"}
                                         >
@@ -275,14 +283,16 @@ export function StoreApp() {
                                     }}
                                 >
                                     <Components.OnClick
+                                        type={"utterance"}
                                         disabled={payload["show_address"] === 1}
-                                        payload={{intent: "change_something", change: "payment"}}>
+                                        payload={"payment"}>
                                         <Icon name='dropdown'/>
                                         Payment details
                                     </Components.OnClick>
                                 </Accordion.Title>
                                 <Accordion.Content active={payload["show_payment"]}>
                                     <Components.OnSubmit
+                                        type={"utterance"}
                                         keyType={"attribute"}
                                         attributeName={"name"}
                                         intent={"payment_details"}
@@ -308,9 +318,9 @@ export function StoreApp() {
                                 </Accordion.Content>
                             </Accordion>
                             <Components.OnClick
-                                payload={{intent: "change_nothing"}}
+                                payload={"change_nothing"}
                             >
-                                <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["info_completed"]}>
+                                <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["choose_info"]}>
                                     <Icon name={"angle double down"}/>
                                     Continue
                                 </Button>
@@ -401,9 +411,18 @@ export function StoreApp() {
                     url={"ws://localhost:8765"}
                     uid={uid}
                     onMessage={(m) => {
-                        setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}]);
-                        setPayload(JSON.parse(m).payload);
-                        setIncomingMessage(JSON.parse(m).utterance);
+                        try {
+                            const message = JSON.parse(m);
+                            if (message.utterance) {
+                                setMessages([...messages, {from: "Chat", message: message.utterance}]);
+                                setIncomingMessage(message.utterance)
+                            }
+                            if (message.payload) {
+                                setPayload(message.payload);
+                            }
+                        } catch (e) {
+                            console.log(e)
+                        }
                     }}
                     onError={(err) => setError(err)}
                     onOpen={() => setError(undefined)}

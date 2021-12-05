@@ -52,7 +52,15 @@ const OnClick = (props) => {
     return (
         <div
             onClick={(e) => {
-                handleEvent(e, context, props)
+                let text
+                if (props.type === "utterance") {
+                    if (props.payload) {
+                        text = props.payload
+                    } else {
+                        text = "";
+                    }
+                }
+                handleEvent(e, context, props, {}, text)
                 props.stopPropagation && e.stopPropagation();
             }}
         >
@@ -137,7 +145,11 @@ const OnSubmit = (props) => {
 
                 // Framework compliant utterance type
                 if (props.type === "utterance") {
-                    text = e.target[0].value;
+                    if (props.payload) {
+                        text = props.payload
+                    } else {
+                        text = e.target[0].value;
+                    }
                 }
 
                 // Standard OnSubmit type
