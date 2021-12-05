@@ -21,7 +21,7 @@ function handleEvent(event, context, props, payload, text) {
     if (props.type === "utterance") {
         message["utterance"] = text;
     } else {
-        message["payload"] = props.payload || payload;
+        message["payload"] = {data: props.payload || payload};
         if (props.intent) {
             message.payload = {...message.payload, intent: props.intent};
         }

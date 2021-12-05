@@ -43,7 +43,7 @@ export function StoreApp() {
                                     <div key={index}>
                                         <Components.OnClick
                                             disabled={!item.availability}
-                                            type={"utterance"}
+
                                             payload={item.key}
                                         >
                                             <Card
@@ -99,7 +99,7 @@ export function StoreApp() {
                                 }}
                             >
                                 <Components.OnClick
-                                    type={"utterance"}
+
                                     disabled={payload["show_color"] === 1}
                                     payload={"size"}
                                 >
@@ -115,7 +115,7 @@ export function StoreApp() {
                                                 <>
                                                     {index !== 0 && (<Button.Or/>)}
                                                     <Components.OnClick
-                                                        type={"utterance"}
+
                                                         payload={s.key}
                                                     >
                                                         <Button
@@ -135,7 +135,7 @@ export function StoreApp() {
                             {/** Color **/}
 
                             <Components.OnClick
-                                type={"utterance"}
+
                                 disabled={payload["show_size"] === 1}
                                 payload={"color"}
                             >
@@ -156,7 +156,7 @@ export function StoreApp() {
                                     {data.find(d => d.key === payload["useful_variables"]?.item)?.colors.map((color, index) => {
                                         return (
                                             <Components.OnClick
-                                                type={"utterance"}
+
                                                 key={index}
                                                 payload={color.key}
                                             >
@@ -181,7 +181,7 @@ export function StoreApp() {
                             </Accordion.Content>
                         </Accordion>
                         <Components.OnClick
-                            type={"utterance"}
+
                             disabled={!payload["custom_completed"]}
                             payload={"change_nothing"}
                         >
@@ -239,7 +239,7 @@ export function StoreApp() {
                                 >
                                     <Components.OnClick
                                         disabled={payload["show_payment"] === 1}
-                                        type={"utterance"}
+
                                         payload={"address"}
                                     >
                                         <Icon name='dropdown'/>
@@ -249,7 +249,7 @@ export function StoreApp() {
                                 <Accordion.Content active={payload["show_address"]}>
                                     <div style={styles.container}>
                                         <Components.OnSubmit
-                                            type={"utterance"}
+
                                             intent={"give_address"}
                                             keyType={"label"}
                                         >
@@ -283,7 +283,7 @@ export function StoreApp() {
                                     }}
                                 >
                                     <Components.OnClick
-                                        type={"utterance"}
+
                                         disabled={payload["show_address"] === 1}
                                         payload={"payment"}>
                                         <Icon name='dropdown'/>
@@ -292,7 +292,7 @@ export function StoreApp() {
                                 </Accordion.Title>
                                 <Accordion.Content active={payload["show_payment"]}>
                                     <Components.OnSubmit
-                                        type={"utterance"}
+
                                         keyType={"attribute"}
                                         attributeName={"name"}
                                         intent={"payment_details"}
@@ -318,7 +318,7 @@ export function StoreApp() {
                                 </Accordion.Content>
                             </Accordion>
                             <Components.OnClick
-                                type={"utterance"}
+
                                 payload={"change_nothing"}
                             >
                                 <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["choose_info"]}>
@@ -397,14 +397,14 @@ export function StoreApp() {
         <>
             {!uid ?
                 <div className={"login-container"}>
-                    <label>Insert username and press enter</label>
+                    <label>Insert configId and press enter</label>
                     <br/>
                     <form>
                         <input
                             className={"input"}
                             type={"text"}
                             onChange={e => sessionStorage.setItem("uid", e.target.value)}
-                            placeholder={"Insert your username"}
+                            placeholder={"Insert configuration id"}
                         />
                     </form>
                 </div> :
