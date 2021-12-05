@@ -318,6 +318,7 @@ export function StoreApp() {
                                 </Accordion.Content>
                             </Accordion>
                             <Components.OnClick
+                                type={"utterance"}
                                 payload={"change_nothing"}
                             >
                                 <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["choose_info"]}>
