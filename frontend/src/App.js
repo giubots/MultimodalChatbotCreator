@@ -31,7 +31,7 @@ function App() {
         <>
             {!uid ?
                 <div className={"login-container"}>
-                    <label>Insert username and press enter</label>
+                    <label>Insert config_id and press enter</label>
                     <br/>
                     <form>
                         <input

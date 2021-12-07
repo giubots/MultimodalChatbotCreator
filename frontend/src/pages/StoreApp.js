@@ -37,7 +37,7 @@ export function StoreApp() {
                                     <div key={index}>
                                         <Components.OnClick
                                             disabled={!item.availability}
-                                            payload={{intent: "state_preference", preference: item.key}}
+                                            payload={item.key}
                                         >
                                             <Card
                                                 raised={choice === index}
@@ -386,7 +386,7 @@ export function StoreApp() {
         <>
             {!uid ?
                 <div className={"login-container"}>
-                    <label>Insert username and press enter</label>
+                    <label>Insert config_id and press enter</label>
                     <br/>
                     <form>
                         <input
@@ -401,6 +401,7 @@ export function StoreApp() {
                     url={"ws://localhost:8765"}
                     uid={uid}
                     onMessage={(m) => {
+                        console.log(m)
                         setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}]);
                         setPayload(JSON.parse(m).payload);
                         setIncomingMessage(JSON.parse(m).utterance);
