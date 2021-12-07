@@ -94,7 +94,7 @@ export function StoreApp() {
                             >
                                 <Components.OnClick
                                     disabled={payload["show_color"] === 1}
-                                    payload={{intent: "change_something", change: "size"}}
+                                    payload={"size"}
                                 >
                                     <Icon name='dropdown'/>
                                     Choose size
@@ -108,10 +108,7 @@ export function StoreApp() {
                                                 <>
                                                     {index !== 0 && (<Button.Or/>)}
                                                     <Components.OnClick
-                                                        payload={{
-                                                            intent: "state_preference",
-                                                            preference: s.key
-                                                        }}
+                                                        payload={s.key}
                                                     >
                                                         <Button
                                                             color={size === s.key && 'teal'}
@@ -131,7 +128,7 @@ export function StoreApp() {
 
                             <Components.OnClick
                                 disabled={payload["show_size"] === 1}
-                                payload={{intent: "change_something", change: "color"}}
+                                payload={"color"}
                             >
                                 <Accordion.Title
                                     active={payload["show_color"]}
@@ -151,10 +148,7 @@ export function StoreApp() {
                                         return (
                                             <Components.OnClick
                                                 key={index}
-                                                payload={{
-                                                    intent: "state_preference",
-                                                    preference: color.key
-                                                }}
+                                                payload={color.key}
                                             >
                                                 <Card
                                                     style={{margin: 20, border: colorChoice === color.key && "2px solid rgba(43, 43, 43, 0.5)"}}
@@ -178,7 +172,7 @@ export function StoreApp() {
                         </Accordion>
                         <Components.OnClick
                             disabled={!payload["custom_completed"]}
-                            payload={{intent: "change_nothing"}}
+                            payload={"change_nothing"}
                         >
                             <Button
                                 disabled={!payload["custom_completed"]}
@@ -234,7 +228,7 @@ export function StoreApp() {
                                 >
                                     <Components.OnClick
                                         disabled={payload["show_payment"] === 1}
-                                        payload={{intent: "change_something", change: "address"}}
+                                        payload={"address"}
                                     >
                                         <Icon name='dropdown'/>
                                         Shipping address
@@ -277,7 +271,7 @@ export function StoreApp() {
                                 >
                                     <Components.OnClick
                                         disabled={payload["show_address"] === 1}
-                                        payload={{intent: "change_something", change: "payment"}}>
+                                        payload={"payment"}>
                                         <Icon name='dropdown'/>
                                         Payment details
                                     </Components.OnClick>
@@ -309,7 +303,7 @@ export function StoreApp() {
                                 </Accordion.Content>
                             </Accordion>
                             <Components.OnClick
-                                payload={{intent: "change_nothing"}}
+                                payload={"change_nothing"}
                             >
                                 <Button color={"yellow"} style={styles.button} size={"big"} disabled={!payload["info_completed"]}>
                                     <Icon name={"angle double down"}/>
