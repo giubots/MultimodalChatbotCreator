@@ -150,8 +150,12 @@ const OnSubmit = (props) => {
                             let value = (t.type === "checkbox" || t.type === "radio") ? t.checked : t.value;
 
                             switch (props.keyType) {
+                                case "payload": {
+                                    payload = value
+                                }
                                 case "attribute": {
-                                    payload[t[props.attributeName]] = value;
+                                    // payload[t[props.attributeName]] = value;
+                                    payload = value
                                     break;
                                 }
                                 case "label": {
@@ -260,7 +264,7 @@ OnSubmit.propTypes = {
 }
 
 OnSubmit.defaultProps = {
-    keyType: "attribute",
+    keyType: "payload",
     attributeName: "name",
     customPrefix: "",
     blacklist: ["submit"],

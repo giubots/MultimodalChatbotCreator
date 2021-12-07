@@ -237,8 +237,7 @@ export function StoreApp() {
                                 <Accordion.Content active={payload["show_address"]}>
                                     <div style={styles.container}>
                                         <Components.OnSubmit
-                                            intent={"give_address"}
-                                            keyType={"label"}
+                                            keyType={"payload"}
                                         >
                                             <Form style={{
                                                 flexDirection: "column",
@@ -278,9 +277,8 @@ export function StoreApp() {
                                 </Accordion.Title>
                                 <Accordion.Content active={payload["show_payment"]}>
                                     <Components.OnSubmit
-                                        keyType={"attribute"}
+                                        keyType={"payload"}
                                         attributeName={"name"}
-                                        intent={"payment_details"}
                                         blacklist={["submit"]}
                                     >
                                         <Form style={{marginBottom: 40, marginTop: 20}}>
