@@ -1,10 +1,13 @@
 To run:
+```
 npm install
 
 npm start
-
+```
 
 When asked for a config_id, refer to the guide of mmcc-config-frontend. (The configurations frontend to manage them)
+
+Make sure that you are running the websocket service located in mmcc-backend, to interact with the framework.
 
 The chat app is a simple app that sends utterances.
 The store app instead uses multimodality and interacts with both payloads and utterances, both incoming and outgoing.
