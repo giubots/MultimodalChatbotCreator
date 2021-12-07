@@ -6,7 +6,8 @@ const SimpleChatApp = () => {
 
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState(undefined);
-    const uid = sessionStorage.getItem("uid");
+    // const uid = sessionStorage.getItem("uid");
+    const [uid, setUid] = useState();
 
     return (
         <>
@@ -18,7 +19,7 @@ const SimpleChatApp = () => {
                         <input
                             className={"input"}
                             type={"text"}
-                            onChange={e => sessionStorage.setItem("uid", e.target.value)}
+                            onChange={e => setUid(e.target.value)}
                             placeholder={"Insert your username"}
                         />
                     </form>

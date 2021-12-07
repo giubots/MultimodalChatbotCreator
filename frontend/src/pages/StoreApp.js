@@ -11,7 +11,8 @@ export function StoreApp() {
     const [messages, setMessages] = useState([]);
     const [incomingMessage, setIncomingMessage] = useState("");
     const [payload, setPayload] = useState({});
-    const uid = sessionStorage.getItem("uid");
+    // const uid = sessionStorage.getItem("uid");
+    const [uid, setUid] = useState();
 
     const [size, setSize] = useState(0);
 
@@ -392,7 +393,7 @@ export function StoreApp() {
                         <input
                             className={"input"}
                             type={"text"}
-                            onChange={e => sessionStorage.setItem("uid", e.target.value)}
+                            onChange={e => setUid(e.target.value)}
                             placeholder={"Insert your username"}
                         />
                     </form>
