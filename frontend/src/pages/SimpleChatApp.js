@@ -28,9 +28,9 @@ const SimpleChatApp = () => {
                     url={"ws://localhost:8765"}
                     uid={uid}
                     onMessage={(m) => setMessages([...messages, {from: "Chat", message: JSON.parse(m).utterance}])}
-                    onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
-                    onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
-                    onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
+                    // onOpen={() => setMessages([...messages, {from: "Socket", message: "Connection opened!"}])}
+                    // onClose={() => setMessages([...messages, {from: "Socket", message: "Connection closed!"}])}
+                    // onError={() => setMessages([...messages, {from: "Socket", message: "Error in connection!"}])}
                 >
                     <div style={{
                         borderRadius: 10,
