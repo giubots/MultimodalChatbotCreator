@@ -34,7 +34,7 @@ export class NetworkManager extends React.Component {
     wsUrl() {
         return encodeURI(
             `${this.url}/use/${this.uid}`
-            + (this.state.interaction? `&interaction=${this.state.interaction}` : "")
+            + (this.state.interaction? `?interaction=${this.state.interaction}` : "")
         );
     };
 
